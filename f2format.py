@@ -114,16 +114,16 @@ def convert(bytestring, lineno):
         ### print()
 
         expr = list()
-        for token, entries in reversed(entryl):     # extract expressions in reversed order
+        for token, entries in entryl:     # extract expressions
             ### print(token.string, entries)
-            expr.extend(token.string[entry].encode() for entry in reversed(entries))
+            expr.extend(token.string[entry].encode() for entry in entries)
 
         # convert end of f-string to str.format literal, right bracket ')' for compabitlity in multi-lines
         end = lineno[tokens[-1].end[0]] + tokens[-1].end[1]
-        text[end:end+1] = b').format(%s)%s' % (b', '.join(reversed(expr)), chr(text[end]).encode())
+        text[end:end+1] = b').format(%s)%s' % (b', '.join(expr), chr(text[end]).encode())
 
         # for each token, convert expression literals and brace '{}' escape sequences
-        for token, entries in reversed(entryl):
+        for token, entries in reversed(entryl):     # using reversed to keep offset in leading context
             token_start = lineno[token.start[0]] + token.start[1]   # actual offset at start of token
             token_end = lineno[token.end[0]] + token.end[1]         # actual offset at end of token
             if entries:     # for f-string expressions, replace with empty string ('')
