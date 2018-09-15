@@ -26,7 +26,7 @@ else:
 # macros
 ARCHIVE = 'archive'
 HELPMSG = '''\
-f2format 0.1.0
+f2format 0.1.1
 usage: f2format [-h] [-n] <python source files and folders..>
 
 Convert f-string to str.format for Python 3 compatibility.
@@ -38,14 +38,15 @@ options:
 
 
 def convert(bytestring, lineno):
-    def find_rbrace(text):
+    def find_rbrace(text, quote):
         """Brute force to find right brace."""
+        max_offset = len(text)
         offset = 1
-        while True:
-            ### print('f"{%s' % text[:offset])
+        while offset <= max_offset:
+            ### print('f%s{%s%s' % (quote, text[:offset], quote))
             try:    # try exclusively
                 with contextlib.suppress(SyntaxError):
-                    eval('f"{%s"' % text[:offset])
+                    eval('f%s{%s%s' % (quote, text[:offset], quote))
             except Exception:
                 ### import traceback
                 ### traceback.print_exc()
@@ -61,13 +62,15 @@ def convert(bytestring, lineno):
 
     str_flag = False    # if previous item is token.STRING
     for token in tokenize.generate_tokens(io.StringIO(string).readline):
-        cat_flag = False    # if item is concatenable with previous item, i.e. adjacent string
+        cat_flag = False                # if item is concatenable with previous item, i.e. adjacent string
         if token.type == tokenize.STRING:
             if str_flag:    cat_flag = True
             if cat_flag:    f_string[-1].append(token)
             else:           f_string.append([token])
             str_flag = True
-        else:
+        elif token.type == tokenize.NL: # skip token.NL
+            continue
+        else:                           # otherwise, not concatenable
             str_flag = False
         ### print(token)
 
@@ -91,22 +94,23 @@ def convert(bytestring, lineno):
             tmpent = list()                         # temporary entry list
 
             if isinstance(tmpval, ast.JoinedStr):   # ast.JoinedStr is f-string
-                # fetch string literal prefixes
                 rmatch = re.match(r'^((f|rf|fr)(\'\'\'|\'|"""|"))', token.string, re.IGNORECASE)
-                prefix = '' if rmatch is None else rmatch.groups()[0]
-                length = len(prefix)                # offset from token.string
+                prefix = '' if rmatch is None else rmatch.groups()[0]           # fetch string literal prefixes
+                quotes = re.sub(r'^rf|fr|f', r'', prefix, flags=re.IGNORECASE)  # quote character(s) for this f-string
+                length = len(prefix)                                            # offset from token.string
 
                 for obj in tmpval.values:           # traverse ast.JoinedStr.values -> list
                     if isinstance(obj, ast.FormattedValue):     # expression part (in braces)
-                        start = length + 1                                  # for '{', get start of expression
-                        end = start + find_rbrace(token.string[start:])     # find '}', fetch end of expression
-                        length += 2 + (end - start)                         # for '{', '}' and expression, update offset
-                        if obj.conversion != -1:    end -= 2                # has conversion ('![rsa]'), minus 2
-                        if obj.format_spec is not None:                     # has format specification (':...')
-                            end -= (len(obj.format_spec.values[0].s) + 1)   # minus length of format_spec and colon (':')
-                        tmpent.append(slice(start, end))                    # actual expression slice
+                        start = length + 1                                      # for '{', get start of expression
+                        end = start + find_rbrace(token.string[start:], quotes) # find '}', fetch end of expression
+                        length += 2 + (end - start)                             # for '{', '}' and expression, update offset
+                        if obj.conversion != -1:    end -= 2                    # has conversion ('![rsa]'), minus 2
+                        if obj.format_spec is not None:                         # has format specification (':...')
+                            end -= (len(obj.format_spec.values[0].s) + 1)       # minus length of format_spec and colon (':')
+                        tmpent.append(slice(start, end))                        # actual expression slice
                     else:                                       # raw string part
-                        length += len(obj.s)                    # ast.Str.s -> str
+                        length += len(obj.s) + obj.s.count('{') + obj.s.count('}')
+                                                                # ast.Str.s -> str, count '{}' twice for escape sequence
                     ### print(length)
             entryl.append((token, tmpent))          # each token with a concatenation entry list
 
@@ -120,7 +124,9 @@ def convert(bytestring, lineno):
 
         # convert end of f-string to str.format literal, right bracket ')' for compabitlity in multi-lines
         end = lineno[tokens[-1].end[0]] + tokens[-1].end[1]
-        text[end:end+1] = b').format(%s)%s' % (b', '.join(expr), chr(text[end]).encode())
+        text[end:end+1] = b').format(%s)%s' % (b'%s%s%s' % (b'(', b'), ('.join(expr), b')'), chr(text[end]).encode())
+
+        ### print(expr)
 
         # for each token, convert expression literals and brace '{}' escape sequences
         for token, entries in reversed(entryl):     # using reversed to keep offset in leading context
@@ -205,16 +211,16 @@ def main():
     filelist = list()
     for path in sys.argv[1:]:
         if os.path.isfile(path):
-            if archive:    
-                shutil.copy(path, ARCHIVE)
+            if archive:
+                shutil.copy(path, os.path.join(ARCHIVE, path.replace(os.path.sep, '_')))
             filelist.append(path)
         if os.path.isdir(path):
             if archive:
-                shutil.copytree(path, ARCHIVE)
+                shutil.copytree(path, os.path.join(ARCHIVE, path))
             filelist.extend(find(path))
     filelist = set(filter(ispy, filelist))
 
-    # process files 
+    # process files
     multiprocessing.Pool(processes=CPU_CNT).map(prepare, filelist)
 
 

@@ -1,5 +1,16 @@
 # Changelog
 
+### Version 0.1.1
+
+ > Release date: 2018-09-16
+
+ - fixed bugs when try exclusively due to quote characters
+ - avoided infinite loop
+ - fixed bugs when token is NL
+ - fixed bugs when expression is implicit tuple
+ - fixed bugs when counting braces '{}' in ast.Str
+ - fixed bugs when archiving files
+
 ### Version 0.1.0 (initial distribution)
 
  > Release date: 2018-09-15
