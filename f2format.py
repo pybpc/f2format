@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+
 import ast
 import contextlib
 import copy
@@ -22,44 +23,49 @@ else:
     CPU_CNT = os.cpu_count() or 1
 
 
-# help message
-HELP = """\
+# macros
+ARCHIVE = 'archive'
+HELPMSG = '''\
 f2format 0.1.0
-usage: f2format <python source files and folders..>
-"""
+usage: f2format [-h] [-n] <python source files and folders..>
 
+Convert f-string to str.format for Python 3 compatibility.
 
-def find_rbrace(text):
-    offset = 1
-    while True:
-        ### print('f"{%s' % text[:offset])
-        try:
-            with contextlib.suppress(SyntaxError):
-                eval('f"{%s"' % text[:offset])
-        except Exception:
-            ### import traceback
-            ### traceback.print_exc()
-            ### print()
-            break
-        offset += 1
-    return (offset - 1)
+options:
+    -h      show this help message and exit
+    -n      do not archive original files
+'''
 
 
 def convert(bytestring, lineno):
-    source = bytearray(bytestring)
-    string = bytestring.decode()
+    def find_rbrace(text):
+        """Brute force to find right brace."""
+        offset = 1
+        while True:
+            ### print('f"{%s' % text[:offset])
+            try:    # try exclusively
+                with contextlib.suppress(SyntaxError):
+                    eval('f"{%s"' % text[:offset])
+            except Exception:
+                ### import traceback
+                ### traceback.print_exc()
+                ### print()
+                break
+            offset += 1
+        return (offset - 1)
+
+    source = bytearray(bytestring)  # bytearray source (mutable)
+    string = bytestring.decode()    # string for tokenisation
 
     f_string = [list()] # [[token, ...], [...], ...] -> concatenable strings
 
-    str_flag = False
+    str_flag = False    # if previous item is token.STRING
     for token in tokenize.generate_tokens(io.StringIO(string).readline):
-        cat_flag = False
+        cat_flag = False    # if item is concatenable with previous item, i.e. adjacent string
         if token.type == tokenize.STRING:
             if str_flag:    cat_flag = True
-            if cat_flag:
-                f_string[-1].append(token)
-            else:
-                f_string.append([token])
+            if cat_flag:    f_string[-1].append(token)
+            else:           f_string.append([token])
             str_flag = True
         else:
             str_flag = False
@@ -72,80 +78,90 @@ def convert(bytestring, lineno):
 
     ### print()
 
-    text = copy.deepcopy(source)
-    for tokens in reversed(f_string):
+    text = copy.deepcopy(source)        # make a copy, just in case
+    for tokens in reversed(f_string):   # for each string concatenation
+        # check if has f-string literal in this concatenation
         py36 = any(map(lambda token: re.match(r'^(f|rf|fr)', token.string, re.IGNORECASE), tokens))
-        if not py36:
-            continue
+        if not py36:    continue
 
         entryl = list()
         for token in tokens:
-            rmatch = re.match(r'^((f|rf|fr)(\'\'\'|\'|"""|"))', token.string, re.IGNORECASE)
-            prefix = '' if rmatch is None else rmatch.groups()[0]
-            tmpent = list()
-            module = ast.parse(token.string)
-            tmpval = module.body[0].value
-            length = len(prefix)
-            if isinstance(tmpval, ast.JoinedStr):
-                for obj in tmpval.values:
-                    if isinstance(obj, ast.FormattedValue):
-                        start = length + 1
-                        end = start + find_rbrace(token.string[start:])
-                        length += 2 + (end - start)
-                        if obj.conversion != -1:    end -= 2
-                        if obj.format_spec is not None:
-                            end -= (len(obj.format_spec.values[0].s) + 1)
-                        tmpent.append(slice(start, end))
-                    else:
-                        length += len(obj.s)
+            module = ast.parse(token.string)        # parse AST, get ast.Module, ast.Module.body -> list
+            tmpval = module.body[0].value           # either ast.Str or ast.JoinedStr
+            tmpent = list()                         # temporary entry list
+
+            if isinstance(tmpval, ast.JoinedStr):   # ast.JoinedStr is f-string
+                # fetch string literal prefixes
+                rmatch = re.match(r'^((f|rf|fr)(\'\'\'|\'|"""|"))', token.string, re.IGNORECASE)
+                prefix = '' if rmatch is None else rmatch.groups()[0]
+                length = len(prefix)                # offset from token.string
+
+                for obj in tmpval.values:           # traverse ast.JoinedStr.values -> list
+                    if isinstance(obj, ast.FormattedValue):     # expression part (in braces)
+                        start = length + 1                                  # for '{', get start of expression
+                        end = start + find_rbrace(token.string[start:])     # find '}', fetch end of expression
+                        length += 2 + (end - start)                         # for '{', '}' and expression, update offset
+                        if obj.conversion != -1:    end -= 2                # has conversion ('![rsa]'), minus 2
+                        if obj.format_spec is not None:                     # has format specification (':...')
+                            end -= (len(obj.format_spec.values[0].s) + 1)   # minus length of format_spec and colon (':')
+                        tmpent.append(slice(start, end))                    # actual expression slice
+                    else:                                       # raw string part
+                        length += len(obj.s)                    # ast.Str.s -> str
                     ### print(length)
-            entryl.append((token, tmpent))
+            entryl.append((token, tmpent))          # each token with a concatenation entry list
 
         ### pprint.pprint(entryl)
         ### print()
 
         expr = list()
-        for token, entries in reversed(entryl):
+        for token, entries in reversed(entryl):     # extract expressions in reversed order
             ### print(token.string, entries)
             expr.extend(token.string[entry].encode() for entry in reversed(entries))
 
+        # convert end of f-string to str.format literal, right bracket ')' for compabitlity in multi-lines
         end = lineno[tokens[-1].end[0]] + tokens[-1].end[1]
         text[end:end+1] = b').format(%s)%s' % (b', '.join(reversed(expr)), chr(text[end]).encode())
 
+        # for each token, convert expression literals and brace '{}' escape sequences
         for token, entries in reversed(entryl):
-            token_start = lineno[token.start[0]] + token.start[1]
-            token_end = lineno[token.end[0]] + token.end[1]
-            if entries:
+            token_start = lineno[token.start[0]] + token.start[1]   # actual offset at start of token
+            token_end = lineno[token.end[0]] + token.end[1]         # actual offset at end of token
+            if entries:     # for f-string expressions, replace with empty string ('')
                 for entry in reversed(entries):
                     start = token_start + entry.start
                     end = token_start + entry.stop
                     text[start:end] = b''
-            else:
+            else:           # for escape sequences, double braces
                 text[token_start:token_end] = re.sub(rb'([{}])', rb'\1\1', text[token_start:token_end])
 
+            # strip leading f-string literals ('[fF]')
             text[token_start:token_start+3] = re.sub(rb'[fF]', rb'', text[token_start:token_start+3])
 
+        # then add left bracket '(' for compabitlity in multi-lines
         start = lineno[tokens[0].start[0]] + tokens[0].start[1]
         text[start:start+1] = b'(%s' % text[start:start+1]
 
+    # return modified context
     return text
 
 
 def prepare(filename):
+    """Wrapper works for conversion."""
     print(f'Now converting {filename!r}...')
-    shutil.move(file, f'archive/{file.replace(os.path.sep, '_')}')
 
-    lineno = dict()
-    context = list()
+    lineno = dict()     # line number -> file offset
+    content = list()    # file content
     with open(filename, 'rb') as file:
         lineno[1] = file.tell()
         for lnum, line in enumerate(file):
             lineno[lnum+2] = file.tell()
-            context.append(line)
+            content.append(line)
 
-    bytestring = b''.join(context)
+    # now, do the dirty works
+    bytestring = b''.join(content)
     text = convert(bytestring, lineno)
 
+    # dump back to the file
     with open(filename, 'wb') as file:
         file.write(text)
 
@@ -155,20 +171,50 @@ def prepare(filename):
 
 
 def main():
-    def ispy(file):
-        return (os.path.isfile(file) and (file.endswith('py') or file.endswith('pyw')))
+    """Entry point for f2format."""
+    def find(root):
+        """Recursively find all files under root."""
+        flst = list()
+        temp = os.listdir(root)
+        for file in temp:
+            path = os.path.join(root, file)
+            if os.path.isdir(path):     flst.extend(find(path))
+            elif os.path.isfile(path):  flst.append(path)
+            elif os.path.islink(path):  continue    # exclude symbolic links
+        yield from flst
 
+    def ispy(file):
+        """Check if file is Python source code."""
+        return (os.path.isfile(file) and (os.path.splitext(file)[1] in ('.py', '.pyw')))
+
+    # help command
+    if '-h' in sys.argv[1:]:
+        print(HELPMSG)
+        return
+
+    # do not make archive
+    archive = True
+    if '-n' in sys.argv[1:]:
+        archive = False
+
+    # make archive directory
+    if archive:
+        pathlib.Path(ARCHIVE).mkdir(parents=True, exist_ok=True)
+
+    # fetch file list
     filelist = list()
     for path in sys.argv[1:]:
-        if path in ('-h', '--help'):
-            print(HELP)
         if os.path.isfile(path):
+            if archive:    
+                shutil.copy(path, ARCHIVE)
             filelist.append(path)
         if os.path.isdir(path):
-            filelist.extend(filter(ispy, os.listdir(path)))
-    filelist = set(filelist)
+            if archive:
+                shutil.copytree(path, ARCHIVE)
+            filelist.extend(find(path))
+    filelist = set(filter(ispy, filelist))
 
-    pathlib.Path('archive').mkdir(parents=True, exist_ok=True)
+    # process files 
     multiprocessing.Pool(processes=CPU_CNT).map(prepare, filelist)
 
 

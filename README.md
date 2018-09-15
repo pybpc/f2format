@@ -28,11 +28,18 @@ git pull
 
 &emsp; It is fairly straightforward to use `f2format`:
 
-```sh
-f2format /path/to/the/file_or_directory
+```
+f2format 0.1.0
+usage: f2format [-h] [-n] <python source files and folders..>
+
+Convert f-string to str.format for Python 3 compatibility.
+
+options:
+    -h      show this help message and exit
+    -n      do not archive original files
 ```
 
-&emsp; `f2format` will read then convert all *f-string* literals in every Python file under this path. In case there might be some problems with the conversion, `f2format` will duplicate all original files it is to modify into `archive` directory ahead of the process.
+&emsp; `f2format` will read then convert all *f-string* literals in every Python file under this path. In case there might be some problems with the conversion, `f2format` will duplicate all original files it is to modify into `archive` directory ahead of the process, if `-n` not set.
 
 ## Contribution
 

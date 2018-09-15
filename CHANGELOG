@@ -1,7 +1,14 @@
 # Changelog
 
-### Version 0.1.0 (initial distribution)
+### Version 0.1.0b2
 
  > Release date: 2018-09-15
 
-&emsp; Convert f-string to `str.format` for Python 3 capability.
+ - fixed minor bugs
+ - comments added
+
+### Version 0.1.0b1 (initial distribution)
+
+ > Release date: 2018-09-15
+
+&emsp; Convert f-string to `str.format` for Python 3 compatibility.

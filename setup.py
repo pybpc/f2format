@@ -10,7 +10,7 @@ with open('./README.md', 'r') as file:
 
 
 # version string
-__version__ = '0.1.0'
+__version__ = '0.1.0b2'
 
 
 # set-up script for pip distribution
@@ -22,12 +22,12 @@ setuptools.setup(
     url = 'https://github.com/JarryShaw/f2format',
     license = 'MIT License',
     keywords = 'fstring format conversion',
-    description = 'Convert f-string to `str.format` for Python 3 capability.',
+    description = 'Convert f-string to str.format for Python 3 compatibility.',
     long_description = long_desc,
     long_description_content_type='text/markdown',
     python_requires = '>=3.6',
     install_requires = ['setuptools'],
-    py_modules = ['pcapkit'],
+    py_modules = ['f2format'],
     entry_points = {
         'console_scripts': [
             'f2format = f2format:main',
