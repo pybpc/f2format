@@ -4,8 +4,6 @@
 
 &emsp; `f2format` is inspired and assisted by my mate [@gousaiyang](https://github.com/gousaiyang). It functions by tokenising and parsing Python code into multiple abstract syntax trees (AST), through which it shall synthesise and extract expressions from *f-string* literal and then reassemble the original string using `str.format` method. Besides **[conversion](https://docs.python.org/3/library/string.html#format-string-syntax)** and **[format specification](https://docs.python.org/3/library/string.html#formatspec)**, `f2format` also considered and resolved **[string concatenation](https://docs.python.org/3/reference/lexical_analysis.html#string-literal-concatenation)**. Also, it always tries to maintain the original layout of source code, and accuracy of syntax.
 
-&nbsp;
-
 ## Installation
 
 > Note that `f2format` only supports Python versions __since 3.6__
@@ -26,8 +24,6 @@ pip install -e .
 git pull
 ```
 
-&nbsp;
-
 ## Usage
 
 &emsp; It is fairly straightforward to use `f2format`:
@@ -38,8 +34,6 @@ f2format /path/to/the/file
 
 &emsp; `f2format` will read then convert all *f-string* literals in every Python file under such path. In case there might be some problems with the conversion, `f2format` will duplicate all original files it is to modify into `archive` directory ahead the process.
 
-&nbsp;
-
-## Contribution
+## Contribution
 
 &emps; Contributions are very welcome, especially fixing bugs and providing test cases, which [@gousaiyang](https://github.com/gousaiyang) is to help with so to speak. Note that code must remain valid and reasonable.
