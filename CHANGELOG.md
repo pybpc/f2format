@@ -1,14 +1,24 @@
 # Changelog
 
+### Version 0.1.2
+
+ > Release date: 2018-09-16
+
+ - considered when `multiprocessing` not supported
+ - revised search algorithm for end of *f-string* expressions
+ - revised length calculation of *f-string* raw string part
+ - renamed functions
+ - fixed minor bugs
+
 ### Version 0.1.1
 
  > Release date: 2018-09-16
 
  - fixed bugs when try exclusively due to quote characters
  - avoided infinite loop
- - fixed bugs when token is NL
+ - fixed bugs when token is `NL`
  - fixed bugs when expression is implicit tuple
- - fixed bugs when counting braces '{}' in ast.Str
+ - fixed bugs when counting braces `'{}'` in ast.Str
  - fixed bugs when archiving files
 
 ### Version 0.1.0 (initial distribution)
@@ -28,4 +38,4 @@
 
  > Release date: 2018-09-15
 
-&emsp; Convert f-string to `str.format` for Python 3 compatibility.
+&emsp; Convert *f-string* to `str.format` for Python 3 compatibility.

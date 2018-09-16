@@ -2,10 +2,8 @@
 
 
 import ast
-import contextlib
 import copy
 import io
-import multiprocessing
 import os
 import pathlib
 import re
@@ -14,19 +12,27 @@ import sys
 import tokenize
 
 
-# CPU number
-if os.name == 'posix' and 'SC_NPROCESSORS_CONF' in os.sysconf_names:
-    CPU_CNT = os.sysconf('SC_NPROCESSORS_CONF')
-elif 'sched_getaffinity' in os.__all__:
-    CPU_CNT = len(os.sched_getaffinity(0))
-else:
-    CPU_CNT = os.cpu_count() or 1
+# multiprocessing may not be supported
+try:        # try first
+    import multiprocessing
+except ImportError:
+    multiprocessing = None
+else:       # CPU number if multiprocessing supported
+    if os.name == 'posix' and 'SC_NPROCESSORS_CONF' in os.sysconf_names:
+        CPU_CNT = os.sysconf('SC_NPROCESSORS_CONF')
+    elif 'sched_getaffinity' in os.__all__:
+        CPU_CNT = len(os.sched_getaffinity(0))
+    else:
+        CPU_CNT = os.cpu_count() or 1
+finally:    # alias and aftermath
+    mp = multiprocessing
+    del multiprocessing
 
 
 # macros
 ARCHIVE = 'archive'
 HELPMSG = '''\
-f2format 0.1.1
+f2format 0.1.2
 usage: f2format [-h] [-n] <python source files and folders..>
 
 Convert f-string to str.format for Python 3 compatibility.
@@ -38,6 +44,7 @@ options:
 
 
 def convert(bytestring, lineno):
+    """The main conversion process."""
     def find_rbrace(text, quote):
         """Brute force to find right brace."""
         max_offset = len(text)
@@ -45,14 +52,15 @@ def convert(bytestring, lineno):
         while offset <= max_offset:
             ### print('f%s{%s%s' % (quote, text[:offset], quote))
             try:    # try exclusively
-                with contextlib.suppress(SyntaxError):
-                    eval('f%s{%s%s' % (quote, text[:offset], quote))
-            except Exception:
-                ### import traceback
-                ### traceback.print_exc()
-                ### print()
-                break
-            offset += 1
+                ast.parse('f%s{%s%s' % (quote, text[:offset], quote))
+            except SyntaxError:
+                offset += 1
+                continue
+            ### except Exception as error:
+            ###     import traceback
+            ###     traceback.print_exc()
+            ###     exit(1)
+            break
         return (offset - 1)
 
     source = bytearray(bytestring)  # bytearray source (mutable)
@@ -75,10 +83,8 @@ def convert(bytestring, lineno):
         ### print(token)
 
     ### print()
-
     ### import pprint
     ### pprint.pprint(f_string)
-
     ### print()
 
     text = copy.deepcopy(source)        # make a copy, just in case
@@ -90,7 +96,7 @@ def convert(bytestring, lineno):
         entryl = list()
         for token in tokens:
             module = ast.parse(token.string)        # parse AST, get ast.Module, ast.Module.body -> list
-            tmpval = module.body[0].value           # either ast.Str or ast.JoinedStr
+            tmpval = module.body[0].value           # either ast.Str or ast.JoinedStr, ast.Module.body[0] -> ast.Expr
             tmpent = list()                         # temporary entry list
 
             if isinstance(tmpval, ast.JoinedStr):   # ast.JoinedStr is f-string
@@ -99,19 +105,26 @@ def convert(bytestring, lineno):
                 quotes = re.sub(r'^rf|fr|f', r'', prefix, flags=re.IGNORECASE)  # quote character(s) for this f-string
                 length = len(prefix)                                            # offset from token.string
 
-                for obj in tmpval.values:           # traverse ast.JoinedStr.values -> list
-                    if isinstance(obj, ast.FormattedValue):     # expression part (in braces)
+                for index, obj in enumerate(tmpval.values):     # traverse ast.JoinedStr.values -> list
+                    if isinstance(obj, ast.FormattedValue):     # expression part (in braces), ast.FormattedValue
                         start = length + 1                                      # for '{', get start of expression
                         end = start + find_rbrace(token.string[start:], quotes) # find '}', fetch end of expression
                         length += 2 + (end - start)                             # for '{', '}' and expression, update offset
-                        if obj.conversion != -1:    end -= 2                    # has conversion ('![rsa]'), minus 2
-                        if obj.format_spec is not None:                         # has format specification (':...')
-                            end -= (len(obj.format_spec.values[0].s) + 1)       # minus length of format_spec and colon (':')
+                        if obj.conversion != -1:    end -= 2                    # has conversion ('![rsa]'), minus 2, ast.FormattedValue.converstion -> int
+                        if obj.format_spec is not None:                         # has format specification (':...'), minus length of format_spec and colon (':')
+                            end -= (len(obj.format_spec.values[0].s) + 1)       # ast.FormattedValue.format_spec -> ast.JoinedStr, .values[0] -> ast.Str
                         tmpent.append(slice(start, end))                        # actual expression slice
-                    else:                                       # raw string part
-                        length += len(obj.s) + obj.s.count('{') + obj.s.count('}')
-                                                                # ast.Str.s -> str, count '{}' twice for escape sequence
-                    ### print(length)
+                    elif isinstance(obj, ast.Str):              # raw string part, ast.Str, .s -> str
+                        raw = token.string[length:]                             # original string
+                        end = len(raw)                                          # end of raw string part
+                        cnt = 0                                                 # counter for left braces ('{')
+                        for i, c in enumerate(raw):                             # enumerate string
+                            if c == '{':    cnt += 1                            # increment when reads left brace ('{')
+                            elif cnt % 2 == 1:  end = i - 1;    break           # when number of left braces is odd, reach the end
+                        length += end
+                    else:
+                        raise ValueError('malformed node or string:: %r' % obj)
+                    ### print('length:', length, '###', token.string[:length], '###', token.string[length:])
             entryl.append((token, tmpent))          # each token with a concatenation entry list
 
         ### pprint.pprint(entryl)
@@ -126,7 +139,8 @@ def convert(bytestring, lineno):
         end = lineno[tokens[-1].end[0]] + tokens[-1].end[1]
         text[end:end+1] = b').format(%s)%s' % (b'%s%s%s' % (b'(', b'), ('.join(expr), b')'), chr(text[end]).encode())
 
-        ### print(expr)
+        ### print()
+        ### pprint.pprint(expr)
 
         # for each token, convert expression literals and brace '{}' escape sequences
         for token, entries in reversed(entryl):     # using reversed to keep offset in leading context
@@ -151,7 +165,7 @@ def convert(bytestring, lineno):
     return text
 
 
-def prepare(filename):
+def f2format(filename):
     """Wrapper works for conversion."""
     print(f'Now converting {filename!r}...')
 
@@ -172,8 +186,9 @@ def prepare(filename):
         file.write(text)
 
     ### print()
-    ### print('original:', repr(bytestring.decode()))
-    ### print('converted:', repr(text.decode()))
+    ### print('original:\n', bytestring.decode())
+    ### print('###')
+    ### print('converted:\n', text.decode())
 
 
 def main():
@@ -188,10 +203,6 @@ def main():
             elif os.path.isfile(path):  flst.append(path)
             elif os.path.islink(path):  continue    # exclude symbolic links
         yield from flst
-
-    def ispy(file):
-        """Check if file is Python source code."""
-        return (os.path.isfile(file) and (os.path.splitext(file)[1] in ('.py', '.pyw')))
 
     # help command
     if '-h' in sys.argv[1:]:
@@ -218,10 +229,16 @@ def main():
             if archive:
                 shutil.copytree(path, os.path.join(ARCHIVE, path))
             filelist.extend(find(path))
+
+    # check if file is Python source code
+    ispy = lambda file: (os.path.isfile(file) and (os.path.splitext(file)[1] in ('.py', '.pyw')))
     filelist = set(filter(ispy, filelist))
 
     # process files
-    multiprocessing.Pool(processes=CPU_CNT).map(prepare, filelist)
+    if mp is None:
+        [ f2format(filename) for filename in filelist ]
+    else:
+        mp.Pool(processes=CPU_CNT).map(f2format, filelist)
 
 
 if __name__ == '__main__':
