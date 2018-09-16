@@ -1,6 +1,6 @@
 # f2format
 
-&emsp; Since [PEP 498](https://www.python.org/dev/peps/pep-0498/), Python introduced *[f-string](https://docs.python.org/3/reference/lexical_analysis.html#formatted-string-literals)* literal in version __3.6__. Though released ever since [December 23, 2016](https://docs.python.org/3.6/whatsnew/changelog.html#python-3-6-0-final), Python 3.6 is still not widely used as expected. For those who are now used to *f-string*, `f2format` provides an intelligent, yet imperfect, solution of a **backport compiler** by converting *f-string*s to `str.format` literals.
+&emsp; Since [PEP 498](https://www.python.org/dev/peps/pep-0498/), Python introduced *[f-string](https://docs.python.org/3/reference/lexical_analysis.html#formatted-string-literals)* literal in version __3.6__. Though released ever since [December 23, 2016](https://docs.python.org/3.6/whatsnew/changelog.html#python-3-6-0-final), Python 3.6 is still not widely used as expected. For those who are now used to *f-string*, `f2format` provides an intelligent, yet imperfect, solution of a **backport compiler** by converting *f-string*s to `str.format` literals, which guarentees you to always write *f-string* in Python 3.6 flavour then compile for compatibility later.
 
 &emsp; `f2format` is inspired and assisted by my mate [@gousaiyang](https://github.com/gousaiyang). It functions by tokenising and parsing Python code into multiple abstract syntax trees (AST), through which it shall synthesise and extract expressions from *f-string* literals, and then reassemble the original string using `str.format` method. Besides **[conversion](https://docs.python.org/3/library/string.html#format-string-syntax)** and **[format specification](https://docs.python.org/3/library/string.html#formatspec)**, `f2format` also considered and resolved **[string concatenation](https://docs.python.org/3/reference/lexical_analysis.html#string-literal-concatenation)**. Also, it always tries to maintain the original layout of source code, and accuracy of syntax.
 
@@ -40,6 +40,15 @@ options:
 ```
 
 &emsp; `f2format` will read then convert all *f-string* literals in every Python file under this path. In case there might be some problems with the conversion, `f2format` will duplicate all original files it is to modify into `archive` directory ahead of the process, if `-n` not set.
+
+&emsp; For instance, the code will be converted as follows.
+
+```python
+# the original code
+var = f'foo{(1+2)*3:>5}bar{"a", "b"!r}boo'
+# after `f2format`
+var = ('foo{:>5}bar{!r}boo').format(((1+2)*3), ("a", "b"))
+```
 
 ## Contribution
 
