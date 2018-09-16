@@ -1,5 +1,11 @@
 # Changelog
 
+### Version 0.1.3.post1
+
+ > Release date: 2018-09-16
+
+&emsp; There were no new changes in version 0.1.3.post1.
+
 ### Version 0.1.3
 
  > Release date: 2018-09-16

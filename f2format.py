@@ -33,7 +33,7 @@ finally:    # alias and aftermath
 # macros
 ARCHIVE = 'archive'
 HELPMSG = '''\
-f2format 0.1.3
+f2format 0.1.3.post1
 usage: f2format [-h] [-n] <python source files and folders..>
 
 Convert f-string to str.format for Python 3 compatibility.
@@ -235,7 +235,7 @@ def main():
     def rename(path):
         stem, ext = os.path.splitext(path)
         name = '%s%s%s' % (stem, datetime.datetime.now().strftime('-%y%m%d%H%M%S'), ext)
-        return os.path.join(ARCHIVE, path)
+        return os.path.join(ARCHIVE, name)
 
     # help command
     if '-h' in sys.argv[1:]:
