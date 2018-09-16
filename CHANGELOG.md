@@ -1,5 +1,16 @@
 # Changelog
 
+### Version 0.1.3
+
+ > Release date: 2018-09-16
+
+&emsp; Now `f2format` supports all encodings, including emoji!
+
+ - introduced mutable `strarray`
+ - revised conversion process
+ - changed archive algorithm
+ - fixed minor bugs
+
 ### Version 0.1.2
 
  > Release date: 2018-09-16

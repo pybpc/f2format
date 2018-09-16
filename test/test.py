@@ -18,5 +18,6 @@ for file in filter(ispy, os.listdir('.')):
 
 print('All tests passed, now restore backups...')
 for file in filter(ispy, os.listdir('archive')):
-    os.rename(os.path.join('archive', file), file)
+    stem, ext = os.path.splitext(file)
+    os.rename(os.path.join('archive', file), '%s%s' % (stem.rsplit('-', 1)[0], ext))
 os.rmdir('archive')
