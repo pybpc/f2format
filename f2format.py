@@ -3,7 +3,6 @@
 
 import ast
 import collections.abc
-import datetime
 import io
 import os
 import pathlib
@@ -11,6 +10,7 @@ import re
 import shutil
 import sys
 import tokenize
+import uuid
 
 
 __all__ = ['f2format', 'convert']
@@ -36,7 +36,7 @@ finally:    # alias and aftermath
 # macros
 ARCHIVE = 'archive'
 HELPMSG = '''\
-f2format 0.1.3.post2
+f2format 0.1.4
 usage: f2format [-h] [-n] <python source files and folders..>
 
 Convert f-string to str.format for Python 3 compatibility.
@@ -170,17 +170,25 @@ def convert(string, lineno):
         ### print()
 
         expr = list()
-        for token, entries in entryl:     # extract expressions
+        for token, entries in entryl:   # extract expressions
             ### print(token.string, entries)
-            expr.extend(token.string[entry] for entry in entries)
+            for entry in entries:       # walk entries
+                temp_expr = token.string[entry]                                 # original expression
+                val = ast.parse(temp_expr).body[0].value                        # parse AST
+                if isinstance(val, ast.Tuple) and \
+                    re.fullmatch(r'\(.*\)', temp_expr, re.DOTALL) is None:      # if expression is implicit tuples
+                    real_expr = '(%s)' % temp_expr                              # add parentheses
+                else:
+                    real_expr = temp_expr                                       # or keep original
+                expr.append(real_expr)                                          # record expression
 
         ### print()
         ### print('expr: ', end='')
         ### pprint.pprint(expr)
 
-        # convert end of f-string to str.format literal, right bracket ')' for compabitlity in multi-lines
+        # convert end of f-string to str.format literal
         end = lineno[tokens[-1].end[0]] + tokens[-1].end[1]
-        source[end:end+1] = ').format(%s)%s' % ('%s%s%s' % ('(', '), ('.join(expr), ')'), source[end])
+        source[end:end+1] = '.format(%s)%s' % (', '.join(expr), source[end])
 
         # for each token, convert expression literals and brace '{}' escape sequences
         for token, entries in reversed(entryl):     # using reversed to keep offset in leading context
@@ -196,10 +204,6 @@ def convert(string, lineno):
 
             # strip leading f-string literals ('[fF]')
             source[token_start:token_start+3] = re.sub(r'[fF]', r'', source[token_start:token_start+3], count=1)
-
-        # then add left bracket '(' for compabitlity in multi-lines
-        start = lineno[tokens[0].start[0]] + tokens[0].start[1]
-        source[start:start+1] = '(%s' % source[start:start+1]
 
     # return modified context
     return str(source)
@@ -251,7 +255,7 @@ def main():
 
     def rename(path):
         stem, ext = os.path.splitext(path)
-        name = '%s%s%s' % (stem, datetime.datetime.now().strftime('-%y%m%d%H%M%S'), ext)
+        name = '%s-%s%s' % (stem, uuid.uuid4(), ext)
         return os.path.join(ARCHIVE, name)
 
     # help command

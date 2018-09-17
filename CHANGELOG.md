@@ -1,5 +1,11 @@
 # Changelog
 
+### Version 0.1.4
+
+ > Release date: 2018-09-17
+
+ - removed redundant parentheses according to u/ziel from Reddit
+
 ### Version 0.1.3.post2
 
  > Release date: 2018-09-17
