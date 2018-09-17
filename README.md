@@ -50,6 +50,8 @@ var = f'foo{(1+2)*3:>5}bar{"a", "b"!r}boo'
 var = ('foo{:>5}bar{!r}boo').format(((1+2)*3), ("a", "b"))
 ```
 
+&emsp; Also, [`release.sh`](https://github.com/JarryShaw/f2format/blob/master/release.sh) provides a demo distribution script, which may help you integrate `f2format` with your other automators.
+
 ## Contribution
 
 &emsp; Contributions are very welcome, especially fixing bugs and providing test cases, which [@gousaiyang](https://github.com/gousaiyang) is to help with, so to speak. Note that code must remain valid and reasonable.
