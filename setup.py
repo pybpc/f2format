@@ -10,7 +10,7 @@ with open('./README.md', 'r') as file:
 
 
 # version string
-__version__ = '0.1.3.post1'
+__version__ = '0.1.3.post2'
 
 
 # set-up script for pip distribution
@@ -22,7 +22,7 @@ setuptools.setup(
     url = 'https://github.com/JarryShaw/f2format',
     license = 'MIT License',
     keywords = 'fstring format conversion',
-    description = 'Convert f-string to str.format for Python 3 compatibility.',
+    description = 'Back-port compiler for Python 3.6 f-string literals.',
     long_description = long_desc,
     long_description_content_type='text/markdown',
     python_requires = '>=3.6',

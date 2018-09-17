@@ -13,6 +13,9 @@ import sys
 import tokenize
 
 
+__all__ = ['f2format', 'convert']
+
+
 # multiprocessing may not be supported
 try:        # try first
     import multiprocessing
@@ -33,7 +36,7 @@ finally:    # alias and aftermath
 # macros
 ARCHIVE = 'archive'
 HELPMSG = '''\
-f2format 0.1.3.post1
+f2format 0.1.3.post2
 usage: f2format [-h] [-n] <python source files and folders..>
 
 Convert f-string to str.format for Python 3 compatibility.
@@ -71,7 +74,16 @@ class strarray(collections.abc.ByteString):
 
 
 def convert(string, lineno):
-    """The main conversion process."""
+    """The main conversion process.
+
+    Args:
+     - string -- str, context to be converted
+     - lineo -- dict<int: int>, line number to actual offset mapping
+
+    Returns:
+     - str -- converted string
+
+    """
     def find_rbrace(text, quote):
         """Brute force to find right brace."""
         max_offset = len(text)
@@ -194,7 +206,12 @@ def convert(string, lineno):
 
 
 def f2format(filename):
-    """Wrapper works for conversion."""
+    """Wrapper works for conversion.
+
+    Args:
+     - filename -- str, file to be converted
+
+    """
     print('Now converting %r...' % filename)
 
     lineno = dict()     # line number -> file offset
@@ -206,15 +223,15 @@ def f2format(filename):
             lineno[lnum+2] = lineno[lnum+1] + len(line)
 
     # now, do the dirty works
-    bytestring = ''.join(content)
-    text = convert(bytestring, lineno)
+    string = ''.join(content)
+    text = convert(string, lineno)
 
     # dump back to the file
     with open(filename, 'w') as file:
         file.write(text)
 
     ### print()
-    ### print('original:', bytestring, sep='\n')
+    ### print('original:', string, sep='\n')
     ### print('###\n')
     ### print('converted:', text, sep='\n')
 
