@@ -21,7 +21,7 @@ mv -f dist/*.whl wheels/ 2> /dev/null
 mv -f dist/*.tar.gz sdist/ 2> /dev/null
 
 # distribute to PyPI and TestPyPI
-python3 setup.py sdist bdist_wheel
+python setup.py sdist bdist_wheel
 twine upload dist/* -r pypi --skip-existing
 twine upload dist/* -r pypitest --skip-existing
 
