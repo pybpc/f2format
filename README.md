@@ -1,6 +1,6 @@
 # f2format
 
- > Write *f-string* in Python 3.6 flavour, then compile and distribute for older versions :beer:
+ > Write *f-string* in Python 3.6 flavour, and let `f2format` worry about back-port issues :beer:
 
 &emsp; Since [PEP 498](https://www.python.org/dev/peps/pep-0498/), Python introduced *[f-string](https://docs.python.org/3/reference/lexical_analysis.html#formatted-string-literals)* literal in version __3.6__. Though released ever since [December 23, 2016](https://docs.python.org/3.6/whatsnew/changelog.html#python-3-6-0-final), Python 3.6 is still not widely used as expected. For those who are now used to *f-string*, `f2format` provides an intelligent, yet imperfect, solution of a **backport compiler** by converting *f-string*s to `str.format` literals, which guarentees you to always write *f-string* in Python 3.6 flavour then compile for compatibility later.
 
@@ -51,14 +51,14 @@ options:
 # the original code
 var = f'foo{(1+2)*3:>5}bar{"a", "b"!r}boo'
 # after `f2format`
-var = ('foo{:>5}bar{!r}boo').format(((1+2)*3), ("a", "b"))
+var = 'foo{:>5}bar{!r}boo'.format((1+2)*3, ("a", "b"))
 ```
 
 ### Automator
 
 &emsp; [`release.sh`](https://github.com/JarryShaw/f2format/blob/master/release.sh) provides a demo script, which may help integrate `f2format` in your development and distribution circle.
 
- > __NB__: `release.sh` is not an integrated automation script.
+ > __NB__: `release.sh` is not an integrated automation script. It should be revised by design.
 
 &emsp; It assumes
 
