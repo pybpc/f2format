@@ -1,0 +1,19 @@
+{
+    "python.linting.pylintEnabled": true,
+    "python.pythonPath": "/Users/jarryshaw/.local/share/virtualenvs/f2format-hTJkNAHn/bin/python",
+    "cSpell.words": [
+        "HELPMSG",
+        "NPROCESSORS",
+        "entryl",
+        "flst",
+        "fstring",
+        "ispy",
+        "lnum",
+        "rmatch",
+        "rsplit",
+        "sched",
+        "sysconf",
+        "tmpent",
+        "tmpval"
+    ]
+}

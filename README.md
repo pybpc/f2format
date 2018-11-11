@@ -8,7 +8,7 @@
 
 ## Installation
 
-> Note that `f2format` only supports Python versions __since 3.6__
+> Note that `f2format` only supports Python versions __since 3.3__
 
 &emsp; Simply run the following to install the current version from PyPI:
 
@@ -33,7 +33,7 @@ git pull
 &emsp; It is fairly straightforward to use `f2format`:
 
 ```
-f2format 0.1.2
+f2format 0.2.0
 usage: f2format [-h] [-n] <python source files and folders..>
 
 Convert f-string to str.format for Python 3 compatibility.

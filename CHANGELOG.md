@@ -1,5 +1,13 @@
 # Changelog
 
+### Version 0.2.0
+
+ > Release date: 2018-11-12
+
+ - pep8 compatible
+ - updated test samples
+ - now supports up from Python 3.3
+
 ### Version 0.1.4
 
  > Release date: 2018-09-17

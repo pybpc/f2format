@@ -4,10 +4,16 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-homebrew-pypi-poet = "*"
-"f2format" = "*"
+typed_ast = "*"
 
 [dev-packages]
+"f2format" = {editable = true, path = "."}
+ipython = "*"
+rope = "*"
+"autopep8" = "*"
+pylint = "*"
+pycodestyle = "*"
+isort = {extras = ["pipfile", "requirements"], version = "*"}
 
 [requires]
 python_version = "3.7"
