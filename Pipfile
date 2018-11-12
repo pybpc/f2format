@@ -4,7 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-typed_ast = "*"
+typed_ast = ">=1.1.0"
 
 [dev-packages]
 "f2format" = {editable = true, path = "."}

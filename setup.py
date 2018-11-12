@@ -7,7 +7,7 @@ with open('./README.md', 'r') as file:
     long_desc = file.read()
 
 # version string
-__version__ = '0.2.0'
+__version__ = '0.2.0.post1'
 
 # set-up script for pip distribution
 setuptools.setup(
@@ -24,8 +24,8 @@ setuptools.setup(
     python_requires='>=3.3',
     install_requires=['setuptools'],
     extras_require={
-        ':python_version < "3.6"': ['typed_ast'],
-        ':python_version < "3.5"': ['pathlib2'],
+        ':python_version < "3.6"': ['typed_ast>=1.1.0'],
+        ':python_version < "3.5"': ['pathlib2>=2.3.2'],
     },
     py_modules=['f2format'],
     entry_points={
