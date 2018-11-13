@@ -1,5 +1,11 @@
 # Changelog
 
+### Version 0.2.0.post2
+
+ > Release date: 2018-11-13
+
+&emsp; There were no new changes in version 0.2.0.post2.
+
 ### Version 0.2.0.post1
 
  > Release date: 2018-11-12
