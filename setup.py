@@ -48,7 +48,7 @@ setup(
         '': [
             'LICENSE',
             'README.md',
-            'CHANGELOG',
+            'CHANGELOG.md',
         ],
     },
     classifiers=[
