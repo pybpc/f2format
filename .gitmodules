@@ -1,0 +1,3 @@
+[submodule "codec"]
+	path = codec
+	url = https://github.com/JarryShaw/f2format-codec.git
