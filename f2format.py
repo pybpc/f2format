@@ -46,7 +46,7 @@ except ImportError:
 # macros
 ARCHIVE = 'archive'
 HELPMSG = '''\
-f2format 0.2.0.post3
+f2format 0.2.1
 usage: f2format [-h] [-n] <python source files and folders..>
 
 Convert f-string to str.format for Python 3 compatibility.
@@ -259,9 +259,9 @@ def f2format(filename):
     content = list()    # file content
     with open(filename, 'r') as file:
         lineno[1] = 0
-        for lnum, line in enumerate(file):
+        for lnum, line in enumerate(file, start=1):
             content.append(line)
-            lineno[lnum+2] = lineno[lnum+1] + len(line)
+            lineno[lnum+1] = lineno[lnum] + len(line)
 
     # now, do the dirty works
     string = ''.join(content)

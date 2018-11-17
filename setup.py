@@ -1,16 +1,28 @@
 # -*- coding: utf-8 -*-
 
-import setuptools
+import os
+import re
+
+try:
+    from setuptools import setup
+except ImportError:
+    from distutils.core import setup
 
 # README
 with open('./README.md', 'r') as file:
     long_desc = file.read()
 
 # version string
-__version__ = '0.2.0.post3'
+with open(os.path.join(os.path.dirname(__file__), 'f2format.py'), 'r') as file:
+    for line in file:
+        match = re.match(r'f2format (.*)', line)
+        if match is None:
+            continue
+        __version__ = match.groups()[0]
+        break
 
 # set-up script for pip distribution
-setuptools.setup(
+setup(
     name='f2format',
     version=__version__,
     author='Jarry Shaw',
