@@ -4,6 +4,8 @@
     "cSpell.words": [
         "HELPMSG",
         "NPROCESSORS",
+        "Reddit",
+        "emsp",
         "entryl",
         "flst",
         "fstring",
@@ -12,8 +14,10 @@
         "rmatch",
         "rsplit",
         "sched",
+        "strarray",
         "sysconf",
         "tmpent",
-        "tmpval"
+        "tmpval",
+        "ziel"
     ]
 }

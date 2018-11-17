@@ -11,13 +11,15 @@ import uuid
 
 __all__ = ['f2format', 'convert']
 
-# check Python version & import ast
-version_info = sys.version_info
-future = (version_info.major >= 3 and version_info.minor >= 6)
-if future:  # using stdlib.ast
-    import ast
-else:       # using typed_ast.ast3
+# check f-string compatibility & import ast
+try:
+    eval("f'Hello world.'")
+except SyntaxError:     # using typed_ast.ast3
+    future = False
     import typed_ast.ast3 as ast
+else:                   # using stdlib.ast
+    future = True
+    import ast
 
 # multiprocessing may not be supported
 try:        # try first
@@ -44,7 +46,7 @@ except ImportError:
 # macros
 ARCHIVE = 'archive'
 HELPMSG = '''\
-f2format 0.2.0.post1
+f2format 0.2.0.post3
 usage: f2format [-h] [-n] <python source files and folders..>
 
 Convert f-string to str.format for Python 3 compatibility.
