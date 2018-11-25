@@ -46,7 +46,7 @@ except ImportError:
 # macros
 ARCHIVE = 'archive'
 HELPMSG = '''\
-f2format 0.2.1
+f2format 0.2.1.post1
 usage: f2format [-h] [-n] <python source files and folders..>
 
 Convert f-string to str.format for Python 3 compatibility.

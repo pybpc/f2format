@@ -13,7 +13,7 @@ with open('./README.md', 'r') as file:
     long_desc = file.read()
 
 # version string
-with open(os.path.join(os.path.dirname(__file__), 'f2format.py'), 'r') as file:
+with open('f2format.py', 'r') as file:
     for line in file:
         match = re.match(r'f2format (.*)', line)
         if match is None:
@@ -52,7 +52,7 @@ setup(
         ],
     },
     classifiers=[
-        'Development Status :: 4 - Beta',
+        'Development Status :: 6 - Mature',
         'Environment :: Console',
         'Environment :: MacOS X',
         'Environment :: Win32 (MS Windows)',
