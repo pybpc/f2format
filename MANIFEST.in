@@ -1,2 +1,4 @@
 global-include *.py
+
+prune codec
 prune test

@@ -13,7 +13,7 @@ with open('./README.md', 'r') as file:
     long_desc = file.read()
 
 # version string
-with open('f2format.py', 'r') as file:
+with open('./f2format.py', 'r') as file:
     for line in file:
         match = re.match(r'f2format (.*)', line)
         if match is None:
@@ -34,6 +34,8 @@ setup(
     long_description=long_desc,
     long_description_content_type='text/markdown',
     python_requires='>=3.3',
+    # include_package_data=True,
+    zip_safe=True,
     extras_require={
         ':python_version < "3.6"': ['typed_ast>=1.1.0'],
         ':python_version < "3.5"': ['pathlib2>=2.3.2'],

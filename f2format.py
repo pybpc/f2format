@@ -46,7 +46,7 @@ except ImportError:
 # macros
 ARCHIVE = 'archive'
 HELPMSG = '''\
-f2format 0.2.1.post2
+f2format 0.2.2
 usage: f2format [-h] [-n] <python source files and folders..>
 
 Convert f-string to str.format for Python 3 compatibility.
@@ -240,7 +240,9 @@ def convert(string, lineno):
                 source[token_start:token_end] = re.sub(r'([{}])', r'\1\1', source[token_start:token_end])
 
             # strip leading f-string literals ('[fF]')
-            source[token_start:token_start+3] = re.sub(r'[fF]', r'', source[token_start:token_start+3], count=1)
+            string = source[token_start:token_start+3]
+            if re.match(r'^(rf|fr|f)', string, re.IGNORECASE) is not None:
+                source[token_start:token_start+3] = re.sub(r'[fF]', r'', string, count=1)
 
     # return modified context
     return str(source)

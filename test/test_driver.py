@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import contextlib
 import glob
 import os
 import shutil
@@ -11,6 +12,7 @@ def ispy(file):
     return (os.path.isfile(file) and (os.path.splitext(file)[1] == '.py'))
 
 
+FLAG = True
 for file in filter(ispy, os.listdir('.')):
     if file == __file__:
         continue
@@ -22,9 +24,16 @@ for file in filter(ispy, os.listdir('.')):
     new = subprocess.run([sys.executable, file], stdout=subprocess.PIPE)
     old = subprocess.run([sys.executable, name], stdout=subprocess.PIPE)
 
-    assert new.stdout == old.stdout
+    try:
+        assert new.stdout == old.stdout
+    except AssertionError:
+        FLAG = False
+        input(f'Test failed on {file!r}! Enter to continue...')
 
-print('All tests passed, now restore backups...')
+if FLAG:
+    input('All tests passed, now restore backups...')
+else:
+    print('Tests failed, now restore backups...')
 for file in os.listdir('.'):
     stem, ext = os.path.splitext(file)
     if ext == '.pyw' and os.path.exists('%s.py' % stem):

@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 0.2.2
+
+ > Release date: 2018-11-27
+
+&emsp; Fixed bugs when stripping leading *f-string* literals (\[fF\]).
+
 ## Version 0.2.1.post2
 
  > Release date: 2018-11-25
