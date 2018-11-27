@@ -43,7 +43,7 @@ TYPED_AST = subprocess.check_output(['poet', 'typed_ast']).decode().strip()
 # print(TYPED_AST)
 
 FORMULA = f'''\
-class Macdaily < Formula
+class F2format < Formula
   include Language::Python::Virtualenv
 
   version "{VERSION}"

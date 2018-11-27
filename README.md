@@ -57,7 +57,7 @@ git pull
 &emsp; It is fairly straightforward to use `f2format`:
 
 ```man
-f2format 0.2.3.post1
+f2format 0.2.3
 usage: f2format [-h] [-n] <python source files and folders..>
 
 Convert f-string to str.format for Python 3 compatibility.
