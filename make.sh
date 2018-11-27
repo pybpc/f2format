@@ -31,7 +31,7 @@ twine upload dist/* -r pypi --skip-existing
 twine upload dist/* -r pypitest --skip-existing
 
 # get version string
-version=$( cat setup.py | grep "__version__" | sed "s/__version__ = '\(.*\)'/\1/" )
+version=$( cat f2format.py | grep "^f2format" | sed "s/f2format \(.*\)/\1/" )
 
 # upload to GitHub
 git pull
