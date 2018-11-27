@@ -8,6 +8,9 @@ typed_ast = ">=1.1.0"
 
 [dev-packages]
 "f2format" = {editable = true, path = "."}
+"requests" = "*"
+"bs4" = "*"
+"html5lib" = "*"
 ipython = "*"
 rope = "*"
 "autopep8" = "*"

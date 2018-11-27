@@ -4,7 +4,7 @@
 # This is a demo script for those who is to integrate
 # `f2format` in development and distribution circle.
 #
-# It assumes 
+# It assumes
 # 	- all source files in `/src` directory
 # 	- using GitHub for repository management
 # 	- having release branch under `/release` directory
@@ -22,7 +22,10 @@
 set -x
 
 # duplicate distribution files
-cp -r src setup.py release/
+cp -rf MANIFEST.in \
+       setup.cfg \
+       setup.py \
+       src release/
 cd release/
 
 # perform f2format
@@ -44,17 +47,18 @@ twine upload dist/* -r pypi --skip-existing
 twine upload dist/* -r pypitest --skip-existing
 
 # upload to GitHub
-git pull
-if [[ "$?" -ne "0" ]] ; then
-    exit 1
-fi
-git add .
+git pull && \
+git add . && \
 if [[ -z "$1" ]] ; then
     git commit -a
 else
     git commit -a -m "$1"
-fi
+fi && \
 git push
+returncode="$?"
+if [[ "$returncode" -ne "0" ]] ; then
+    exit $returncode
+fi
 
 # # [optional] archive original files
 # for file in $( ls archive ) ; do
@@ -66,14 +70,11 @@ git push
 
 # upload develop environment
 cd ..
-git pull
-if [[ "$?" -ne "0" ]] ; then
-    exit 1
-fi
-git add .
+git pull && \
+git add . && \
 if [[ -z "$1" ]] ; then
     git commit -a
 else
     git commit -a -m "$1"
-fi
+fi && \
 git push

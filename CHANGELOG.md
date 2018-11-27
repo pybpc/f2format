@@ -1,5 +1,15 @@
 # Changelog
 
+## Version 0.2.3
+
+ > Release data: 2018-11-27
+
+&emsp; There were no new changes in version 0.2.3, except:
+
+- `f2format` available from Homebrew
+- revised distro scripts
+- updated README.md
+
 ## Version 0.2.2
 
  > Release date: 2018-11-27

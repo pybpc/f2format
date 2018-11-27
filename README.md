@@ -25,6 +25,15 @@ Also, it always tries to maintain the original layout of source code, and accura
 
 > Note that `f2format` only supports Python versions __since 3.3__
 
+&emsp; For macOS users, `f2format` is now available through [Homebrew](https://brew.sh):
+
+```sh
+brew tap jarryshaw/tap
+brew install f2format
+# or simply, a one-liner
+brew install jarryshaw/tap/f2format
+```
+
 &emsp; Simply run the following to install the current version from PyPI:
 
 ```sh
@@ -48,7 +57,7 @@ git pull
 &emsp; It is fairly straightforward to use `f2format`:
 
 ```man
-f2format 0.2.0
+f2format 0.2.3
 usage: f2format [-h] [-n] <python source files and folders..>
 
 Convert f-string to str.format for Python 3 compatibility.
@@ -73,10 +82,10 @@ var = 'foo{:>5}bar{!r}boo'.format((1+2)*3, ("a", "b"))
 
 ### Automator
 
-&emsp; [`release.sh`](https://github.com/JarryShaw/f2format/blob/master/release.sh) provides a
+&emsp; [`make-demo.sh`](https://github.com/JarryShaw/f2format/blob/master/make-demo.sh) provides a
 demo script, which may help integrate `f2format` in your development and distribution circle.
 
- > __NB__: `release.sh` is not an integrated automation script. It should be revised by design.
+ > __NB__: `make-demo.sh` is not an integrated automation script. It should be revised by design.
 
 &emsp; It assumes
 
@@ -126,6 +135,11 @@ Returns:
 &emsp; [`f2format-codec`](https://github.com/JarryShaw/f2format-codec) registers a codec in Python
 interpreter, which grants you the compatibility to write directly in Python 3.6 *f-string* syntax
 even through running with a previous version of Python.
+
+## Test
+
+&emsp; The current test samples are under [`/test`](https://github.com/JarryShaw/f2format/blob/master/test)
+folder. `test_driver.py` is the main entry point for tests.
 
 ## Contribution
 

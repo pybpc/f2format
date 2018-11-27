@@ -13,13 +13,7 @@ with open('./README.md', 'r') as file:
     long_desc = file.read()
 
 # version string
-with open('./f2format.py', 'r') as file:
-    for line in file:
-        match = re.match(r'f2format (.*)', line)
-        if match is None:
-            continue
-        __version__ = match.groups()[0]
-        break
+__version__ = '0.2.3'
 
 # set-up script for pip distribution
 setup(

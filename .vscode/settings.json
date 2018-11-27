@@ -2,10 +2,12 @@
     "python.linting.pylintEnabled": true,
     "python.pythonPath": "/Users/jarryshaw/.local/share/virtualenvs/f2format-hTJkNAHn/bin/python",
     "cSpell.words": [
+        "DEVEL",
         "HELPMSG",
         "NPROCESSORS",
         "Reddit",
         "dict",
+        "distro",
         "emsp",
         "entryl",
         "f'foo",
