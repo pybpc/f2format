@@ -8,6 +8,7 @@ typed_ast = ">=1.1.0"
 
 [dev-packages]
 "f2format" = {editable = true, path = "."}
+homebrew-pypi-poet = "*"
 "requests" = "*"
 "bs4" = "*"
 "html5lib" = "*"

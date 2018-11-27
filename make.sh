@@ -75,9 +75,9 @@ if [[ $ret -ne "0" ]] ; then
     exit $ret
 fi
 
-# aftermath
-cd ..
-git pull && \
-git add . && \
-git commit -a -S -m "Regular update after distribution" && \
-git push
+# # aftermath
+# cd ..
+# git pull && \
+# git add . && \
+# git commit -a -S -m "Regular update after distribution" && \
+# git push
