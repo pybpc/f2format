@@ -28,7 +28,10 @@ for file in filter(ispy, os.listdir('.')):
         assert new.stdout == old.stdout
     except AssertionError:
         FLAG = False
-        input(f'Test failed on {file!r}! Enter to continue...')
+        print(f'Test failed on {file!r}!')
+        print(f'EXPECT:\n{old.stdout.decode()}')
+        print(f'GOT:\n{new.stdout.decode()}')
+        input('Enter to continue...')
 
 if FLAG:
     input('All tests passed, now restore backups...')
