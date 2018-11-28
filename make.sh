@@ -6,6 +6,12 @@ set -x
 # update version string
 python3 setup-version.py
 
+# update Python stdlib files
+rm -f src/token.py src/tokenize.py
+token=$( python3 -c "print(__import__('token').__spec__.origin)" )
+tokenize=$( python3 -c "print(__import__('tokenize').__spec__.origin)" )
+cp -f ${token} ${tokenize} src/
+
 # prepare for PyPI distribution
 rm -rf build 2> /dev/null
 mkdir eggs \
@@ -31,7 +37,7 @@ twine upload dist/* -r pypi --skip-existing
 twine upload dist/* -r pypitest --skip-existing
 
 # get version string
-version=$( cat f2format.py | grep "^f2format" | sed "s/f2format \(.*\)/\1/" )
+version=$( cat f2format/__main__.py | grep "^f2format" | sed "s/f2format \(.*\)/\1/" )
 
 # upload to GitHub
 git pull

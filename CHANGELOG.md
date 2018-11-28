@@ -1,5 +1,13 @@
 # Changelog
 
+## Version 0.3.0
+
+ > Release date: 2018-11-28
+
+- restructured f2format
+- fixed crash errors when archiving files with folder prefix
+- fixed abnormal behaviour using in CPython 3.4/3.5
+
 ## Version 0.2.4
 
  > Release date: 2018-11-28

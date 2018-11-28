@@ -6,5 +6,7 @@ include LICENSE
 exclude setup-formula.py
 exclude setup-version.py
 
+prune archive
 prune codec
 prune test
+prune src

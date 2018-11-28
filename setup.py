@@ -13,7 +13,7 @@ with open('./README.md', 'r') as file:
     long_desc = file.read()
 
 # version string
-__version__ = '0.2.4'
+__version__ = '0.3.0'
 
 # set-up script for pip distribution
 setup(
@@ -35,9 +35,10 @@ setup(
         ':python_version < "3.5"': ['pathlib2>=2.3.2'],
     },
     py_modules=['f2format'],
+    packages=['f2format'],
     entry_points={
         'console_scripts': [
-            'f2format = f2format:main',
+            'f2format = f2format.__main__:main',
         ]
     },
     package_data={

@@ -16,7 +16,7 @@ FLAG = True
 for file in filter(ispy, os.listdir('.')):
     if file == __file__:
         continue
-    subprocess.run([sys.executable, '../f2format.py', file])
+    subprocess.run([sys.executable, '-m', 'f2format', file])
 
     stem, ext = os.path.splitext(file)
     name = glob.glob('archive/%s*' % stem)[0]

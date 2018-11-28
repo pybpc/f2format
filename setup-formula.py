@@ -8,7 +8,7 @@ import subprocess
 import bs4
 import requests
 
-with open('./f2format.py', 'r') as file:
+with open('./f2format/__main__.py', 'r') as file:
     for line in file:
         match = re.match(r'f2format (.*)', line)
         if match is None:
