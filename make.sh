@@ -22,9 +22,9 @@ platform=$( python3 -c "import distutils.util; print(distutils.util.get_platform
 # make distribution
 python3.7 setup.py sdist bdist_egg bdist_wheel --plat-name="${platform}" --python-tag='cp37'
 python3.6 setup.py bdist_egg bdist_wheel --plat-name="${platform}" --python-tag='cp36'
+python3.5 setup.py bdist_egg bdist_wheel --plat-name="${platform}" --python-tag='cp35'
+python3.4 setup.py bdist_egg bdist_wheel --plat-name="${platform}" --python-tag='cp34'
 pypy3 setup.py bdist_wheel --plat-name="${platform}" --python-tag='pp35'
-python3.5 setup.py bdist_egg
-python3.4 setup.py bdist_egg
 
 # distribute to PyPI and TestPyPI
 twine upload dist/* -r pypi --skip-existing

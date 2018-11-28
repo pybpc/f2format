@@ -1,4 +1,10 @@
 global-include *.py
 
+include README.md
+include LICENSE
+
+exclude setup-formula.py
+exclude setup-version.py
+
 prune codec
 prune test
