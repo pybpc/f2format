@@ -56,15 +56,33 @@ git pull
 
 &emsp; It is fairly straightforward to use `f2format`:
 
+ > context in `${...}` changes dynamically according to runtime environment
+
 ```man
-f2format 0.3.0
-usage: f2format [-h] [-n] <python source files and folders..>
+usage: f2format [options] <python source files and folders...>
 
 Convert f-string to str.format for Python 3 compatibility.
 
-options:
-    -h      show this help message and exit
-    -n      do not archive original files
+positional arguments:
+  SOURCE                python source files and folders to be converted
+                        (default is '${CWD}')
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -V, --version         show program's version number and exit
+
+archive options:
+  duplicate original files in case there's any issue
+
+  -n, --no-archive      do not archive original files
+  -p PATH, --archive-path PATH
+                        path to archive original files (default is '${CWD}/archive')
+
+convert options:
+  compatibility configuration for none-unicode files
+
+  -c CODING, --encoding CODING
+                        encoding to open source files (default is '${ENCODING}')
 ```
 
 &emsp; `f2format` will read then convert all *f-string* literals in every Python file under this

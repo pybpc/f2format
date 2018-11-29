@@ -228,9 +228,12 @@ def f2format(filename):
     """
     print('Now converting %r...' % filename)
 
+    # fetch encoding
+    encoding = os.environ['F2FORMAT_ENCODING']
+
     lineno = dict()     # line number -> file offset
     content = list()    # file content
-    with open(filename, 'r') as file:
+    with open(filename, 'r', encoding=encoding) as file:
         lineno[1] = 0
         for lnum, line in enumerate(file, start=1):
             content.append(line)
@@ -241,7 +244,7 @@ def f2format(filename):
     text = convert(string, lineno)
 
     # dump back to the file
-    with open(filename, 'w') as file:
+    with open(filename, 'w', encoding=encoding) as file:
         file.write(text)
 
     # print() ###

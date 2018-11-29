@@ -1,5 +1,13 @@
 # Changelog
 
+## Version 0.3.1
+
+ > Release date: 2018-11-29
+
+- revised CLI, introduced `argparse`
+- fixed compatibility issue when given files not encoded with 'UTF-8'
+- now supports customise archive path & file encoding
+
 ## Version 0.3.0
 
  > Release date: 2018-11-28
@@ -80,7 +88,7 @@
 - updated test samples
 - now supports up from Python 3.3
 
-## Version 0.1.4
+## Version 0.1.4
 
  > Release date: 2018-09-17
 
@@ -136,7 +144,7 @@
 
 &emsp; There were no new changes in version 0.1.0.
 
-## Version 0.1.0b2
+## Version 0.1.0b2
 
  > Release date: 2018-09-15
 

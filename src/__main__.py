@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+import argparse
+import locale
 import os
 import shutil
 import sys
@@ -29,22 +31,49 @@ try:
 except ImportError:
     import pathlib
 
+# version string
+__version__ = '0.3.1'
+
 # macros
-ARCHIVE = 'archive'
-HELPMSG = '''\
-f2format 0.3.0
-usage: f2format [-h] [-n] <python source files and folders..>
+__cwd__ = os.getcwd()
+__archive__ = os.path.join(__cwd__, 'archive')
+__encoding__ = locale.getpreferredencoding()
 
-Convert f-string to str.format for Python 3 compatibility.
 
-options:
-    -h      show this help message and exit
-    -n      do not archive original files
-'''
+def get_parser():
+    parser = argparse.ArgumentParser(prog='f2format',
+                                     usage='f2format [options] <python source files and folders...>',
+                                     description='Convert f-string to str.format for Python 3 compatibility.')
+    parser.add_argument('-V', '--version', action='version', version=__version__)
+
+    archive_group = parser.add_argument_group(title='archive options',
+                                              description="duplicate original files in case there's any issue")
+    archive_group.add_argument('-n', '--no-archive', action='store_true',
+                               help='do not archive original files')
+    archive_group.add_argument('-p', '--archive-path', action='store', default=__archive__, metavar='PATH',
+                               help='path to archive original files (default is %r)' % __archive__)
+
+    convert_group = parser.add_argument_group(title='convert options',
+                                              description='compatibility configuration for none-unicode files')
+    convert_group.add_argument('-c', '--encoding', action='store', default=__encoding__, metavar='CODING',
+                               help='encoding to open source files (default is %r)' % __encoding__)
+
+    parser.add_argument('file', nargs='*', metavar='SOURCE', default=__cwd__,
+                        help='python source files and folders to be converted (default is %r)' % __cwd__)
+
+    return parser
 
 
 def main():
     """Entry point for f2format."""
+    parser = get_parser()
+    args = parser.parse_args()
+
+    # set up variables
+    ARCHIVE = args.archive_path
+    archive = (not args.no_archive)
+    os.environ['F2FORMAT_ENCODING'] = args.encoding
+
     def find(root):
         """Recursively find all files under root."""
         flst = list()
@@ -63,16 +92,6 @@ def main():
         stem, ext = os.path.splitext(path)
         name = '%s-%s%s' % (stem, uuid.uuid4(), ext)
         return os.path.join(ARCHIVE, name)
-
-    # help command
-    if '-h' in sys.argv[1:]:
-        print(HELPMSG)
-        return
-
-    # do not make archive
-    archive = True
-    if '-n' in sys.argv[1:]:
-        archive = False
 
     # make archive directory
     if archive:
@@ -98,8 +117,7 @@ def main():
 
     # if no file supplied
     if len(filelist) == 0:
-        print(HELPMSG)
-        return
+        parser.error('argument PATH: no valid source file found')
 
     # process files
     if mp is None:

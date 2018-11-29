@@ -10,7 +10,7 @@ import requests
 
 with open('./f2format/__main__.py', 'r') as file:
     for line in file:
-        match = re.match(r'f2format (.*)', line)
+        match = re.match(r"^__version__ = '(.*)'", line)
         if match is None:
             continue
         VERSION = match.groups()[0]
