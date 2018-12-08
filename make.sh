@@ -61,6 +61,7 @@ go run github.com/aktau/github-release release \
     --tag "v${version}" \
     --name "f2format v${version}" \
     --description "$1"
+ret="$?"
 if [[ $ret -ne "0" ]] ; then
     exit $ret
 fi
@@ -81,9 +82,18 @@ if [[ $ret -ne "0" ]] ; then
     exit $ret
 fi
 
-# # aftermath
-# cd ..
-# git pull && \
-# git add . && \
-# git commit -a -S -m "Regular update after distribution" && \
-# git push
+# update maintenance information
+# maintainer changelog && \
+maintainer contributor && \
+maintainer contributing
+ret="$?"
+if [[ $ret -ne "0" ]] ; then
+    exit $ret
+fi
+
+# aftermath
+cd ..
+git pull && \
+git add . && \
+git commit -a -S -m "Regular update after distribution" && \
+git push

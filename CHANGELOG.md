@@ -1,5 +1,12 @@
 # Changelog
 
+## Version 0.4.0
+
+ > Release date: 2018-12-08
+
+- no changes
+- changed license and updated misc files
+
 ## Version 0.3.1
 
  > Release date: 2018-11-29
