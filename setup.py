@@ -13,7 +13,7 @@ with open('./README.md', 'r') as file:
     long_desc = file.read()
 
 # version string
-__version__ = '0.4.0'
+__version__ = '0.4.0.post1'
 
 # set-up script for pip distribution
 setup(
@@ -22,7 +22,7 @@ setup(
     author='Jarry Shaw',
     author_email='jarryshaw@icloud.com',
     url='https://github.com/JarryShaw/f2format',
-    license='MIT License',
+    license='Apache Software License',
     keywords='fstring format conversion',
     description='Back-port compiler for Python 3.6 f-string literals.',
     long_description=long_desc,
@@ -54,7 +54,7 @@ setup(
         'Environment :: MacOS X',
         'Environment :: Win32 (MS Windows)',
         'Intended Audience :: Developers',
-        'License :: OSI Approved :: MIT License',
+        'License :: OSI Approved :: Apache Software License',
         'Natural Language :: English',
         'Operating System :: OS Independent',
         'Programming Language :: Python',
