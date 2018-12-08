@@ -83,6 +83,7 @@ if [[ $ret -ne "0" ]] ; then
 fi
 
 # update maintenance information
+cd ..
 # maintainer changelog && \
 maintainer contributor && \
 maintainer contributing
@@ -92,7 +93,6 @@ if [[ $ret -ne "0" ]] ; then
 fi
 
 # aftermath
-cd ..
 git pull && \
 git add . && \
 git commit -a -S -m "Regular update after distribution" && \
