@@ -32,7 +32,7 @@ except ImportError:
     import pathlib
 
 # version string
-__version__ = '0.4.0.post1'
+__version__ = '0.4.0.post2'
 
 # macros
 __cwd__ = os.getcwd()
