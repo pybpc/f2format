@@ -67,7 +67,20 @@ class F2format < Formula
   {TYPED_AST}
 
   def install
-    virtualenv_install_with_resources
+    # virtualenv_install_with_resources
+    venv = virtualenv_create(libexec, "python3")
+
+    version = `#{{libexec}}/"bin/python" -c "print('%s.%s' % __import__('sys').version_info[:2])"`
+    if ( version =~ /3.[34]/ )
+      %w[pathlib2 six].each do |r|
+        venv.pip_install resource(r)
+      end
+    end
+
+    if ( version =~ /3.[345]/ )
+      venv.pip_install resource("typed-ast")
+    end
+    venv.pip_install_and_link buildpath
   end
 
   test do
