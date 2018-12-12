@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 0.4.0.post2
+
+ > Release date: 2018-12-12
+
+&emsp; There were no new changes in version 0.4.0.post2. But minor bugs fixed in `setup.py` with encoding errors.
+
 ## Version 0.4.0.post1
 
  > Release date: 2018-12-08

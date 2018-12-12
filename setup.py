@@ -9,7 +9,7 @@ except ImportError:
     from distutils.core import setup
 
 # README
-with open('./README.md', 'r') as file:
+with open('./README.md', encoding='utf-8') as file:
     long_desc = file.read()
 
 # version string
