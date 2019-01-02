@@ -84,7 +84,16 @@ class F2format < Formula
   end
 
   test do
-    system bin/"f2format", "--help"
+    (testpath/"test.py").write <<~EOS
+      var = f'foo{{(1+2)*3:>5}}bar{{"a", "b"!r}}boo'
+    EOS
+
+    std_output = <<~EOS
+      var = 'foo{{:>5}}bar{{!r}}boo'.format((1+2)*3, ("a", "b"))
+    EOS
+
+    system bin/"f2format", "--no-archive", "test.py"
+    assert_match std_output, shell_output("cat test.py")
   end
 end
 '''

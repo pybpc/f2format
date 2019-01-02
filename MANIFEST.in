@@ -6,6 +6,9 @@ include LICENSE
 exclude setup-formula.py
 exclude setup-version.py
 
+prune Cellar
+prune Tap
+
 prune archive
 prune codec
 prune test
