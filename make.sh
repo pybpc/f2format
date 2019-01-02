@@ -84,7 +84,7 @@ fi
 
 # update maintenance information
 cd ..
-# maintainer changelog && \
+maintainer changelog && \
 maintainer contributor && \
 maintainer contributing
 ret="$?"
