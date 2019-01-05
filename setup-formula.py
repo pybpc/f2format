@@ -32,11 +32,6 @@ for line in filter(lambda item: isinstance(item, bs4.element.Tag), table.tbody):
 # print(F2FORMAT_URL)
 # print(F2FORMAT_SHA)
 
-DEVEL_URL = f'https://codeload.github.com/JarryShaw/f2format/tar.gz/v{VERSION}'
-DEVEL_SHA = hashlib.sha256(requests.get(DEVEL_URL).content).hexdigest()
-# print(DEVEL_URL)
-# print(DEVEL_SHA)
-
 PATHLIB2 = subprocess.check_output(['poet', 'pathlib2']).decode().strip()
 TYPED_AST = subprocess.check_output(['poet', 'typed_ast']).decode().strip()
 # print(PATHLIB2)
@@ -47,18 +42,14 @@ class F2format < Formula
   include Language::Python::Virtualenv
 
   version "{VERSION}"
-  desc "Back-port compiler for Python 3.6 f-string literals."
+  desc "Back-port compiler for Python 3.6 f-string literals"
   homepage "https://github.com/JarryShaw/f2format#f2format"
   url "{F2FORMAT_URL}"
   sha256 "{F2FORMAT_SHA}"
+
   head "https://github.com/JarryShaw/f2format.git", :branch => "master"
 
   bottle :unneeded
-
-  devel do
-    url "{DEVEL_URL}"
-    sha256 "{DEVEL_SHA}"
-  end
 
   depends_on "python"
 
@@ -71,13 +62,13 @@ class F2format < Formula
     venv = virtualenv_create(libexec, "python3")
 
     version = `#{{libexec}}/"bin/python" -c "print('%s.%s' % __import__('sys').version_info[:2])"`
-    if ( version =~ /3.[34]/ )
+    if version =~ /3.[34]/
       %w[pathlib2 six].each do |r|
         venv.pip_install resource(r)
       end
     end
 
-    if ( version =~ /3.[345]/ )
+    if version =~ /3.[345]/
       venv.pip_install resource("typed-ast")
     end
     venv.pip_install_and_link buildpath
