@@ -6,21 +6,34 @@ set -x
 # update version string
 python3 setup-version.py
 
-# update Python stdlib files
-rm -f src/token.py src/tokenize.py
-token=$( python3 -c "print(__import__('token').__spec__.origin)" )
-tokenize=$( python3 -c "print(__import__('tokenize').__spec__.origin)" )
-cp -f ${token} ${tokenize} src/
+# update Python 3.6 stdlib files
+rm -f src/3.6/token.py src/3.6/tokenize.py && \
+token=$( python3.6 -c "print(__import__('token').__spec__.origin)" ) && \
+tokenize=$( python3.6 -c "print(__import__('tokenize').__spec__.origin)" ) && \
+cp -f ${token} ${tokenize} src/py36/
+returncode=$?
+if [[ ${returncode} -ne "0" ]] ; then
+    exit ${returncode}
+fi
+
+# update Python 3.7 stdlib files
+rm -f src/3.7/token.py src/3.7/tokenize.py && \
+token=$( python3.7 -c "print(__import__('token').__spec__.origin)" ) && \
+tokenize=$( python3.7 -c "print(__import__('tokenize').__spec__.origin)" ) && \
+cp -f ${token} ${tokenize} src/py37/
+returncode=$?
+if [[ ${returncode} -ne "0" ]] ; then
+    exit ${returncode}
+fi
 
 # prepare for PyPI distribution
-rm -rf build 2> /dev/null
-mkdir eggs \
-      sdist \
-      wheels 2> /dev/null
-mv -f dist/*.egg eggs/ 2> /dev/null
-mv -f dist/*.whl wheels/ 2> /dev/null
-mv -f dist/*.tar.gz sdist/ 2> /dev/null
-rm -rf dist 2> /dev/null
+rm -rf build
+mkdir -p eggs \
+         sdist \
+         wheels
+mv -f dist/*.egg eggs/
+mv -f dist/*.whl wheels/
+mv -f dist/*.tar.gz sdist/
 
 # fetch platform spec
 platform=$( python3 -c "import distutils.util; print(distutils.util.get_platform().replace('-', '_').replace('.', '_'))" )
@@ -40,18 +53,18 @@ twine upload dist/* -r pypitest --skip-existing
 version=$( cat f2format/__main__.py | grep "^__version__" | sed "s/__version__ = '\(.*\)'/\1/" )
 
 # upload to GitHub
-git pull
-git tag "v${version}"
-git add .
+git pull && \
+git tag "v${version}" && \
+git add . && \
 if [[ -z "$1" ]] ; then
     git commit -a -S
 else
     git commit -a -S -m "$1"
-fi
+fi && \
 git push
-ret="$?"
-if [[ $ret -ne "0" ]] ; then
-    exit $ret
+returncode=$?
+if [[ ${returncode} -ne "0" ]] ; then
+    exit ${returncode}
 fi
 
 # file new release
@@ -61,9 +74,9 @@ go run github.com/aktau/github-release release \
     --tag "v${version}" \
     --name "f2format v${version}" \
     --description "$1"
-ret="$?"
-if [[ $ret -ne "0" ]] ; then
-    exit $ret
+returncode=$?
+if [[ ${returncode} -ne "0" ]] ; then
+    exit ${returncode}
 fi
 
 # update Homebrew Formulae
@@ -77,9 +90,9 @@ else
     git commit -a -S -m "$1"
 fi && \
 git push
-ret="$?"
-if [[ $ret -ne "0" ]] ; then
-    exit $ret
+returncode=$?
+if [[ ${returncode} -ne "0" ]] ; then
+    exit ${returncode}
 fi
 
 # update maintenance information
@@ -87,9 +100,9 @@ cd ..
 maintainer changelog && \
 maintainer contributor && \
 maintainer contributing
-ret="$?"
-if [[ $ret -ne "0" ]] ; then
-    exit $ret
+returncode=$?
+if [[ ${returncode} -ne "0" ]] ; then
+    exit ${returncode}
 fi
 
 # aftermath

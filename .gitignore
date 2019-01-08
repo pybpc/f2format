@@ -2,6 +2,7 @@
 Tap
 test/*.pyw
 archive/
+Pipfile.lock
 
 # Created by https://www.gitignore.io/api/python,macos
 

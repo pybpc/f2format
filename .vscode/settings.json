@@ -17,6 +17,7 @@
         "getcwd",
         "ispy",
         "lnum",
+        "pyversion",
         "rmatch",
         "rsplit",
         "sched",
@@ -25,6 +26,7 @@
         "sysconf",
         "tmpent",
         "tmpval",
+        "tokenisation",
         "ziel"
     ]
 }
