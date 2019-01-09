@@ -13,7 +13,7 @@ with open('./README.md', encoding='utf-8') as file:
     long_desc = file.read()
 
 # version string
-__version__ = '0.4.1'
+__version__ = '0.4.2'
 
 # set-up script for pip distribution
 setup(
@@ -30,8 +30,9 @@ setup(
     python_requires='>=3.3',
     # include_package_data=True,
     zip_safe=True,
+    install_requires=['typed_ast>=1.1.0'],
     extras_require={
-        ':python_version < "3.6"': ['typed_ast>=1.1.0'],
+        # ':python_version < "3.6"': ['typed_ast>=1.1.0'],
         ':python_version < "3.5"': ['pathlib2>=2.3.2'],
     },
     py_modules=['f2format'],
