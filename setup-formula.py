@@ -68,9 +68,10 @@ class F2format < Formula
       end
     end
 
-    if version =~ /3.[345]/
-      venv.pip_install resource("typed-ast")
-    end
+    venv.pip_install resource("typed-ast")
+    # if version =~ /3.[345]/
+    #   venv.pip_install resource("typed-ast")
+    # end
     venv.pip_install_and_link buildpath
   end
 
