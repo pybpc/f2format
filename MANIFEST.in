@@ -1,3 +1,6 @@
+recursive-include f2format/py36/ast *.h
+recursive-include f2format/py37/ast *.h
+
 global-include *.py
 
 include README.md

@@ -3,6 +3,9 @@
 # print a trace of simple commands
 set -x
 
+# copy ast stdlib
+bash copy.sh
+
 # update version string
 python3 setup-version.py
 
