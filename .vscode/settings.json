@@ -2,13 +2,17 @@
     "python.linting.pylintEnabled": true,
     "python.pythonPath": "/Users/jarryshaw/.local/share/virtualenvs/f2format-hTJkNAHn/bin/python",
     "cSpell.words": [
+        "BDFL",
         "DEVEL",
+        "EOFS",
         "HELPMSG",
         "NPROCESSORS",
         "Reddit",
+        "XDECREF",
         "acceler",
         "argparse",
         "asdl",
+        "bltinmodule",
         "dict",
         "distro",
         "emsp",
@@ -19,8 +23,10 @@
         "getcwd",
         "graminit",
         "ispy",
+        "kwnames",
         "lnum",
         "parsetok",
+        "perrdetail",
         "pyversion",
         "rmatch",
         "rsplit",
@@ -31,6 +37,7 @@
         "tmpent",
         "tmpval",
         "tokenisation",
+        "unindent",
         "ziel"
     ]
 }

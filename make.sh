@@ -3,8 +3,8 @@
 # print a trace of simple commands
 set -x
 
-# copy ast stdlib
-bash copy.sh
+# # copy ast stdlib
+# bash copy.sh
 
 # update version string
 python3 setup-version.py
@@ -42,15 +42,23 @@ mv -f dist/*.tar.gz sdist/
 platform=$( python3 -c "import distutils.util; print(distutils.util.get_platform().replace('-', '_').replace('.', '_'))" )
 
 # make distribution
-python3.7 setup.py sdist bdist_egg bdist_wheel --plat-name="${platform}" --python-tag='cp37'
-python3.6 setup.py bdist_egg bdist_wheel --plat-name="${platform}" --python-tag='cp36'
-python3.5 setup.py bdist_egg bdist_wheel --plat-name="${platform}" --python-tag='cp35'
-python3.4 setup.py bdist_egg bdist_wheel --plat-name="${platform}" --python-tag='cp34'
+python3.7 setup.py sdist bdist_egg bdist_wheel --plat-name="${platform}" --python-tag='cp37' && \
+python3.6 setup.py bdist_egg bdist_wheel --plat-name="${platform}" --python-tag='cp36' && \
+python3.5 setup.py bdist_egg bdist_wheel --plat-name="${platform}" --python-tag='cp35' && \
+python3.4 setup.py bdist_egg bdist_wheel --plat-name="${platform}" --python-tag='cp34' && \
 pypy3 setup.py bdist_wheel --plat-name="${platform}" --python-tag='pp35'
+returncode=$?
+if [[ ${returncode} -ne "0" ]] ; then
+    exit ${returncode}
+fi
 
 # distribute to PyPI and TestPyPI
-twine upload dist/* -r pypi --skip-existing
+twine upload dist/* -r pypi --skip-existing && \
 twine upload dist/* -r pypitest --skip-existing
+returncode=$?
+if [[ ${returncode} -ne "0" ]] ; then
+    exit ${returncode}
+fi
 
 # get version string
 version=$( cat f2format/__main__.py | grep "^__version__" | sed "s/__version__ = '\(.*\)'/\1/" )

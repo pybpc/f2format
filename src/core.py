@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import collections.abc
-import importlib
 import io
 import os
 import re
@@ -73,8 +72,8 @@ def convert(string, lineno):
      - str -- converted string
 
     """
+    import tokenize
     ast, FUTURE = import_ast()
-    tokenize = importlib.import_module('tokenize', os.environ['F2FORMAT_PYTHONVERSION'])
 
     def find_rbrace(text, quote):
         """Brute force to find right brace."""

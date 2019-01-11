@@ -1,7 +1,6 @@
 
 # submodules
-vendor/cpython
-vendor/typed_ast
+vendor/*
 
 Tap
 test/*.pyw

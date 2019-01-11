@@ -33,7 +33,7 @@ else:
     import pathlib
 
 # version string
-__version__ = '0.4.2'
+__version__ = '0.4.2.dev1'
 
 # macros
 __cwd__ = os.getcwd()
@@ -80,6 +80,7 @@ def main():
     archive = (not args.no_archive)
     os.environ['F2FORMAT_ENCODING'] = args.encoding
     os.environ['F2FORMAT_PYTHONVERSION'] = 'py%s' % args.python_version
+    sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'py%s' % args.python_version))
 
     # warn if PYTHONVERSION higher than current version
     version = 'py%d%d' % sys.version_info[:2]

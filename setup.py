@@ -13,7 +13,7 @@ with open('./README.md', encoding='utf-8') as file:
     long_desc = file.read()
 
 # version string
-__version__ = '0.4.2'
+__version__ = '0.4.2.dev1'
 
 # Python 3.6
 _ast36 = Extension(
@@ -31,6 +31,7 @@ _ast36 = Extension(
         'f2format/py36/ast/Python/ast.c',
         'f2format/py36/ast/Python/graminit.c',
         'f2format/py36/ast/Python/Python-ast.c',
+        'f2format/py36/ast/Custom/py36_ast.c',
     ],
     include_dirs=['f2format/py36/ast/Include'],
     depends=[
@@ -66,6 +67,7 @@ _ast37 = Extension(
         'f2format/py37/ast/Python/ast.c',
         'f2format/py37/ast/Python/graminit.c',
         'f2format/py37/ast/Python/Python-ast.c',
+        'f2format/py37/ast/Custom/py37_ast.c',
     ],
     include_dirs=['f2format/py37/ast/Include'],
     depends=[

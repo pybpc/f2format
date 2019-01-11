@@ -9,6 +9,7 @@ include LICENSE
 exclude setup-formula.py
 exclude setup-version.py
 
+prune vendor
 prune Cellar
 prune Tap
 
