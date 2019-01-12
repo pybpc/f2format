@@ -8,7 +8,7 @@
 #include "parsetok.h"
 #include "errcode.h"
 
-extern grammar _Ta3Parser_Grammar; /* from graminit.c */
+extern grammar _PyParser_Grammar; /* from graminit.c */
 
 // from Python/bltinmodule.c
 static const char *
@@ -224,7 +224,7 @@ PyParser_ASTFromStringObject(const char *s, PyObject *filename, int start,
     int iflags = PARSER_FLAGS(flags);
 
     node *n = PyParser_ParseStringObject(s, filename,
-                                         &_Ta3Parser_Grammar, start, &err,
+                                         &_PyParser_Grammar, start, &err,
                                          &iflags);
     if (flags == NULL) {
         localflags.cf_flags = 0;
@@ -385,4 +385,28 @@ ast37_compile(PyObject *module, PyObject *const *args, Py_ssize_t nargs, PyObjec
 
 exit:
     return return_value;
+}
+
+static PyMethodDef Ast37Methods[] = {
+    {"compile",  ast37_compile, METH_VARARGS, NULL},
+};
+
+static struct PyModuleDef ast37module = {
+    PyModuleDef_HEAD_INIT,
+    "ast37",    /* name of module */
+    NULL,       /* module documentation, may be NULL */
+    -1,         /* size of per-interpreter state of the module,
+                   or -1 if the module keeps state in global variables. */
+    Ast37Methods
+};
+
+PyMODINIT_FUNC
+PyInit_ast37(void)
+{
+    PyObject *m;
+
+    m = PyModule_Create(&ast37module);
+    if (m == NULL)
+        return NULL;
+    return m;
 }

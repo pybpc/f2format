@@ -17,7 +17,7 @@ __version__ = '0.4.2.dev1'
 
 # Python 3.6
 _ast36 = Extension(
-    name='_ast36',
+    name='ast36',
     sources=[
         'f2format/py36/ast/Parser/acceler.c',
         'f2format/py36/ast/Parser/bitset.c',
@@ -31,7 +31,7 @@ _ast36 = Extension(
         'f2format/py36/ast/Python/ast.c',
         'f2format/py36/ast/Python/graminit.c',
         'f2format/py36/ast/Python/Python-ast.c',
-        'f2format/py36/ast/Custom/py36_ast.c',
+        'f2format/py36/ast/Custom/ast36.c',
     ],
     include_dirs=['f2format/py36/ast/Include'],
     depends=[
@@ -53,7 +53,7 @@ _ast36 = Extension(
 
 # Python 3.7
 _ast37 = Extension(
-    name='_ast37',
+    name='ast37',
     sources=[
         'f2format/py37/ast/Parser/acceler.c',
         'f2format/py37/ast/Parser/bitset.c',
@@ -67,7 +67,7 @@ _ast37 = Extension(
         'f2format/py37/ast/Python/ast.c',
         'f2format/py37/ast/Python/graminit.c',
         'f2format/py37/ast/Python/Python-ast.c',
-        'f2format/py37/ast/Custom/py37_ast.c',
+        'f2format/py37/ast/Custom/ast37.c',
     ],
     include_dirs=['f2format/py37/ast/Include'],
     depends=[

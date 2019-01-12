@@ -8,7 +8,7 @@
 #include "parsetok.h"
 #include "errcode.h"
 
-extern grammar _Ta3Parser_Grammar; /* from graminit.c */
+extern grammar _PyParser_Grammar; /* from graminit.c */
 
 // from Python/bltinmodule.c
 static const char *
@@ -224,7 +224,7 @@ PyParser_ASTFromStringObject(const char *s, PyObject *filename, int start,
     int iflags = PARSER_FLAGS(flags);
 
     node *n = PyParser_ParseStringObject(s, filename,
-                                         &_Ta3Parser_Grammar, start, &err,
+                                         &_PyParser_Grammar, start, &err,
                                          &iflags);
     if (flags == NULL) {
         localflags.cf_flags = 0;
@@ -381,8 +381,32 @@ ast36_compile(PyObject *module, PyObject **args, Py_ssize_t nargs, PyObject *kwn
         &source, PyUnicode_FSDecoder, &filename, &mode, &flags, &dont_inherit, &optimize)) {
         goto exit;
     }
-    return_value = builtin_compile_impl(module, source, filename, mode, flags, dont_inherit, optimize);
+    return_value = ast36_compile_impl(module, source, filename, mode, flags, dont_inherit, optimize);
 
 exit:
     return return_value;
+}
+
+static PyMethodDef Ast36Methods[] = {
+    {"compile",  ast36_compile, METH_VARARGS, NULL},
+};
+
+static struct PyModuleDef ast36module = {
+    PyModuleDef_HEAD_INIT,
+    "ast36",    /* name of module */
+    NULL,       /* module documentation, may be NULL */
+    -1,         /* size of per-interpreter state of the module,
+                   or -1 if the module keeps state in global variables. */
+    Ast36Methods
+};
+
+PyMODINIT_FUNC
+PyInit_ast36(void)
+{
+    PyObject *m;
+
+    m = PyModule_Create(&ast36module);
+    if (m == NULL)
+        return NULL;
+    return m;
 }
