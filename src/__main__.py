@@ -6,7 +6,6 @@ import os
 import shutil
 import sys
 import uuid
-import warnings
 
 from f2format.core import f2format
 
@@ -33,13 +32,12 @@ else:
     import pathlib
 
 # version string
-__version__ = '0.4.2.dev1'
+__version__ = '0.4.3'
 
 # macros
 __cwd__ = os.getcwd()
 __archive__ = os.path.join(__cwd__, 'archive')
 __encoding__ = locale.getpreferredencoding()
-__pyversion__ = os.environ['F2FORMAT_PYTHONVERSION']
 
 
 def get_parser():
@@ -56,13 +54,9 @@ def get_parser():
                                help='path to archive original files (default is %r)' % __archive__)
 
     convert_group = parser.add_argument_group(title='convert options',
-                                              description='compatibility configuration for lexical analysis')
+                                              description='compatibility configuration for none-unicode files')
     convert_group.add_argument('-c', '--encoding', action='store', default=__encoding__, metavar='CODING',
                                help='encoding to open source files (default is %r)' % __encoding__)
-    convert_group.add_argument('-v', '--python-version', action='store', metavar='VERSION',
-                               default=__pyversion__, choices=['36', '37'],
-                               help=('Python version of lexical scanner to analyse source files '
-                                     '(default is Python %s)' % __pyversion__))
 
     parser.add_argument('file', nargs='*', metavar='SOURCE', default=__cwd__,
                         help='python source files and folders to be converted (default is %r)' % __cwd__)
@@ -79,14 +73,6 @@ def main():
     ARCHIVE = args.archive_path
     archive = (not args.no_archive)
     os.environ['F2FORMAT_ENCODING'] = args.encoding
-    os.environ['F2FORMAT_PYTHONVERSION'] = 'py%s' % args.python_version
-    sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'py%s' % args.python_version))
-
-    # warn if PYTHONVERSION higher than current version
-    version = 'py%d%d' % sys.version_info[:2]
-    if version < args.python_version:
-        warnings.warn(('current Python version is %s; '
-                       'some features may not support') % version, FutureWarning)
 
     def find(root):
         """Recursively find all files under root."""

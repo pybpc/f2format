@@ -4,88 +4,16 @@ import os
 import re
 
 try:
-    from setuptools import Extension, setup
+    from setuptools import setup
 except ImportError:
-    from distutils.core import Extension, setup
+    from distutils.core import setup
 
 # README
 with open('./README.md', encoding='utf-8') as file:
     long_desc = file.read()
 
 # version string
-__version__ = '0.4.2.dev1'
-
-# Python 3.6
-_ast36 = Extension(
-    name='ast36',
-    sources=[
-        'f2format/py36/ast/Parser/acceler.c',
-        'f2format/py36/ast/Parser/bitset.c',
-        'f2format/py36/ast/Parser/grammar.c',
-        'f2format/py36/ast/Parser/grammar1.c',
-        'f2format/py36/ast/Parser/node.c',
-        'f2format/py36/ast/Parser/parser.c',
-        'f2format/py36/ast/Parser/parsetok.c',
-        'f2format/py36/ast/Parser/tokenizer.c',
-        'f2format/py36/ast/Python/asdl.c',
-        'f2format/py36/ast/Python/ast.c',
-        'f2format/py36/ast/Python/graminit.c',
-        'f2format/py36/ast/Python/Python-ast.c',
-        'f2format/py36/ast/Custom/ast36.c',
-    ],
-    include_dirs=['f2format/py36/ast/Include'],
-    depends=[
-        'f2format/py36/ast/Include/asdl.h',
-        'f2format/py36/ast/Include/ast.h',
-        'f2format/py36/ast/Include/bitset.h',
-        'f2format/py36/ast/Include/compile.h',
-        'f2format/py36/ast/Include/errcode.h',
-        'f2format/py36/ast/Include/graminit.h',
-        'f2format/py36/ast/Include/grammar.h',
-        'f2format/py36/ast/Include/node.h',
-        'f2format/py36/ast/Include/parsetok.h',
-        'f2format/py36/ast/Include/Python-ast.h',
-        'f2format/py36/ast/Include/token.h',
-        'f2format/py36/ast/Parser/parser.h',
-        'f2format/py36/ast/Parser/tokenizer.h',
-    ]
-)
-
-# Python 3.7
-_ast37 = Extension(
-    name='ast37',
-    sources=[
-        'f2format/py37/ast/Parser/acceler.c',
-        'f2format/py37/ast/Parser/bitset.c',
-        'f2format/py37/ast/Parser/grammar.c',
-        'f2format/py37/ast/Parser/grammar1.c',
-        'f2format/py37/ast/Parser/node.c',
-        'f2format/py37/ast/Parser/parser.c',
-        'f2format/py37/ast/Parser/parsetok.c',
-        'f2format/py37/ast/Parser/tokenizer.c',
-        'f2format/py37/ast/Python/asdl.c',
-        'f2format/py37/ast/Python/ast.c',
-        'f2format/py37/ast/Python/graminit.c',
-        'f2format/py37/ast/Python/Python-ast.c',
-        'f2format/py37/ast/Custom/ast37.c',
-    ],
-    include_dirs=['f2format/py37/ast/Include'],
-    depends=[
-        'f2format/py37/ast/Include/asdl.h',
-        'f2format/py37/ast/Include/ast.h',
-        'f2format/py37/ast/Include/bitset.h',
-        'f2format/py37/ast/Include/compile.h',
-        'f2format/py37/ast/Include/errcode.h',
-        'f2format/py37/ast/Include/graminit.h',
-        'f2format/py37/ast/Include/grammar.h',
-        'f2format/py37/ast/Include/node.h',
-        'f2format/py37/ast/Include/parsetok.h',
-        'f2format/py37/ast/Include/Python-ast.h',
-        'f2format/py37/ast/Include/token.h',
-        'f2format/py37/ast/Parser/parser.h',
-        'f2format/py37/ast/Parser/tokenizer.h',
-    ]
-)
+__version__ = '0.4.3'
 
 # set-up script for pip distribution
 setup(
@@ -102,21 +30,12 @@ setup(
     python_requires='>=3.3',
     # include_package_data=True,
     zip_safe=True,
-    install_requires=['typed_ast>=1.1.0'],
     extras_require={
-        # ':python_version < "3.6"': ['typed_ast>=1.1.0'],
+        ':python_version < "3.6"': ['typed_ast>=1.1.0'],
         ':python_version < "3.5"': ['pathlib2>=2.3.2'],
     },
     py_modules=['f2format'],
-    packages=[
-        'f2format',
-        'f2format.py36',
-        'f2format.py37',
-    ],
-    ext_modules=[
-        _ast36,
-        _ast37,
-    ],
+    packages=['f2format'],
     entry_points={
         'console_scripts': [
             'f2format = f2format.__main__:main',
@@ -130,7 +49,7 @@ setup(
         ],
     },
     classifiers=[
-        'Development Status :: 6 - Mature',
+        'Development Status :: 5 - Production/Stable',
         'Environment :: Console',
         'Environment :: MacOS X',
         'Environment :: Win32 (MS Windows)',

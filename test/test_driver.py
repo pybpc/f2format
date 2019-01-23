@@ -7,6 +7,14 @@ import shutil
 import subprocess
 import sys
 
+try:
+    import f2format
+except ImportError:
+    sys.exit('Wrong interpreter...')
+
+# change cwd to current directory of this file
+os.chdir(os.path.dirname(__file__))
+
 
 def ispy(file):
     return (os.path.isfile(file) and (os.path.splitext(file)[1] == '.py'))
@@ -14,7 +22,7 @@ def ispy(file):
 
 FLAG = True
 for file in filter(ispy, os.listdir('.')):
-    if file == __file__:
+    if file == os.path.split(__file__)[1]:
         continue
     subprocess.run([sys.executable, '-m', 'f2format', file])
 

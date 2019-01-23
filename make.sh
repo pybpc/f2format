@@ -3,31 +3,14 @@
 # print a trace of simple commands
 set -x
 
-# # copy ast stdlib
-# bash copy.sh
-
 # update version string
 python3 setup-version.py
 
-# update Python 3.6 stdlib files
-rm -f src/3.6/token.py src/3.6/tokenize.py && \
-token=$( python3.6 -c "print(__import__('token').__spec__.origin)" ) && \
-tokenize=$( python3.6 -c "print(__import__('tokenize').__spec__.origin)" ) && \
-cp -f ${token} ${tokenize} src/py36/
-returncode=$?
-if [[ ${returncode} -ne "0" ]] ; then
-    exit ${returncode}
-fi
-
-# update Python 3.7 stdlib files
-rm -f src/3.7/token.py src/3.7/tokenize.py && \
-token=$( python3.7 -c "print(__import__('token').__spec__.origin)" ) && \
-tokenize=$( python3.7 -c "print(__import__('tokenize').__spec__.origin)" ) && \
-cp -f ${token} ${tokenize} src/py37/
-returncode=$?
-if [[ ${returncode} -ne "0" ]] ; then
-    exit ${returncode}
-fi
+# update Python stdlib files
+rm -f src/token.py src/tokenize.py
+token=$( python3 -c "print(__import__('token').__spec__.origin)" )
+tokenize=$( python3 -c "print(__import__('tokenize').__spec__.origin)" )
+cp -f ${token} ${tokenize} src/
 
 # prepare for PyPI distribution
 rm -rf build
@@ -47,15 +30,16 @@ python3.6 setup.py bdist_egg bdist_wheel --plat-name="${platform}" --python-tag=
 python3.5 setup.py bdist_egg bdist_wheel --plat-name="${platform}" --python-tag='cp35' && \
 python3.4 setup.py bdist_egg bdist_wheel --plat-name="${platform}" --python-tag='cp34' && \
 pypy3 setup.py bdist_wheel --plat-name="${platform}" --python-tag='pp35'
-returncode=$?
+returncode="$?"
 if [[ ${returncode} -ne "0" ]] ; then
     exit ${returncode}
 fi
 
 # distribute to PyPI and TestPyPI
+twine check dist/* && \
 twine upload dist/* -r pypi --skip-existing && \
 twine upload dist/* -r pypitest --skip-existing
-returncode=$?
+returncode="$?"
 if [[ ${returncode} -ne "0" ]] ; then
     exit ${returncode}
 fi
@@ -73,7 +57,7 @@ else
     git commit -a -S -m "$1"
 fi && \
 git push
-returncode=$?
+returncode="$?"
 if [[ ${returncode} -ne "0" ]] ; then
     exit ${returncode}
 fi
@@ -85,7 +69,7 @@ go run github.com/aktau/github-release release \
     --tag "v${version}" \
     --name "f2format v${version}" \
     --description "$1"
-returncode=$?
+returncode="$?"
 if [[ ${returncode} -ne "0" ]] ; then
     exit ${returncode}
 fi
@@ -101,7 +85,7 @@ else
     git commit -a -S -m "$1"
 fi && \
 git push
-returncode=$?
+returncode="$?"
 if [[ ${returncode} -ne "0" ]] ; then
     exit ${returncode}
 fi
@@ -111,7 +95,7 @@ cd ..
 maintainer changelog && \
 maintainer contributor && \
 maintainer contributing
-returncode=$?
+returncode="$?"
 if [[ ${returncode} -ne "0" ]] ; then
     exit ${returncode}
 fi

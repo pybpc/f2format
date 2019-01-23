@@ -83,9 +83,6 @@ convert options:
 
   -c CODING, --encoding CODING
                         encoding to open source files (default is '${ENCODING}')
-  -v VERSION, --python-version VERSION
-                        Python version of lexical scanner to analyse source
-                        files (default is Python ${PYTHONVERSION})
 ```
 
 &emsp; `f2format` will read then convert all *f-string* literals in every Python file under this

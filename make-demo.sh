@@ -30,23 +30,24 @@ cd release/
 
 # perform f2format
 f2format -n src
-returncode=$?
+returncode="$?"
 if [[ ${returncode} -ne "0" ]] ; then
     exit ${returncode}
 fi
 
 # prepare for PyPI distribution
-mkdir -p eggs sdist wheels && \
-rm -rf build && \
-mv -f dist/*.egg eggs/ && \
-mv -f dist/*.whl wheels/ && \
+mkdir -p eggs sdist wheels
+rm -rf build
+mv -f dist/*.egg eggs/
+mv -f dist/*.whl wheels/
 mv -f dist/*.tar.gz sdist/
 
 # distribute to PyPI and TestPyPI
 python setup.py sdist bdist_wheel && \
+twine check dist/* && \
 twine upload dist/* -r pypi --skip-existing && \
 twine upload dist/* -r pypitest --skip-existing
-returncode=$?
+returncode="$?"
 if [[ ${returncode} -ne "0" ]] ; then
     exit ${returncode}
 fi
@@ -60,7 +61,7 @@ else
     git commit -a -m "$1"
 fi && \
 git push
-returncode=$?
+returncode="$?"
 if [[ ${returncode} -ne "0" ]] ; then
     exit ${returncode}
 fi
