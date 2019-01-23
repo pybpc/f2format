@@ -389,6 +389,7 @@ exit:
 
 static PyMethodDef Ast36Methods[] = {
     {"compile",  ast36_compile, METH_VARARGS, NULL},
+    { NULL, NULL, 0, NULL }  // We require this `NULL` to signal the end of our method definition
 };
 
 static struct PyModuleDef ast36module = {
