@@ -5,6 +5,10 @@ DIR   ?= .
 platform = $(shell python3 -c "import distutils.util; print(distutils.util.get_platform().replace('-', '_').replace('.', '_'))")
 # get version string
 version  = $(shell cat f2format/__main__.py | grep "^__version__" | sed "s/__version__ = '\(.*\)'/\1/")
+# builtins.token
+token    = $(shell python3 -c "print(__import__('token').__spec__.origin)")
+# builtins.tokenize
+tokenize = $(shell python3 -c "print(__import__('tokenize').__spec__.origin)")
 # commit message
 message  =
 
@@ -30,9 +34,7 @@ setup-formula:
 # update Python stdlib files
 setup-stdlib:
 	rm -f src/token.py src/tokenize.py
-	token    = `python3 -c "print(__import__('token').__spec__.origin)"`
-	tokenize = `python3 -c "print(__import__('tokenize').__spec__.origin)"`
-	cp -f $${token} $${tokenize} src/
+	cp -f $(token) $(tokenize) src/
 
 # remove *.pyc
 clean-pyc:
@@ -154,8 +156,8 @@ release-devel:
 # run distribution process
 distro:
 	$(MAKE) message=$(message) \
-		setup-version setup-stdlib
-		clean pypi git-tag git-upload
+		setup-version setup-stdlib \
+		clean pypi git-tag git-upload \
 		git-upload release setup-formula
 	$(MAKE) message=$(message) DIR=Tap \
 		git-upload
