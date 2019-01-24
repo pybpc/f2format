@@ -118,9 +118,9 @@ git-upload:
 	git pull
 	git add .
 	if [[ -z "$(message)" ]] ; then \
-		git commit -a -S \
+		git commit -a -S ; \
 	else \
-		git commit -a -S -m "$(message)" \
+		git commit -a -S -m "$(message)" ; \
 	fi
 	git push
 
