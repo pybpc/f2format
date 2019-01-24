@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # [NB]
 # This is a demo script for those who is to integrate

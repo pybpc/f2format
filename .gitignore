@@ -3,6 +3,7 @@
 vendor/*
 
 Tap
+*~orig*
 test/*.pyw
 archive/
 Pipfile.lock
