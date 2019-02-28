@@ -1,3 +1,5 @@
+.PHONY: clean release pipenv pypi setup dist
+
 SHELL := /usr/local/bin/bash
 DIR   ?= .
 
@@ -71,14 +73,23 @@ update-maintainer:
 	go run github.com/gaocegege/maintainer contributing
 
 # make PyPI distribution
+dist-pypi: clean-pypi dist-macos dist-linux
+
 .ONESHELL:
-dist-pypi: clean-pypi
+dist-macos:
 	cd $(DIR)
 	python3.7 setup.py sdist bdist_egg bdist_wheel --plat-name="$(platform)" --python-tag='cp37'
 	python3.6 setup.py bdist_egg bdist_wheel --plat-name="$(platform)" --python-tag='cp36'
 	python3.5 setup.py bdist_egg bdist_wheel --plat-name="$(platform)" --python-tag='cp35'
 	python3.4 setup.py bdist_egg bdist_wheel --plat-name="$(platform)" --python-tag='cp34'
 	pypy3 setup.py bdist_wheel --plat-name="$(platform)" --python-tag='pp35'
+
+.ONESHELL:
+dist-linux:
+	cd $(DIR)/docker
+	sed "s/LABEL version.*/LABEL version $(shell date +%Y.%m.%d)/" Dockerfile > Dockerfile.tmp
+	mv Dockerfile.tmp Dockerfile
+	docker-compose up --build
 
 # upload PyPI distribution
 .ONESHELL:
@@ -135,7 +146,7 @@ release-devel:
 		--pre-release
 
 # run distribution process
-distro:
+dist:
 	$(MAKE) message=$(message) \
 		setup-version setup-stdlib \
 		clean pypi git-tag git-upload \

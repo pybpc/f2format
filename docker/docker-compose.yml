@@ -1,0 +1,12 @@
+version: '3'
+
+services:
+  f2format:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    command: ["bash", "/f2format/docker/docker.sh"]
+    container_name: f2format
+    image: f2format
+    volumes:
+      - ../dist:/f2format/dist
