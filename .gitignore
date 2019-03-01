@@ -6,6 +6,7 @@ Tap
 *~orig*
 test/*.pyw
 archive/
+release/
 Pipfile.lock
 
 # Created by https://www.gitignore.io/api/python,macos

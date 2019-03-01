@@ -1,4 +1,4 @@
-.PHONY: clean release pipenv pypi setup dist
+.PHONY: clean docker release pipenv pypi setup dist
 
 SHELL := /usr/local/bin/bash
 DIR   ?= .
@@ -15,6 +15,7 @@ tokenize = $(shell python3 -c "print(__import__('tokenize').__spec__.origin)")
 message  =
 
 clean: clean-pyc clean-misc clean-pypi
+docker: setup-version docker-build
 release: release-master release-devel
 pipenv: update-pipenv
 pypi: dist-pypi dist-upload
@@ -53,6 +54,7 @@ clean-pipenv:
 # prepare for PyPI distribution
 .ONESHELL:
 clean-pypi:
+	set -ex
 	cd $(DIR)
 	mkdir -p sdist eggs wheels
 	find dist -iname '*.egg' -exec mv {} eggs \;
@@ -72,11 +74,27 @@ update-maintainer:
 	go run github.com/gaocegege/maintainer contributor
 	go run github.com/gaocegege/maintainer contributing
 
+docker-prep:
+	rm -rf release
+	mkdir -p release
+	cp -rf src release/f2format
+	cp setup.py \
+	   setup.cfg \
+	   README.md \
+	   Dockerfile \
+	   MANIFEST.in \
+	   .dockerignore release
+	DIR=release $(MAKE) clean-pyc
+
+docker-build: docker-prep
+	docker build --tag f2format:$(version) --tag f2format:latest release
+
 # make PyPI distribution
 dist-pypi: clean-pypi dist-macos dist-linux
 
 .ONESHELL:
 dist-macos:
+	set -ex
 	cd $(DIR)
 	python3.7 setup.py sdist bdist_egg bdist_wheel --plat-name="$(platform)" --python-tag='cp37'
 	python3.6 setup.py bdist_egg bdist_wheel --plat-name="$(platform)" --python-tag='cp36'
@@ -86,6 +104,7 @@ dist-macos:
 
 .ONESHELL:
 dist-linux:
+	set -ex
 	cd $(DIR)/docker
 	sed "s/LABEL version.*/LABEL version $(shell date +%Y.%m.%d)/" Dockerfile > Dockerfile.tmp
 	mv Dockerfile.tmp Dockerfile
@@ -94,6 +113,7 @@ dist-linux:
 # upload PyPI distribution
 .ONESHELL:
 dist-upload:
+	set -ex
 	cd $(DIR)
 	twine check dist/*
 	twine upload dist/* -r pypi --skip-existing
@@ -102,12 +122,14 @@ dist-upload:
 # add tag
 .ONESHELL:
 git-tag:
+	set -ex
 	cd $(DIR)
 	git tag "v$(version)"
 
 # upload to GitHub
 .ONESHELL:
 git-upload:
+	set -ex
 	cd $(DIR)
 	git pull
 	git add .

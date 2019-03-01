@@ -22,3 +22,15 @@ with open(os.path.join(os.path.dirname(__file__), 'setup.py')) as file:
 
 with open(os.path.join(os.path.dirname(__file__), 'setup.py'), 'w') as file:
     file.writelines(context)
+
+context = list()
+with open(os.path.join(os.path.dirname(__file__), 'Dockerfile')) as file:
+    for line in file:
+        match = re.match(r"LABEL version (.*)", line)
+        if match is None:
+            context.append(line)
+        else:
+            context.append(f'LABEL version {__version__}\n')
+
+with open(os.path.join(os.path.dirname(__file__), 'Dockerfile'), 'w') as file:
+    file.writelines(context)
