@@ -12,7 +12,7 @@ token    = $(shell python3 -c "print(__import__('token').__spec__.origin)")
 # builtins.tokenize
 tokenize = $(shell python3 -c "print(__import__('tokenize').__spec__.origin)")
 # commit message
-message  =
+message  ?= ""
 
 clean: clean-pyc clean-misc clean-pypi
 docker: setup-version docker-build
