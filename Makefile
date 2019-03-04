@@ -30,7 +30,7 @@ setup-version:
 	python3 setup-version.py
 
 # update Homebrew Formulae
-setup-formula:
+setup-formula: pipenv
 	pipenv run python3 setup-formula.py
 
 # update Python stdlib files
