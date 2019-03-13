@@ -19,10 +19,8 @@ sys.path.pop(0)
 try:
     eval("f'Hello world.'")
 except SyntaxError:     # using typed_ast.ast3
-    future = False
     import typed_ast.ast3 as ast
 else:                   # using stdlib.ast
-    future = True
     import ast
 
 __all__ = ['f2format', 'convert']
@@ -135,10 +133,10 @@ def convert(string, lineno):
                         if obj.conversion != -1:                                    # has conversion ('![rsa]'), minus 2, ast.FormattedValue.convertion -> int # noqa
                             end -= 2
                         if obj.format_spec is not None:                             # has format specification (':...'), minus length of format_spec and colon (':') # noqa
-                            if future:  # using stdlib.ast
-                                end -= (len(obj.format_spec.values[0].s) + 1)       # ast.FormattedValue.format_spec -> ast.JoinedStr, .values[0] -> ast.Str # noqa
-                            else:       # using typed_ast.ast3
-                                end -= (len(obj.format_spec.s) + 1)                 # ast.FormattedValue.format_spec -> ast.Str # noqa
+                            format_spec = obj.format_spec                           # ast.FormattedValue.format_spec -> ast.JoinedStr
+                            for spec in format_spec.values:                         # ast.JoinedStr.values -> list
+                                if isinstance(spec, ast.Str):
+                                    end -= (len(obj.format_spec.values[0].s) + 1)   # ast.Str, .s -> str
                         tmpent.append(slice(start, end))                            # actual expression slice
                     elif isinstance(obj, ast.Str):              # raw string part, ast.Str, .s -> str
                         raw = token_string[length:]                                 # original string
@@ -154,23 +152,6 @@ def convert(string, lineno):
                     else:
                         raise ValueError('malformed node or string:: %r' % obj)
                     # print('length:', length, '###', token_string[:length], '###', token_string[length:]) ###
-
-            if not future:  # using typed_ast.ast3
-                if isinstance(tmpval, ast.FormattedValue):  # ast.FormattedValue can also be f-string (f'{val}')
-                    rmatch = re.match(r'^((f|rf|fr)(\'\'\'|\'|"""|"))', token_string, re.IGNORECASE)
-                    prefix = '' if rmatch is None else rmatch.groups()[0]           # fetch string literal prefixes
-                    quotes = re.sub(r'^rf|fr|f', r'', prefix, flags=re.IGNORECASE)  # quote character(s) for this f-string # noqa
-                    length = len(prefix)                                            # offset from token.string
-
-                    start = length + 1                                              # for '{', get start of expression
-                    end = start + find_rbrace(token_string[start:], quotes)         # find '}', fetch end of expression
-                    length += 2 + (end - start)                                     # for '{', '}' and expression, update offset # noqa
-                    if tmpval.conversion != -1:                                     # has conversion ('![rsa]'), minus 2, ast.FormattedValue.convertion -> int # noqa
-                        end -= 2
-                    if tmpval.format_spec is not None:                              # has format specification (':...'), minus length of format_spec and colon (':') # noqa
-                        end -= (len(tmpval.format_spec.s) + 1)                      # ast.FormattedValue.format_spec -> ast.Str # noqa
-                    tmpent.append(slice(start, end))                                # actual expression slice
-
             entryl.append((token, tmpent))          # each token with a concatenation entry list
 
         # print('entry: ', end='') ###

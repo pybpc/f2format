@@ -32,7 +32,7 @@ else:
     import pathlib
 
 # version string
-__version__ = '0.4.3'
+__version__ = '0.4.4.dev1'
 
 # macros
 __cwd__ = os.getcwd()

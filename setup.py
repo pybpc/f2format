@@ -31,7 +31,7 @@ setup(
     # include_package_data=True,
     zip_safe=True,
     extras_require={
-        ':python_version < "3.6"': ['typed_ast>=1.1.0'],
+        ':python_version < "3.6"': ['typed_ast~=1.3.0'],
         ':python_version < "3.5"': ['pathlib2>=2.3.2'],
     },
     py_modules=['f2format'],

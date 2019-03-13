@@ -1,6 +1,4 @@
 {
-    "python.linting.pylintEnabled": true,
-    "python.pythonPath": "/Users/jarryshaw/.local/share/virtualenvs/f2format-hTJkNAHn/bin/python",
     "cSpell.words": [
         "BDFL",
         "DEVEL",
@@ -43,5 +41,6 @@
         "tokenisation",
         "unindent",
         "ziel"
-    ]
+    ],
+    "python.pythonPath": "/Users/jarryshaw/.local/share/virtualenvs/f2format-hTJkNAHn/bin/python"
 }
