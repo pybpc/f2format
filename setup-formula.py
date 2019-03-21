@@ -48,8 +48,6 @@ class F2format < Formula
 
   head "https://github.com/JarryShaw/f2format.git", :branch => "master"
 
-  bottle :unneeded
-
   depends_on "python"
 
   {PATHLIB2}
@@ -60,17 +58,16 @@ class F2format < Formula
     # virtualenv_install_with_resources
     venv = virtualenv_create(libexec, "python3")
 
-    version = `#{{libexec}}/"bin/python" -c "print('%s.%s' % __import__('sys').version_info[:2])"`
+    version = Language::Python.major_minor_version "python3"
     if version =~ /3.[34]/
       %w[pathlib2 six].each do |r|
         venv.pip_install resource(r)
       end
     end
 
-    venv.pip_install resource("typed-ast")
-    # if version =~ /3.[345]/
-    #   venv.pip_install resource("typed-ast")
-    # end
+    if version =~ /3.[345]/
+      venv.pip_install resource("typed-ast")
+    end
     venv.pip_install_and_link buildpath
   end
 
