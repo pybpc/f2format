@@ -1,5 +1,7 @@
 .PHONY: clean docker release pipenv pypi setup dist
 
+export PIPENV_VENV_IN_PROJECT=1
+
 SHELL := /usr/local/bin/bash
 DIR   ?= .
 
