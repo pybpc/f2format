@@ -1,6 +1,6 @@
 # basic info
 FROM library/ubuntu
-LABEL version 2019.02.28
+LABEL version 2019.04.06
 LABEL description "Ubuntu Environment"
 
 # prepare environment

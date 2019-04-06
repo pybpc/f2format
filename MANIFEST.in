@@ -13,7 +13,12 @@ prune vendor
 prune Cellar
 prune Tap
 
+prune release
 prune archive
 prune codec
 prune test
 prune src
+
+prune .github
+prune .venv
+prune .vscode

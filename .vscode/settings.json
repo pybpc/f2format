@@ -13,10 +13,12 @@
         "argparse",
         "asdl",
         "bltinmodule",
+        "chld",
         "dict",
         "distro",
         "emsp",
         "entryl",
+        "exchld",
         "f'foo",
         "flst",
         "fstring",
@@ -26,6 +28,7 @@
         "kwnames",
         "lnum",
         "parsetok",
+        "parso",
         "perrdetail",
         "pyversion",
         "rmatch",
@@ -39,8 +42,9 @@
         "tmpent",
         "tmpval",
         "tokenisation",
+        "tvchld",
         "unindent",
         "ziel"
     ],
-    "python.pythonPath": "/Users/jarryshaw/.local/share/virtualenvs/f2format-hTJkNAHn/bin/python"
+    "python.pythonPath": ".venv/bin/python"
 }

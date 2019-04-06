@@ -1,6 +1,6 @@
 # basic info
 FROM library/ubuntu
-LABEL version 0.4.3
+LABEL version 0.5.0
 LABEL description "Ubuntu Environment"
 
 # prepare environment

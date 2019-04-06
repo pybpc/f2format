@@ -32,12 +32,17 @@ else:
     import pathlib
 
 # version string
-__version__ = '0.4.4.dev1'
+__version__ = '0.5.0'
+
+# parso supported versions
+PARSO_VERSION = ('2.6', '2.7',
+                 '3.3', '3.4', '3.5', '3.6', '3.7', '3.8')
 
 # macros
 __cwd__ = os.getcwd()
 __archive__ = os.path.join(__cwd__, 'archive')
 __encoding__ = locale.getpreferredencoding()
+__f2format_version__ = os.getenv('F2FORMAT_VERSION', '%s.%s' % sys.version_info[:2])
 
 
 def get_parser():
@@ -57,6 +62,9 @@ def get_parser():
                                               description='compatibility configuration for none-unicode files')
     convert_group.add_argument('-c', '--encoding', action='store', default=__encoding__, metavar='CODING',
                                help='encoding to open source files (default is %r)' % __encoding__)
+    convert_group.add_argument('-v', '--python', action='store', metavar='VERSION', choices=PARSO_VERSION,
+                               default=__f2format_version__,
+                               help='convert against Python version (default is %r)' % __f2format_version__)
 
     parser.add_argument('file', nargs='*', metavar='SOURCE', default=__cwd__,
                         help='python source files and folders to be converted (default is %r)' % __cwd__)
@@ -72,6 +80,7 @@ def main():
     # set up variables
     ARCHIVE = args.archive_path
     archive = (not args.no_archive)
+    os.environ['F2FORMAT_VERSION'] = args.python
     os.environ['F2FORMAT_ENCODING'] = args.encoding
 
     def find(root):

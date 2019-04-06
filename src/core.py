@@ -8,20 +8,15 @@ sys.path.insert(0, os.path.dirname(__file__))  # noqa
 
 import collections.abc
 import io
+import locale
 import re
 import tokenize
+
+import parso
 
 ###############################################################################
 sys.path.pop(0)
 ###############################################################################
-
-# check f-string compatibility & import ast
-try:
-    eval("f'Hello world.'")
-except SyntaxError:     # using typed_ast.ast3
-    import typed_ast.ast3 as ast
-else:                   # using stdlib.ast
-    import ast
 
 __all__ = ['f2format', 'convert']
 
@@ -62,23 +57,9 @@ def convert(string, lineno):
      - str -- converted string
 
     """
-    def find_rbrace(text, quote):
-        """Brute force to find right brace."""
-        max_offset = len(text)
-        offset = 1
-        while offset <= max_offset:
-            # print('f%s{%s%s' % (quote, text[:offset], quote)) ###
-            try:    # try exclusively
-                ast.parse('f%s{%s%s' % (quote, text[:offset], quote))
-            except SyntaxError:
-                offset += 1
-                continue
-            # except Exception as error: ###
-            #     import traceback ###
-            #     traceback.print_exc() ###
-            #     exit(1) ###
-            break
-        return (offset - 1)
+    def parse(string):
+        return parso.parse(string, error_recovery=False,
+                           version=os.getenv('F2FORMAT_VERSION', '%s.%s' % sys.version_info[:2]))
 
     source = strarray(string)       # strarray source (mutable)
     f_string = [list()]             # [[token, ...], [...], ...] -> concatenable strings
@@ -107,50 +88,44 @@ def convert(string, lineno):
 
     for tokens in reversed(f_string):   # for each string concatenation
         # check if has f-string literal in this concatenation
-        py36 = any(map(lambda token: re.match(r'^(f|rf|fr)', token.string, re.IGNORECASE), tokens))
-        if not py36:
+        future = any(map(lambda token: re.match(r'^(f|rf|fr)', token.string, re.IGNORECASE), tokens))
+        if not future:
             continue
 
         entryl = list()
         for token in tokens:            # for each token in concatenation
             token_string = token.string
 
-            module = ast.parse(token_string)        # parse AST, get ast.Module, ast.Module.body -> list
-            tmpval = module.body[0].value           # either ast.Str or ast.JoinedStr, ast.Module.body[0] -> ast.Expr
+            module = parse(token_string)            # parse AST, get parso.python.tree.Module, _.children -> list
+                                                    # _[0] -> parso.python.tree.PythonNode
+                                                    # _[1] -> parso.python.tree.EndMarker
+            tmpval = module.children[0]             # parsed string token
             tmpent = list()                         # temporary entry list
 
-            if isinstance(tmpval, ast.JoinedStr):       # ast.JoinedStr is f-string
-                rmatch = re.match(r'^((f|rf|fr)(\'\'\'|\'|"""|"))', token_string, re.IGNORECASE)
-                prefix = '' if rmatch is None else rmatch.groups()[0]               # fetch string literal prefixes
-                quotes = re.sub(r'^rf|fr|f', r'', prefix, flags=re.IGNORECASE)      # quote character(s) for this f-string # noqa
-                length = len(prefix)                                                # offset from token.string
+            if tmpval.type == 'fstring':            # parso.python.tree.PythonNode.type -> str, string / fstring
+                # parso.python.tree.PythonNode.children[0] -> parso.python.tree.FStringStart, regex: /^((f|rf|fr)('''|'|"""|"))/
+                # parso.python.tree.PythonNode.children[-1] -> parso.python.tree.FStringEnd, regex: /('''|'|"""|")$/
+                for obj in tmpval.children[1:-1]:               # traverse parso.python.tree.PythonNode.children -> list # noqa
+                    if obj.type == 'fstring_expr':                      # expression part (in braces), parso.python.tree.PythonNode # noqa
+                        obj_children = obj.children                             # parso.python.tree.PythonNode.children -> list
+                                                                                # _[0] -> parso.python.tree.Operator, '{' # noqa
+                                                                                # _[1] -> %undetermined%, expression literal (f_expression) # noqa
+                                                                                # _[2] -> %optional%, parso.python.tree.PythonNode, format specification (format_spec) # noqa
+                                                                                # -[3] -> parso.python.tree.Operator, '}' # noqa
+                        start_expr = obj_children[1].start_pos[1]
+                        end_expr = obj_children[1].end_pos[1]
+                        tmpent.append(slice(start_expr, end_expr))              # entry of expression literal (f_expression)
 
-                for obj in tmpval.values:                       # traverse ast.JoinedStr.values -> list
-                    if isinstance(obj, ast.FormattedValue):     # expression part (in braces), ast.FormattedValue
-                        start = length + 1                                          # for '{', get start of expression
-                        end = start + find_rbrace(token_string[start:], quotes)     # find '}', fetch end of expression
-                        length += 2 + (end - start)                                 # for '{', '}' and expression, update offset # noqa
-                        if obj.conversion != -1:                                    # has conversion ('![rsa]'), minus 2, ast.FormattedValue.convertion -> int # noqa
-                            end -= 2
-                        if obj.format_spec is not None:                             # has format specification (':...'), minus length of format_spec and colon (':') # noqa
-                            format_spec = obj.format_spec                           # ast.FormattedValue.format_spec -> ast.JoinedStr
-                            for spec in format_spec.values:                         # ast.JoinedStr.values -> list
-                                if isinstance(spec, ast.Str):
-                                    end -= (len(obj.format_spec.values[0].s) + 1)   # ast.Str, .s -> str
-                        tmpent.append(slice(start, end))                            # actual expression slice
-                    elif isinstance(obj, ast.Str):              # raw string part, ast.Str, .s -> str
-                        raw = token_string[length:]                                 # original string
-                        end = len(raw)                                              # end of raw string part
-                        cnt = 0                                                     # counter for left braces ('{')
-                        for i, c in enumerate(raw):                                 # enumerate string
-                            if c == '{':                                            # increment when reads left brace ('{') # noqa
-                                cnt += 1
-                            elif cnt % 2 == 1:                                      # when number of left braces is odd, reach the end # noqa
-                                end = i - 1
-                                break
-                        length += end
-                    else:
-                        raise ValueError('malformed node or string:: %r' % obj)
+                        if obj_children[2].type == 'fstring_format_spec':
+                            for node in obj_children[2].children:               # traverse format specifications (format_spec)
+                                if node.type == 'fstring_expr':                         # expression part (in braces), parso.python.tree.PythonNode # noqa
+                                    node_chld = node.children                                   # parso.python.tree.PythonNode.children -> list # noqa
+                                                                                                # _[0] -> parso.python.tree.Operator, '{' # noqa
+                                                                                                # _[1] -> %undetermined%, expression literal (f_expression) # noqa
+                                                                                                # _[2] -> parso.python.tree.Operator, '}' # noqa
+                                    start = node_chld[1].start_pos[1]
+                                    end = node_chld[1].end_pos[1]
+                                    tmpent.append(slice(start, end))
                     # print('length:', length, '###', token_string[:length], '###', token_string[length:]) ###
             entryl.append((token, tmpent))          # each token with a concatenation entry list
 
@@ -163,8 +138,8 @@ def convert(string, lineno):
             # print(token.string, entries) ###
             for entry in entries:       # walk entries
                 temp_expr = token.string[entry]                                 # original expression
-                val = ast.parse(temp_expr).body[0].value                        # parse AST
-                if isinstance(val, ast.Tuple) and \
+                val = parse(temp_expr).children[0]                              # parse AST
+                if val.type == 'testlist_star_expr' and \
                         re.fullmatch(r'\(.*\)', temp_expr, re.DOTALL) is None:  # if expression is implicit tuple
                     real_expr = '(%s)' % temp_expr                              # add parentheses
                 else:
@@ -210,7 +185,7 @@ def f2format(filename):
     print('Now converting %r...' % filename)
 
     # fetch encoding
-    encoding = os.environ['F2FORMAT_ENCODING']
+    encoding = os.getenv('F2FORMAT_ENCODING', locale.getpreferredencoding())
 
     lineno = dict()     # line number -> file offset
     content = list()    # file content

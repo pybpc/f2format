@@ -33,9 +33,9 @@ for line in filter(lambda item: isinstance(item, bs4.element.Tag), table.tbody):
 # print(F2FORMAT_SHA)
 
 PATHLIB2 = subprocess.check_output(['poet', 'pathlib2']).decode().strip()
-TYPED_AST = subprocess.check_output(['poet', 'typed_ast']).decode().strip()
+PARSO = subprocess.check_output(['poet', 'parse']).decode().strip()
 # print(PATHLIB2)
-# print(TYPED_AST)
+# print(PARSO)
 
 FORMULA = f'''\
 class F2format < Formula
@@ -50,23 +50,20 @@ class F2format < Formula
 
   depends_on "python"
 
-  {PATHLIB2}
+  {PARSO}
 
-  {TYPED_AST}
+  {PATHLIB2}
 
   def install
     # virtualenv_install_with_resources
     venv = virtualenv_create(libexec, "python3")
+    venv.pip_install resource("parso")
 
     version = Language::Python.major_minor_version "python3"
     if version =~ /3.[34]/
       %w[pathlib2 six].each do |r|
         venv.pip_install resource(r)
       end
-    end
-
-    if version =~ /3.[345]/
-      venv.pip_install resource("typed-ast")
     end
     venv.pip_install_and_link buildpath
   end
