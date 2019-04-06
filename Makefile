@@ -174,7 +174,7 @@ dist:
 	$(MAKE) message=$(message) \
 		setup-version setup-stdlib \
 		clean pypi git-tag git-upload \
-		git-upload release setup-formula
+		release setup-formula
 	$(MAKE) message=$(message) DIR=Tap \
 		git-upload
 	$(MAKE) message=$(message) \
