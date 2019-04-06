@@ -33,7 +33,7 @@ for line in filter(lambda item: isinstance(item, bs4.element.Tag), table.tbody):
 # print(F2FORMAT_SHA)
 
 PATHLIB2 = subprocess.check_output(['poet', 'pathlib2']).decode().strip()
-PARSO = subprocess.check_output(['poet', 'parse']).decode().strip()
+PARSO = subprocess.check_output(['poet', 'parso']).decode().strip()
 # print(PATHLIB2)
 # print(PARSO)
 
