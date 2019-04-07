@@ -23,8 +23,10 @@ F2FORMAT_SHA = hashlib.sha256(requests.get(F2FORMAT_URL).content).hexdigest()
 
 PATHLIB2 = subprocess.check_output(['poet', 'pathlib2']).decode().strip()
 PARSO = subprocess.check_output(['poet', 'parso']).decode().strip()
+TBTRIM = subprocess.check_output(['poet', 'tbtrim']).decode().strip()
 # print(PATHLIB2)
 # print(PARSO)
+# print(TBTRIM)
 
 FORMULA = f'''\
 class F2format < Formula
@@ -43,10 +45,15 @@ class F2format < Formula
 
   {PATHLIB2}
 
+  {TBTRIM}
+
   def install
     # virtualenv_install_with_resources
     venv = virtualenv_create(libexec, "python3")
-    venv.pip_install resource("parso")
+
+    %w[parso tbtrim].each do |r|
+      venv.pip_install resource(r)
+    end
 
     version = Language::Python.major_minor_version "python3"
     if version =~ /3.[34]/
