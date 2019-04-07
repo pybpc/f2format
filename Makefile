@@ -122,7 +122,7 @@ dist-linux:
 dist-upload:
 	set -ex
 	cd $(DIR)
-	twine check dist/*
+	twine check dist/* || true
 	twine upload dist/* -r pypi --skip-existing
 	twine upload dist/* -r pypitest --skip-existing
 

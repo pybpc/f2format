@@ -31,7 +31,7 @@ else:
     import pathlib
 
 # version string
-__version__ = '0.5.1'
+__version__ = '0.5.2'
 
 # macros
 __cwd__ = os.getcwd()
@@ -51,18 +51,18 @@ def get_parser():
     archive_group.add_argument('-n', '--no-archive', action='store_true',
                                help='do not archive original files')
     archive_group.add_argument('-p', '--archive-path', action='store', default=__archive__, metavar='PATH',
-                               help='path to archive original files (default is %r)' % __archive__)
+                               help='path to archive original files (%s)' % __archive__)
 
     convert_group = parser.add_argument_group(title='convert options',
                                               description='compatibility configuration for none-unicode files')
     convert_group.add_argument('-c', '--encoding', action='store', default=__f2format_encoding__, metavar='CODING',
-                               help='encoding to open source files (default is %r)' % __f2format_encoding__)
+                               help='encoding to open source files (%s)' % __f2format_encoding__)
     convert_group.add_argument('-v', '--python', action='store', metavar='VERSION',
                                default=__f2format_version__, choices=PARSO_VERSION,
-                               help='convert against Python version (default is %r)' % __f2format_version__)
+                               help='convert against Python version (%s)' % __f2format_version__)
 
     parser.add_argument('file', nargs='*', metavar='SOURCE', default=__cwd__,
-                        help='python source files and folders to be converted (default is %r)' % __cwd__)
+                        help='python source files and folders to be converted (%s)' % __cwd__)
 
     return parser
 
