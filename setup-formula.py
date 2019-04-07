@@ -56,8 +56,8 @@ class F2format < Formula
     end
     venv.pip_install_and_link buildpath
 
-    man1.install man/f2format.1
-    bash_completion.install comp/f2format.bash-completion
+    man1.install "man/f2format.1"
+    bash_completion.install "comp/f2format.bash-completion"
   end
 
   test do
