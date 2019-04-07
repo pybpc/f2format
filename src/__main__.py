@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
 
 import argparse
-import locale
 import os
 import shutil
 import sys
 import uuid
 
-from f2format.core import f2format
+from f2format.core import LOCALE_ENCODING, PARSO_VERSION, f2format
 
 # multiprocessing may not be supported
 try:        # try first
@@ -32,17 +31,13 @@ else:
     import pathlib
 
 # version string
-__version__ = '0.5.0'
-
-# parso supported versions
-PARSO_VERSION = ('2.6', '2.7',
-                 '3.3', '3.4', '3.5', '3.6', '3.7', '3.8')
+__version__ = '0.5.1'
 
 # macros
 __cwd__ = os.getcwd()
 __archive__ = os.path.join(__cwd__, 'archive')
-__encoding__ = locale.getpreferredencoding()
-__f2format_version__ = os.getenv('F2FORMAT_VERSION', '%s.%s' % sys.version_info[:2])
+__f2format_version__ = os.getenv('F2FORMAT_VERSION', PARSO_VERSION[-1])
+__f2format_encoding__ = os.getenv('F2FORMAT_ENCODING', LOCALE_ENCODING)
 
 
 def get_parser():
@@ -60,10 +55,10 @@ def get_parser():
 
     convert_group = parser.add_argument_group(title='convert options',
                                               description='compatibility configuration for none-unicode files')
-    convert_group.add_argument('-c', '--encoding', action='store', default=__encoding__, metavar='CODING',
-                               help='encoding to open source files (default is %r)' % __encoding__)
-    convert_group.add_argument('-v', '--python', action='store', metavar='VERSION', choices=PARSO_VERSION,
-                               default=__f2format_version__,
+    convert_group.add_argument('-c', '--encoding', action='store', default=__f2format_encoding__, metavar='CODING',
+                               help='encoding to open source files (default is %r)' % __f2format_encoding__)
+    convert_group.add_argument('-v', '--python', action='store', metavar='VERSION',
+                               default=__f2format_version__, choices=PARSO_VERSION,
                                help='convert against Python version (default is %r)' % __f2format_version__)
 
     parser.add_argument('file', nargs='*', metavar='SOURCE', default=__cwd__,

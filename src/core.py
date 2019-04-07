@@ -3,7 +3,7 @@
 ###############################################################################
 import os   # noqa
 import sys  # noqa
-sys.path.insert(0, os.path.dirname(__file__))  # noqa
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'lib'))  # noqa
 ###############################################################################
 
 import collections.abc
@@ -18,7 +18,14 @@ import parso
 sys.path.pop(0)
 ###############################################################################
 
-__all__ = ['f2format', 'convert']
+__all__ = ['f2format', 'convert', 'ConvertError']
+
+# macros
+PARSO_VERSION = ('3.6', '3.7', '3.8')
+LOCALE_ENCODING = locale.getpreferredencoding()
+
+class ConvertError(SyntaxError):
+    pass
 
 
 class strarray(collections.abc.ByteString):
@@ -58,8 +65,13 @@ def convert(string, lineno):
 
     """
     def parse(string):
-        return parso.parse(string, error_recovery=False,
-                           version=os.getenv('F2FORMAT_VERSION', '%s.%s' % sys.version_info[:2]))
+        try:
+            return parso.parse(string, error_recovery=False,
+                               version=os.getenv('F2FORMAT_VERSION', PARSO_VERSION[-1]))
+        except parso.ParserSyntaxError as error:
+            message = '%s: <%s: %r> from %r' % (error.message, err.error_leaf.token_type,
+                                                 err.error_leaf.value, string)
+            raise ConvertError(message)
 
     source = strarray(string)       # strarray source (mutable)
     f_string = [list()]             # [[token, ...], [...], ...] -> concatenable strings

@@ -18,10 +18,9 @@ message  ?= ""
 
 clean: clean-pyc clean-misc clean-pypi
 docker: setup-version docker-build
-release: release-master release-devel
 pipenv: update-pipenv
 pypi: dist-pypi dist-upload
-setup: setup-version setup-formula
+setup: setup-version setup-stdlib setup-manpages
 
 # setup pipenv
 setup-pipenv: clean-pipenv
@@ -37,8 +36,14 @@ setup-formula: pipenv
 
 # update Python stdlib files
 setup-stdlib:
-	rm -f src/token.py src/tokenize.py
-	cp -f $(token) $(tokenize) src/
+	rm -f src/lib/token.py src/lib/tokenize.py
+	mkdir -p src/lib
+	cp -f $(token) $(tokenize) src/lib/
+
+# update manpages
+setup-manpages:
+	rm -f man/f2format.1
+	pipenv run rst2man.py docs/f2format.rst > man/f2format.1
 
 # remove *.pyc
 clean-pyc:
@@ -149,8 +154,8 @@ git-aftermath:
 	git commit -a -S -m "Regular update after distribution"
 	git push
 
-# file new release on master
-release-master:
+# file new release
+release:
 	go run github.com/aktau/github-release release \
 		--user JarryShaw \
 		--repo f2format \
@@ -158,24 +163,11 @@ release-master:
 		--name "f2format v$(version)" \
 		--description "$(message)"
 
-# file new release on devel
-release-devel:
-	go run github.com/aktau/github-release release \
-		--user JarryShaw \
-		--repo f2format \
-		--tag "v$(version).devel" \
-		--name "f2format v$(version).devel" \
-		--description "$(message)" \
-		--target "devel" \
-		--pre-release
-
 # run distribution process
 dist:
-	$(MAKE) message=$(message) \
-		setup-version setup-stdlib \
-		clean pypi git-tag git-upload \
-		release setup-formula
-	$(MAKE) message=$(message) DIR=Tap \
+	$(MAKE) message="$(message)" \
+		setup clean pypi git-tag \
+		git-upload release setup-formula
+	$(MAKE) message="f2format: $(version)" DIR=Tap \
 		git-upload
-	$(MAKE) message=$(message) \
-		update-maintainer git-aftermath
+	$(MAKE) update-maintainer git-aftermath

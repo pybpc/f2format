@@ -5,7 +5,6 @@ import os
 import re
 import subprocess
 
-import bs4
 import requests
 
 with open('./f2format/__main__.py', 'r') as file:
@@ -17,18 +16,8 @@ with open('./f2format/__main__.py', 'r') as file:
         break
 # print(VERSION)
 
-url = f'https://pypi.org/project/f2format/{VERSION}/#files'
-page = requests.get(url)
-soup = bs4.BeautifulSoup(page.text, 'html5lib')
-table = soup.find_all('table', class_='table--downloads')[0]
-
-for line in filter(lambda item: isinstance(item, bs4.element.Tag), table.tbody):
-    item = line.find_all('td')[0]
-    link = item.a.get('href') or ''
-    if link.endswith('.tar.gz'):
-        F2FORMAT_URL = link
-        F2FORMAT_SHA = hashlib.sha256(requests.get(F2FORMAT_URL).content).hexdigest()
-        break
+F2FORMAT_URL = f'https://github.com/JarryShaw/f2format/archive/v{VERSION}.tar.gz'
+F2FORMAT_SHA = hashlib.sha256(requests.get(F2FORMAT_URL).content).hexdigest()
 # print(F2FORMAT_URL)
 # print(F2FORMAT_SHA)
 
@@ -66,6 +55,9 @@ class F2format < Formula
       end
     end
     venv.pip_install_and_link buildpath
+
+    man1.install man/f2format.1
+    bash_completion.install comp/f2format.bash-completion
   end
 
   test do

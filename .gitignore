@@ -56,7 +56,7 @@ dist/
 downloads/
 eggs/
 .eggs/
-#lib/
+lib/
 lib64/
 parts/
 sdist/
@@ -168,3 +168,5 @@ pip-selfcheck.json
 
 
 # End of https://www.gitignore.io/api/python,macos
+
+!lib

@@ -64,8 +64,7 @@ usage: f2format [options] <python source files and folders...>
 Convert f-string to str.format for Python 3 compatibility.
 
 positional arguments:
-  SOURCE                python source files and folders to be converted
-                        (default is '${CWD}')
+  SOURCE                python source files and folders to be converted (${CWD})
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -76,13 +75,15 @@ archive options:
 
   -n, --no-archive      do not archive original files
   -p PATH, --archive-path PATH
-                        path to archive original files (default is '${CWD}/archive')
+                        path to archive original files (${CWD}/archive)
 
 convert options:
   compatibility configuration for none-unicode files
 
   -c CODING, --encoding CODING
-                        encoding to open source files (default is '${ENCODING}')
+                        encoding to open source files (${LOCALE_ENCODING})
+  -v VERSION, --python VERSION
+                        convert against Python version (${LATEST_VERSION})
 ```
 
 &emsp; `f2format` will read then convert all *f-string* literals in every Python file under this
@@ -120,6 +121,13 @@ demo script, which may help integrate `f2format` in your development and distrib
 - distribute to [PyPI](https://pypi.org) and [TestPyPI](https://test.pypi.org) using `twine`
 - upload to release branch on GitHub
 - upload original files to GitHub
+
+### Environments
+
+`f2format` currently supports two environment arguments:
+
+- `F2FORMAT_VERSION` -- convert against Python version (same as `--python` option in CLI)
+- `F2FORMAT_ENCODING` -- encoding to open source files (same as `--encoding` option in CLI)
 
 ### APIs
 

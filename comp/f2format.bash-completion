@@ -1,0 +1,78 @@
+#!/usr/bin/env bash
+
+# Indicates there are no completions
+__f2format_comp_null() {
+  COMPREPLY=""
+}
+
+__f2format_comp_words_include() {
+  local i=1
+  while [[ "$i" -lt "$COMP_CWORD" ]]
+  do
+    if [[ "${COMP_WORDS[i]}" = "$1" ]]
+    then
+      return
+    fi
+    (( i++ ))
+  done
+  return 1
+}
+
+__f2format_comp() {
+  # break $1 on space, tab, and newline characters,
+  # and turn it into a newline separated list of words
+  local list s sep=$'\n' IFS=$' \t\n'
+  local cur="${COMP_WORDS[COMP_CWORD]}"
+
+  for s in $1
+  do
+    __f2format_comp_words_include "$s" && continue
+    list="$list$s$sep"
+  done
+
+  IFS="$sep"
+  COMPREPLY=($(compgen -W "$list" -- "$cur"))
+}
+
+###########################################################
+# Bash Completion for `f2format`
+###########################################################
+
+_f2format() {
+  local cur prev opts cmds
+  cur="${COMP_WORDS[COMP_CWORD]}"
+  prev="${COMP_WORDS[COMP_CWORD-1]}"
+  opts="--help --version --no-archive"
+  cmds="--archive-path --encoding --python"
+
+  if [[ ${prev} =~ "--help|--version|--no-archive" ]]
+  then
+    __f2format_comp_null
+    return
+  elif [[ ${prev} =~ "--archive-path|--encoding" ]]
+  then
+    __f2format_comp_null
+    return
+  elif [[ ${prev} =~ "--python" ]]
+  then
+    __f2format_comp "3.6 3.7 3.8"
+    return
+  fi
+
+  if [[ ${cur} =~ -* ]]
+  then
+    __f2format_comp "${opts} ${cmds}"
+    return
+  elif [[ ${cur} == * ]]
+  then
+    __f2format_comp "$(ls *.py *.pyw 2>/dev/null | xargs)"
+    return
+  fi
+}
+
+# keep around for compatibility
+_f2format_to_completion() {
+  _f2format
+}
+
+complete -o bashdefault -o default -F _f2format             f2format

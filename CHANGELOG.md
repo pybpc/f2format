@@ -1,5 +1,17 @@
 # Change Log
 
+## [Unreleased](https://github.com/JarryShaw/f2format/tree/HEAD)
+
+[Full Changelog](https://github.com/JarryShaw/f2format/compare/v0.5.0...HEAD)
+
+**Closed issues:**
+
+- "SyntaxError: invalid syntax" error on a line with a ternary conditional operator [\#2](https://github.com/JarryShaw/f2format/issues/2)
+- AttributeError: 'FormattedValue' object has no attribute 's' [\#1](https://github.com/JarryShaw/f2format/issues/1)
+
+## [v0.5.0](https://github.com/JarryShaw/f2format/tree/v0.5.0) (2019-04-06)
+[Full Changelog](https://github.com/JarryShaw/f2format/compare/v0.4.3...v0.5.0)
+
 ## [v0.4.3](https://github.com/JarryShaw/f2format/tree/v0.4.3) (2019-01-23)
 [Full Changelog](https://github.com/JarryShaw/f2format/compare/v0.4.2...v0.4.3)
 

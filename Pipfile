@@ -5,7 +5,8 @@ name = "pypi"
 
 [packages]
 "pathlib2" = ">=2.3.2"
-parso = ">=0.4.0"
+parso = "~=0.4.0"
+tbtrim = ">=0.2.1"
 
 [dev-packages]
 f2format = {editable = true,path = "."}
@@ -14,8 +15,7 @@ isort = {extras = ["pipfile", "requirements"],version = "*"}
 ipython = "*"
 homebrew-pypi-poet = "*"
 requests = "*"
-"bs4" = "*"
-"html5lib" = "*"
+docutils = "*"
 
 [requires]
 python_version = "3.7"
