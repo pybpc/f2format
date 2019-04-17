@@ -36,8 +36,9 @@ setup-formula: pipenv
 
 # update Python stdlib files
 setup-stdlib:
-	rm -f src/token.py src/tokenize.py
-	cp -f $(token) $(tokenize) src
+	rm -f src/lib/token.py src/lib/tokenize.py
+	mkdir -p src/lib
+	cp -f $(token) $(tokenize) src/lib
 
 # update manpages
 setup-manpages:

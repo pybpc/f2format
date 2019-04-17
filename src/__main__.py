@@ -25,7 +25,7 @@ finally:    # alias and aftermath
     del multiprocessing
 
 # version string
-__version__ = '0.5.3'
+__version__ = '0.5.4'
 
 # macros
 __cwd__ = os.getcwd()

@@ -12,6 +12,7 @@ f2format = {editable = true,path = "."}
 ipython = "*"
 homebrew-pypi-poet = "*"
 requests = "*"
+autopep8 = "*"
 
 [requires]
 python_version = "3.7"

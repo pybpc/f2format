@@ -1,9 +1,13 @@
 # -*- coding: utf-8 -*-
 
 ###############################################################################
-import os   # noqa
+# modify sys.path
+import os  # noqa
 import sys  # noqa
-sys.path.insert(0, os.path.dirname(__file__))  # noqa
+
+sys.modules.pop('token', None)  # noqa
+sys.modules.pop('tokenize', None)  # noqa
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'lib'))  # noqa
 ###############################################################################
 
 import collections.abc
@@ -15,7 +19,11 @@ import tokenize
 import parso
 
 ###############################################################################
+# reset sys.path
 sys.path.pop(0)
+
+sys.modules.pop('tokenize', None)
+sys.modules.pop('token', None)
 del sys
 ###############################################################################
 
