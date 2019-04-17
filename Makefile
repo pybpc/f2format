@@ -36,9 +36,8 @@ setup-formula: pipenv
 
 # update Python stdlib files
 setup-stdlib:
-	rm -f src/lib/token.py src/lib/tokenize.py
-	mkdir -p src/lib
-	cp -f $(token) $(tokenize) src/lib/
+	rm -f src/token.py src/tokenize.py
+	cp -f $(token) $(tokenize) src
 
 # update manpages
 setup-manpages:
@@ -97,7 +96,14 @@ docker-build: docker-prep
 	docker build --tag f2format:$(version) --tag f2format:latest release
 
 # make PyPI distribution
-dist-pypi: clean-pypi dist-macos dist-linux
+#dist-pypi: clean-pypi dist-macos dist-linux
+dist-pypi: clean-pypi dist-pypi-setup
+
+.ONESHELL:
+dist-pypi-setup:
+	set -ex
+	cd $(DIR)
+	python3 setup.py sdist bdist_wheel
 
 .ONESHELL:
 dist-macos:
@@ -113,8 +119,7 @@ dist-macos:
 dist-linux:
 	set -ex
 	cd $(DIR)/docker
-	sed "s/LABEL version.*/LABEL version $(shell date +%Y.%m.%d)/" Dockerfile > Dockerfile.tmp
-	mv Dockerfile.tmp Dockerfile
+	sed -i "s/LABEL version.*/LABEL version $(shell date +%Y.%m.%d)/" Dockerfile
 	docker-compose up --build
 
 # upload PyPI distribution
@@ -166,7 +171,7 @@ release:
 # run distribution process
 dist:
 	$(MAKE) message="$(message)" \
-		setup clean pypi git-tag \
+		setup clean pypi \
 		git-upload release setup-formula
 	$(MAKE) message="f2format: $(version)" DIR=Tap \
 		git-upload

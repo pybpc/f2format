@@ -3,7 +3,7 @@
 ###############################################################################
 import os   # noqa
 import sys  # noqa
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'lib'))  # noqa
+sys.path.insert(0, os.path.dirname(__file__))  # noqa
 ###############################################################################
 
 import collections.abc
@@ -16,6 +16,7 @@ import parso
 
 ###############################################################################
 sys.path.pop(0)
+del sys
 ###############################################################################
 
 __all__ = ['f2format', 'convert', 'ConvertError']
@@ -197,7 +198,7 @@ def f2format(filename):
     print('Now converting %r...' % filename)
 
     # fetch encoding
-    encoding = os.getenv('F2FORMAT_ENCODING', locale.getpreferredencoding())
+    encoding = os.getenv('F2FORMAT_ENCODING', LOCALE_ENCODING)
 
     lineno = dict()     # line number -> file offset
     content = list()    # file content

@@ -1,7 +1,7 @@
 # basic info
 FROM library/ubuntu
-LABEL version 0.5.2
-LABEL description "Ubuntu Environment"
+LABEL version 0.5.3
+LABEL description "Ubuntu Environment for F2FORMAT"
 
 # prepare environment
 ENV LANG "C.UTF-8"
@@ -10,13 +10,16 @@ ENV PYTHONIOENCODING "UTF-8"
 
 # install packages
 RUN apt-get update \
- && apt-get install --yes python3 python3-distutils \
+ && apt-get install --yes --no-install-recommends \
+        python3 \
+        python3-distutils \
  && rm -rf /var/lib/apt/lists/*
 
 # copy source
-COPY . /f2format
-RUN cd /f2format \
- && python3 /f2format/setup.py install
+COPY . /tmp/f2format
+RUN cd /tmp/f2format \
+ && python3 /f2format/setup.py install \
+ && rm -rf /tmp/f2fomat
 
 # cleanup
 RUN apt-get remove python3-distutils --yes \

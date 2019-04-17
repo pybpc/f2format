@@ -13,7 +13,7 @@ with open('./README.md', encoding='utf-8') as file:
     long_desc = file.read()
 
 # version string
-__version__ = '0.5.2'
+__version__ = '0.5.3'
 
 # set-up script for pip distribution
 setup(
@@ -34,9 +34,6 @@ setup(
         'parso~=0.4.0',     # universal AST support
         'tbtrim>=0.2.1',    # traceback trim support
     ],
-    extras_require={
-        ':python_version < "3.5"': ['pathlib2>=2.3.2'],
-    },
     py_modules=['f2format'],
     packages=['f2format'],
     entry_points={

@@ -24,14 +24,8 @@ finally:    # alias and aftermath
     mp = multiprocessing
     del multiprocessing
 
-# backport compatibility
-if sys.version_info[:2] < (3, 5):
-    import pathlib2 as pathlib
-else:
-    import pathlib
-
 # version string
-__version__ = '0.5.2'
+__version__ = '0.5.3'
 
 # macros
 __cwd__ = os.getcwd()
@@ -61,7 +55,7 @@ def get_parser():
                                default=__f2format_version__, choices=PARSO_VERSION,
                                help='convert against Python version (%s)' % __f2format_version__)
 
-    parser.add_argument('file', nargs='*', metavar='SOURCE', default=__cwd__,
+    parser.add_argument('file', nargs='+', metavar='SOURCE', default=__cwd__,
                         help='python source files and folders to be converted (%s)' % __cwd__)
 
     return parser
@@ -99,7 +93,7 @@ def main():
 
     # make archive directory
     if archive:
-        pathlib.Path(ARCHIVE).mkdir(parents=True, exist_ok=True)
+        os.makedirs(ARCHIVE, exist_ok=True)
 
     # fetch file list
     filelist = list()
@@ -107,7 +101,7 @@ def main():
         if os.path.isfile(path):
             if archive:
                 dest = rename(path)
-                pathlib.Path(dest).parent.mkdir(parents=True, exist_ok=True)
+                os.makedirs(os.path.dirname(dest), exist_ok=True)
                 shutil.copy(path, dest)
             filelist.append(path)
         if os.path.isdir(path):
@@ -117,14 +111,14 @@ def main():
 
     # check if file is Python source code
     def ispy(file): return (os.path.isfile(file) and (os.path.splitext(file)[1] in ('.py', '.pyw')))
-    filelist = set(filter(ispy, filelist))
+    filelist = sorted(filter(ispy, filelist))
 
     # if no file supplied
     if len(filelist) == 0:
         parser.error('argument PATH: no valid source file found')
 
     # process files
-    if mp is None:
+    if mp is None  or CPU_CNT <= 1:
         [f2format(filename) for filename in filelist]
     else:
         mp.Pool(processes=CPU_CNT).map(f2format, filelist)
