@@ -8,6 +8,8 @@ from f2format.core import *
 
 __all__ = ['f2format', 'convert', 'ConvertError']
 
+ROOT = os.path.dirname(os.path.realpath(__file__))
+
 
 def predicate(filename):
     if os.path.basename(filename) == 'f2format':

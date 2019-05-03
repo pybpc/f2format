@@ -13,7 +13,7 @@ with open('./README.md', encoding='utf-8') as file:
     long_desc = file.read()
 
 # version string
-__version__ = '0.5.4'
+__version__ = '0.5.5'
 
 # set-up script for pip distribution
 setup(

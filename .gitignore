@@ -2,7 +2,6 @@
 Tap
 *~orig*
 test/*.pyw
-archive/
 release/
 Pipfile.lock
 

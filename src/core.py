@@ -62,7 +62,7 @@ class strarray(collections.abc.ByteString):
         # print('setitem:', key, value, '###', repr(self)) ###
 
 
-def convert(string, lineno):
+def convert(string, lineno=None):
     """The main conversion process.
 
     Args:
@@ -73,14 +73,19 @@ def convert(string, lineno):
      - str -- converted string
 
     """
-    def parse(string):
+    if lineno is None:
+        lineno = {1: 0}
+        for lnum, line in enumerate(string.splitlines(True), start=1):
+            lineno[lnum+1] = lineno[lnum] + len(line)
+
+    def parse(string, error_recovery=False):
         try:
-            return parso.parse(string, error_recovery=False,
+            return parso.parse(string, error_recovery=error_recovery,
                                version=os.getenv('F2FORMAT_VERSION', PARSO_VERSION[-1]))
         except parso.ParserSyntaxError as error:
-            message = '%s: <%s: %r> from %r' % (error.message, err.error_leaf.token_type,
-                                                 err.error_leaf.value, string)
-            raise ConvertError(message)
+            message = '%s: <%s: %r> from %r' % (error.message, error.error_leaf.token_type,
+                                                error.error_leaf.value, string)
+            raise ConvertError(message).with_traceback(error.__traceback__)
 
     source = strarray(string)       # strarray source (mutable)
     f_string = [list()]             # [[token, ...], [...], ...] -> concatenable strings
@@ -116,6 +121,9 @@ def convert(string, lineno):
         entryl = list()
         for token in tokens:            # for each token in concatenation
             token_string = token.string
+            token_lineno = {1: 0}
+            for lnum, line in enumerate(token_string.splitlines(True), start=1):
+                token_lineno[lnum+1] = token_lineno[lnum] + len(line)
 
             module = parse(token_string)            # parse AST, get parso.python.tree.Module, _.children -> list
                                                     # _[0] -> parso.python.tree.PythonNode
@@ -132,9 +140,12 @@ def convert(string, lineno):
                                                                                 # _[0] -> parso.python.tree.Operator, '{' # noqa
                                                                                 # _[1] -> %undetermined%, expression literal (f_expression) # noqa
                                                                                 # _[2] -> %optional%, parso.python.tree.PythonNode, format specification (format_spec) # noqa
-                                                                                # -[3] -> parso.python.tree.Operator, '}' # noqa
-                        start_expr = obj_children[1].start_pos[1]
-                        end_expr = obj_children[1].end_pos[1]
+                                                                                # _[3] -> parso.python.tree.Operator, '}' # noqa
+                        start_expr_pos = obj_children[1].start_pos              # _[1].start_pos -> tuple, (line, offset) # noqa
+                        end_expr_pos = obj_children[1].end_pos                  # _[1].end_pos -> tuple, (line, offset) # noqa
+
+                        start_expr = token_lineno[start_expr_pos[0]] + start_expr_pos[1]
+                        end_expr = token_lineno[end_expr_pos[0]] + end_expr_pos[1]
                         tmpent.append(slice(start_expr, end_expr))              # entry of expression literal (f_expression)
 
                         if obj_children[2].type == 'fstring_format_spec':
@@ -144,9 +155,12 @@ def convert(string, lineno):
                                                                                                 # _[0] -> parso.python.tree.Operator, '{' # noqa
                                                                                                 # _[1] -> %undetermined%, expression literal (f_expression) # noqa
                                                                                                 # _[2] -> parso.python.tree.Operator, '}' # noqa
-                                    start = node_chld[1].start_pos[1]
-                                    end = node_chld[1].end_pos[1]
-                                    tmpent.append(slice(start, end))
+                                    start_spec_pos = node_chld[1].start_pos                     # _[1].start_pos -> tuple, (line, offset) # noqa
+                                    end_spec_pos = node_chld[1].end_pos                         # _[1].end_pos -> tuple, (line, offset) # noqa
+
+                                    start_spec = token_lineno[start_spec_pos[0]] + start_spec_pos[1]
+                                    end_spec = token_lineno[end_spec_pos[0]] + end_spec_pos[1]
+                                    tmpent.append(slice(start_spec, end_spec))                  # entry of format specification (format_spec) # noqa
                     # print('length:', length, '###', token_string[:length], '###', token_string[length:]) ###
             entryl.append((token, tmpent))          # each token with a concatenation entry list
 
@@ -159,7 +173,7 @@ def convert(string, lineno):
             # print(token.string, entries) ###
             for entry in entries:       # walk entries
                 temp_expr = token.string[entry]                                 # original expression
-                val = parse(temp_expr).children[0]                              # parse AST
+                val = parse(temp_expr, error_recovery=True).children[0]         # parse AST
                 if val.type == 'testlist_star_expr' and \
                         re.fullmatch(r'\(.*\)', temp_expr, re.DOTALL) is None:  # if expression is implicit tuple
                     real_expr = '(%s)' % temp_expr                              # add parentheses
@@ -208,10 +222,9 @@ def f2format(filename):
     # fetch encoding
     encoding = os.getenv('F2FORMAT_ENCODING', LOCALE_ENCODING)
 
-    lineno = dict()     # line number -> file offset
+    lineno = {1: 0}     # line number -> file offset
     content = list()    # file content
     with open(filename, 'r', encoding=encoding) as file:
-        lineno[1] = 0
         for lnum, line in enumerate(file, start=1):
             content.append(line)
             lineno[lnum+1] = lineno[lnum] + len(line)

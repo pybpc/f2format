@@ -21,7 +21,7 @@ def ispy(file):
 
 
 FLAG = True
-for file in filter(ispy, os.listdir('.')):
+for file in sorted(filter(ispy, os.listdir('.'))):
     if file == os.path.split(__file__)[1]:
         continue
     subprocess.run([sys.executable, '-m', 'f2format', file])

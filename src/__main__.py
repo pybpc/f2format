@@ -25,7 +25,7 @@ finally:    # alias and aftermath
     del multiprocessing
 
 # version string
-__version__ = '0.5.4'
+__version__ = '0.5.5'
 
 # macros
 __cwd__ = os.getcwd()
@@ -118,7 +118,7 @@ def main():
         parser.error('argument PATH: no valid source file found')
 
     # process files
-    if mp is None  or CPU_CNT <= 1:
+    if mp is None or CPU_CNT <= 1:
         [f2format(filename) for filename in filelist]
     else:
         mp.Pool(processes=CPU_CNT).map(f2format, filelist)
