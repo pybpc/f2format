@@ -6,6 +6,7 @@ name = "pypi"
 [packages]
 parso = "~=0.4.0"
 tbtrim = ">=0.2.1"
+pyinstaller = "*"
 
 [dev-packages]
 f2format = {editable = true,path = "."}

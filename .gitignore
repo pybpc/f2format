@@ -1,7 +1,4 @@
 
-# submodules
-vendor/*
-
 Tap
 *~orig*
 test/*.pyw
