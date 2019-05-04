@@ -6,8 +6,8 @@ f2format
 back-port compiler for Python 3.6 f-string literals
 ---------------------------------------------------
 
-:Version: v0.5.5
-:Date: May 03, 2019
+:Version: v0.6.0
+:Date: May 05, 2019
 :Manual section: 1
 :Author:
     Jarry Shaw, a newbie programmer, is the author, owner and maintainer
@@ -50,6 +50,7 @@ optional arguments
 
 -h, --help            show this help message and exit
 -V, --version         show program's version number and exit
+-q, --quiet           run in quiet mode
 
 archive options
 ---------------
@@ -79,3 +80,4 @@ ENVIRONMENT
 
 :F2FORMAT_ENCODING:   encoding to open source files
 :F2FORMAT_VERSION:    convert against Python version
+:F2FORMAT_QUIET:      run in quiet mode

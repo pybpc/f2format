@@ -33,6 +33,13 @@ __all__ = ['f2format', 'convert', 'ConvertError']
 PARSO_VERSION = ('3.6', '3.7', '3.8')
 LOCALE_ENCODING = locale.getpreferredencoding()
 
+# from configparser
+BOOLEAN_STATES = {'1': True, '0': False,
+                  'yes': True, 'no': False,
+                  'true': True, 'false': False,
+                  'on': True, 'off': False}
+
+
 class ConvertError(SyntaxError):
     pass
 
@@ -187,7 +194,10 @@ def convert(string, lineno=None):
 
         # convert end of f-string to str.format literal
         end = lineno[tokens[-1].end[0]] + tokens[-1].end[1]
-        source[end:end+1] = '.format(%s)%s' % (', '.join(expr), source[end])
+        if len(source) == end:
+            source[end:end+1] = '.format(%s)' % (', '.join(expr))
+        else:
+            source[end:end+1] = '.format(%s)%s' % (', '.join(expr), source[end])
 
         # for each token, convert expression literals and brace '{}' escape sequences
         for token, entries in reversed(entryl):     # using reversed to keep offset in leading context
@@ -198,13 +208,13 @@ def convert(string, lineno=None):
                     start = token_start + entry.start
                     end = token_start + entry.stop
                     source[start:end] = ''
-            else:           # for escape sequences, double braces
-                source[token_start:token_end] = re.sub(r'([{}])', r'\1\1', source[token_start:token_end])
 
             # strip leading f-string literals ('[fF]')
             string = source[token_start:token_start+3]
             if re.match(r'^(rf|fr|f)', string, re.IGNORECASE) is not None:
                 source[token_start:token_start+3] = re.sub(r'[fF]', r'', string, count=1)
+            else:           # for braces ('{}') in normal strings, double to escape
+                source[token_start:token_end] = re.sub(r'([{}])', r'\1\1', source[token_start:token_end])
 
     # return modified context
     return str(source)
@@ -217,7 +227,8 @@ def f2format(filename):
      - filename -- str, file to be converted
 
     """
-    print('Now converting %r...' % filename)
+    if not BOOLEAN_STATES.get(os.getenv('F2FORMAT_QUIET', '0').casefold(), False):
+        print('Now converting %r...' % filename)
 
     # fetch encoding
     encoding = os.getenv('F2FORMAT_ENCODING', LOCALE_ENCODING)

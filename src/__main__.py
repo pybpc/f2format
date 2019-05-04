@@ -25,7 +25,7 @@ finally:    # alias and aftermath
     del multiprocessing
 
 # version string
-__version__ = '0.5.5'
+__version__ = '0.6.0'
 
 # macros
 __cwd__ = os.getcwd()
@@ -39,6 +39,8 @@ def get_parser():
                                      usage='f2format [options] <python source files and folders...>',
                                      description='Convert f-string to str.format for Python 3 compatibility.')
     parser.add_argument('-V', '--version', action='version', version=__version__)
+    parser.add_argument('-q', '--quiet', action='store_true',
+                        help='run in quiet mode')
 
     archive_group = parser.add_argument_group(title='archive options',
                                               description="duplicate original files in case there's any issue")
@@ -61,16 +63,18 @@ def get_parser():
     return parser
 
 
-def main():
+def main(argv=None):
     """Entry point for f2format."""
     parser = get_parser()
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
 
     # set up variables
     ARCHIVE = args.archive_path
     archive = (not args.no_archive)
     os.environ['F2FORMAT_VERSION'] = args.python
     os.environ['F2FORMAT_ENCODING'] = args.encoding
+    if os.getenv('F2FORMAT_QUIET') is None:
+        os.environ['F2FORMAT_QUIET'] = '1' if args.quiet else '0'
 
     def find(root):
         """Recursively find all files under root."""
@@ -97,7 +101,7 @@ def main():
 
     # fetch file list
     filelist = list()
-    for path in sys.argv[1:]:
+    for path in args.file:
         if os.path.isfile(path):
             if archive:
                 dest = rename(path)

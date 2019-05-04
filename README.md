@@ -69,6 +69,7 @@ positional arguments:
 optional arguments:
   -h, --help            show this help message and exit
   -V, --version         show program's version number and exit
+  -q, --quiet           run in quiet mode
 
 archive options:
   duplicate original files in case there's any issue
@@ -124,8 +125,9 @@ demo script, which may help integrate `f2format` in your development and distrib
 
 ### Environments
 
-`f2format` currently supports two environment arguments:
+`f2format` currently supports three environment arguments:
 
+- `F2FORMAT_QUIET` -- run in quiet mode (same as `--quiet` option in CLI)
 - `F2FORMAT_VERSION` -- convert against Python version (same as `--python` option in CLI)
 - `F2FORMAT_ENCODING` -- encoding to open source files (same as `--encoding` option in CLI)
 

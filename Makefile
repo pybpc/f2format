@@ -1,4 +1,4 @@
-.PHONY: clean docker release pipenv pypi setup dist
+.PHONY: clean docker release pipenv pypi setup dist test
 
 export PIPENV_VENV_IN_PROJECT=1
 
@@ -21,6 +21,13 @@ docker: setup-version docker-build
 pipenv: update-pipenv
 pypi: dist-pypi dist-upload
 setup: setup-version setup-stdlib setup-manpages
+test: test-unitest test-interactive
+
+test-unitest:
+	pipenv run python test.py
+
+test-interactive:
+	pipenv run python test/test_driver.py
 
 # setup pipenv
 setup-pipenv: clean-pipenv
@@ -170,7 +177,7 @@ release:
 		--description "$(message)"
 
 # run distribution process
-dist:
+dist: test
 	$(MAKE) message="$(message)" \
 		setup clean pypi \
 		git-upload release setup-formula

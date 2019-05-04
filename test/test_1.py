@@ -1,5 +1,6 @@
 v1 = 123
 v2 = 'looooo'
+v3 = 10
 
 s1 = (f'vv:\377vv{v1}ww!{{}}ww{v2!r}\\xxx\x03{v2+"!"!s}{v2+"""}"""!a}{{llooo}}{{{v2+":":>10}\''
       r'''yaaa\n'aa'''
@@ -15,3 +16,9 @@ print(s3)
 
 s4 = f'{v2}'
 print(s4)
+
+s5 = f'''multiline
+\
+fstring - {v1} -> {v2:>{v3}}
+'''
+print(s5)
