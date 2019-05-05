@@ -21,7 +21,7 @@ provides an intelligent, yet imperfect, solution of a **backport compiler** by c
 *f-string*s to `str.format` literals, which guarantees you to always write *f-string* in Python
 3.6 flavour then compile for compatibility later.
 
-&emsp; `f2format` is inspired and assisted by my mate [@gousaiyang](https://github.com/gousaiyang).
+&emsp; `f2format` is inspired and assisted by my pal [@gousaiyang](https://github.com/gousaiyang).
 It functions by tokenising and parsing Python code into multiple abstract syntax trees (AST),
 through which it shall synthesise and extract expressions from *f-string* literals, and then
 reassemble the original string using `str.format` method. Besides

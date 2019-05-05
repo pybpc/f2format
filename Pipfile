@@ -15,6 +15,7 @@ homebrew-pypi-poet = "*"
 requests = "*"
 autopep8 = "*"
 coverage = "*"
+codecov = "*"
 
 [requires]
 python_version = "3.7"
