@@ -11,14 +11,14 @@ from f2format.core import LOCALE_ENCODING, PARSO_VERSION, f2format
 # multiprocessing may not be supported
 try:        # try first
     import multiprocessing
-except ImportError:
+except ImportError:  # pragma: no cover
     multiprocessing = None
 else:       # CPU number if multiprocessing supported
-    if os.name == 'posix' and 'SC_NPROCESSORS_CONF' in os.sysconf_names:
+    if os.name == 'posix' and 'SC_NPROCESSORS_CONF' in os.sysconf_names:  # pragma: no cover
         CPU_CNT = os.sysconf('SC_NPROCESSORS_CONF')
-    elif 'sched_getaffinity' in os.__all__:
+    elif 'sched_getaffinity' in os.__all__:  # pragma: no cover
         CPU_CNT = len(os.sched_getaffinity(0))  # pylint: disable=E1101
-    else:
+    else:  # pragma: no cover
         CPU_CNT = os.cpu_count() or 1
 finally:    # alias and aftermath
     mp = multiprocessing
@@ -76,7 +76,7 @@ def main(argv=None):
     if os.getenv('F2FORMAT_QUIET') is None:
         os.environ['F2FORMAT_QUIET'] = '1' if args.quiet else '0'
 
-    def find(root):
+    def find(root):  # pragma: no cover
         """Recursively find all files under root."""
         flst = list()
         temp = os.listdir(root)
@@ -123,7 +123,7 @@ def main(argv=None):
 
     # process files
     if mp is None or CPU_CNT <= 1:
-        [f2format(filename) for filename in filelist]
+        [f2format(filename) for filename in filelist]  # pragma: no cover
     else:
         mp.Pool(processes=CPU_CNT).map(f2format, filelist)
 

@@ -52,7 +52,7 @@ class strarray(collections.abc.ByteString):
     def __str__(self):
         return ''.join(self.__data__)
 
-    def __repr__(self):
+    def __repr__(self):  # pragma: no cover
         return 'strarray(%s)' % ''.join(self.__data__)
 
     def __getitem__(self, index):
@@ -64,7 +64,7 @@ class strarray(collections.abc.ByteString):
     def __setitem__(self, key, value):
         if isinstance(key, slice):
             self.__data__[key] = [c for c in value]
-        else:
+        else:  # pragma: no cover
             self.__data__[key] = value
         # print('setitem:', key, value, '###', repr(self)) ###
 
@@ -228,7 +228,7 @@ def f2format(filename):
 
     """
     if not BOOLEAN_STATES.get(os.getenv('F2FORMAT_QUIET', '0').casefold(), False):
-        print('Now converting %r...' % filename)
+        print('Now converting %r...' % filename)  # pragma: no cover
 
     # fetch encoding
     encoding = os.getenv('F2FORMAT_ENCODING', LOCALE_ENCODING)

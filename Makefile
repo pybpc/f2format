@@ -1,6 +1,9 @@
 .PHONY: clean docker release pipenv pypi setup dist test
 
-export PIPENV_VENV_IN_PROJECT=1
+include .env
+
+export PIPENV_VENV_IN_PROJECT
+export CODECOV_TOKEN
 
 SHELL := /usr/local/bin/bash
 DIR   ?= .

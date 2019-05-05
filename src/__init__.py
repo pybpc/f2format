@@ -11,7 +11,7 @@ __all__ = ['f2format', 'convert', 'ConvertError']
 ROOT = os.path.dirname(os.path.realpath(__file__))
 
 
-def predicate(filename):
+def predicate(filename):  # pragma: no cover
     if os.path.basename(filename) == 'f2format':
         return True
     return (ROOT in os.path.realpath(filename))

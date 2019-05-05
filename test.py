@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import contextlib
 import glob
 import os
 import pathlib
@@ -49,8 +50,12 @@ class TestF2format(unittest.TestCase):
                 dst_files.append(dst)
 
             # run f2format
-            os.environ['F2FORMAT_QUIET'] = '1'
-            main_func(dst_files)
+            with open(os.devnull, 'w') as devnull:
+                with contextlib.redirect_stderr(devnull):
+                    with self.assertRaises(SystemExit):
+                        main_func(['comp', 'docker', 'docs'])
+                with contextlib.redirect_stdout(devnull):
+                    main_func(dst_files)
 
             for dst in dst_files:
                 src = os.path.join(os.path.dirname(__file__), 'test',
@@ -65,6 +70,8 @@ class TestF2format(unittest.TestCase):
     def test_core_func(self):
         src_files = glob.glob(os.path.join(os.path.dirname(__file__),
                                            'test', 'test_?.py'))
+
+        os.environ['F2FORMAT_QUIET'] = '1'
         with tempfile.TemporaryDirectory() as tempdir:
             for src in src_files:
                 name = os.path.split(src)[1]
@@ -72,12 +79,14 @@ class TestF2format(unittest.TestCase):
                 shutil.copy(src, dst)
 
                 # run f2format
-                os.environ['F2FORMAT_QUIET'] = '1'
                 core_func(dst)
 
                 old = subprocess.run([sys.executable, src], stdout=subprocess.PIPE)
                 new = subprocess.run([sys.executable, dst], stdout=subprocess.PIPE)
                 self.assertEqual(old.stdout.decode(), new.stdout.decode())
+
+        # reset environ
+        del os.environ['F2FORMAT_QUIET']
 
     def test_convert(self):
         # normal convertion
@@ -89,6 +98,9 @@ class TestF2format(unittest.TestCase):
         os.environ['F2FORMAT_VERSION'] = '3.7'
         with self.assertRaises(ConvertError):
             convert("""var = f'foo{{(1+2)*3:>5}bar{"a", "b"!r}boo'""")
+
+        # reset environ
+        del os.environ['F2FORMAT_VERSION']
 
 if __name__ == '__main__':
     unittest.main()

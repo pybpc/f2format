@@ -1,5 +1,14 @@
 # f2format
 
+[![PyPI - Downloads](https://pepy.tech/badge/f2format)](https://pepy.tech/count/f2format)
+[![PyPI - Version](https://img.shields.io/pypi/v/f2format.svg)](https://pypi.org/project/f2format)
+[![PyPI - Format](https://img.shields.io/pypi/format/f2format.svg)](https://pypi.org/project/f2format)
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/f2format.svg)](https://pypi.org/project/f2format)
+[![PyPI - Status](https://img.shields.io/pypi/status/f2format.svg)](https://pypi.org/project/f2format)
+[![Travis CI - Status](https://img.shields.io/travis/jarryshaw/f2format.svg)](https://travis-ci.org/jarryshaw/f2format)
+[![Codecov - Coverage](https://codecov.io/gh/JarryShaw/f2format/branch/master/graph/badge.svg)](https://codecov.io/gh/JarryShaw/f2format)
+![License](https://img.shields.io/github/license/jarryshaw/f2format.svg)
+
  > Write *f-string* in Python 3.6 flavour, and let `f2format` worry about back-port issues :beer:
 
 &emsp; Since [PEP 498](https://www.python.org/dev/peps/pep-0498/), Python introduced

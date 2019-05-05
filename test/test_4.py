@@ -1,9 +1,9 @@
-import getpass
-import time
+today = 'Sun May  5 10:27:07 2019'
+whoami = 'nobody'
 
 text = f'''\
-Today is {time.ctime(1556979914.749266)}
-My name is {getpass.getuser()}
+Today is {today}
+My name is {whoami}
 '''
 
 print(text)

@@ -14,3 +14,7 @@ install:
 # command to run tests
 script:
   - python test.py
+
+# coverage
+after_success:
+  - codecov
