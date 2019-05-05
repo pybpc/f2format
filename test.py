@@ -2,6 +2,7 @@
 
 import glob
 import os
+import pathlib
 import shutil
 import subprocess
 import sys
@@ -51,11 +52,16 @@ class TestF2format(unittest.TestCase):
             os.environ['F2FORMAT_QUIET'] = '1'
             main_func(dst_files)
 
-            for (src, dst) in zip(src_files, dst_files):
-                old = subprocess.run([sys.executable, src], stdout=subprocess.PIPE, encoding='utf-8')
-                new = subprocess.run([sys.executable, dst], stdout=subprocess.PIPE, encoding='utf-8')
-                self.assertEqual(old.stdout, new.stdout)
+            for dst in dst_files:
+                src = os.path.join(os.path.dirname(__file__), 'test',
+                                   '%s.txt' % pathlib.Path(dst).stem)
+                with open(src, 'r') as file:
+                    old = file.read()
+                new = subprocess.run([sys.executable, dst], stdout=subprocess.PIPE)
+                self.assertEqual(old, new.stdout.decode())
 
+    @unittest.skipIf(sys.version_info[:2] < (3, 6),
+                     "not supported in this Python version")
     def test_core_func(self):
         src_files = glob.glob(os.path.join(os.path.dirname(__file__),
                                            'test', 'test_?.py'))
@@ -69,9 +75,9 @@ class TestF2format(unittest.TestCase):
                 os.environ['F2FORMAT_QUIET'] = '1'
                 core_func(dst)
 
-                old = subprocess.run([sys.executable, src], stdout=subprocess.PIPE, encoding='utf-8')
-                new = subprocess.run([sys.executable, dst], stdout=subprocess.PIPE, encoding='utf-8')
-                self.assertEqual(old.stdout, new.stdout)
+                old = subprocess.run([sys.executable, src], stdout=subprocess.PIPE)
+                new = subprocess.run([sys.executable, dst], stdout=subprocess.PIPE)
+                self.assertEqual(old.stdout.decode(), new.stdout.decode())
 
     def test_convert(self):
         # normal convertion

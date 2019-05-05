@@ -1,0 +1,8 @@
+/usr/local/opt/python/bin/python3.7 -c "import re, sys
+for line in sys.stdin:
+    data = line.rstrip().replace('^D', '')
+    temp = re.sub(r'\[[0-9][0-9;]*m', r'', data, flags=re.IGNORECASE)
+    text = temp.replace('Password:', 'Password:\r\n').replace('This is a password.', '********')
+    if text:
+        print(text, end='\r\n')
+"

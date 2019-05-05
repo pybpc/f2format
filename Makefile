@@ -21,9 +21,9 @@ docker: setup-version docker-build
 pipenv: update-pipenv
 pypi: dist-pypi dist-upload
 setup: setup-version setup-stdlib setup-manpages
-test: test-unitest test-interactive
+test: test-unittest test-interactive
 
-test-unitest:
+test-unittest:
 	pipenv run python test.py
 
 test-interactive:

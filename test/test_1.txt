@@ -1,0 +1,7 @@
+vv:ÿvv123ww!{}ww'looooo'\xxxlooooo!'looooo}'{llooo}{   looooo:'yaaa\n'aawawa{nono}wa{{}}wa\xi'''looooowxilooooo!k\kkuuxpadding!
+f'fake{f}string!'
+yet_other_("vv:ÿvv123ww!{}ww'looooo'\\xxx\x03looooo!'looooo}'{llooo}{   looooo:'yaaa\\n'aawawa{nono}wa{{}}wa\\xi'''looooowxilooooo!k\\kkuuxpadding!", 'looooo')_fstring!:
+looooo
+multiline
+fstring - 123 ->     looooo
+

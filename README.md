@@ -169,6 +169,8 @@ even through running with a previous version of Python.
 &emsp; The current test samples are under [`/test`](https://github.com/JarryShaw/f2format/blob/master/test)
 folder. `test_driver.py` is the main entry point for tests.
 
+&emsp; For unittests, see [`test.py`](https://github.com/JarryShaw/f2format/blob/master/test.py).
+
 ## Contribution
 
 &emsp; Contributions are very welcome, especially fixing bugs and providing test cases, which
