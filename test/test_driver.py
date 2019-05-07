@@ -13,7 +13,7 @@ except ImportError:
     sys.exit('Wrong interpreter...')
 
 # change cwd to current directory of this file
-os.chdir(os.path.dirname(__file__))
+os.chdir(os.path.dirname(os.path.realpath(__file__)))
 
 
 def ispy(file):
