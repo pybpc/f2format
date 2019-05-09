@@ -1,2 +1,4 @@
 1. Deal with files with coding cookie.
 2. f-strings with Python 3.8 assignment expressions: https://github.com/python/peps/commit/6a705de78ecbb61ff54ddd4ea798a13b2f4fa378
+3. Python 3.8 add f-string debugging using '=': https://github.com/python/cpython/pull/13123/files
+4. Test reference: https://github.com/python/cpython/blob/master/Lib/test/test_fstring.py
