@@ -29,15 +29,16 @@ del sys
 
 __all__ = ['f2format', 'convert', 'ConvertError']
 
-# macros
-PARSO_VERSION = ('3.6', '3.7', '3.8')
-LOCALE_ENCODING = locale.getpreferredencoding()
-
 # from configparser
 BOOLEAN_STATES = {'1': True, '0': False,
                   'yes': True, 'no': False,
                   'true': True, 'false': False,
                   'on': True, 'off': False}
+
+# macros
+PARSO_VERSION = ('3.6', '3.7', '3.8')
+LOCALE_ENCODING = locale.getpreferredencoding()
+F2FORMAT_QUIET = BOOLEAN_STATES.get(os.getenv('F2FORMAT_QUIET', '0').casefold(), False)
 
 
 class ConvertError(SyntaxError):
@@ -75,6 +76,9 @@ def convert(string, lineno=None):
     Args:
      - string -- str, context to be converted
      - lineno -- dict<int: int>, line number to actual offset mapping
+
+    Envs:
+     - F2FORMAT_VERSION -- encoding to open source files (same as `--encoding` option in CLI)
 
     Returns:
      - str -- converted string
@@ -226,8 +230,13 @@ def f2format(filename):
     Args:
      - filename -- str, file to be converted
 
+    Envs:
+     - F2FORMAT_QUIET -- run in quiet mode (same as `--quiet` option in CLI)
+     - F2FORMAT_VERSION -- encoding to open source files (same as `--encoding` option in CLI)
+     - F2FORMAT_ENCODING -- convert against Python version (same as `--python` option in CLI)
+
     """
-    if not BOOLEAN_STATES.get(os.getenv('F2FORMAT_QUIET', '0').casefold(), False):
+    if not F2FORMAT_QUIET:
         print('Now converting %r...' % filename)  # pragma: no cover
 
     # fetch encoding
