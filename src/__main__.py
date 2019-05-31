@@ -6,7 +6,7 @@ import shutil
 import sys
 import uuid
 
-from f2format.core import LOCALE_ENCODING, PARSO_VERSION, f2format
+from f2format.core import LOCALE_ENCODING, F2FORMAT_VERSION, f2format
 
 # multiprocessing may not be supported
 try:        # try first
@@ -25,12 +25,12 @@ finally:    # alias and aftermath
     del multiprocessing
 
 # version string
-__version__ = '0.6.0'
+__version__ = '0.6.1.dev1'
 
 # macros
 __cwd__ = os.getcwd()
 __archive__ = os.path.join(__cwd__, 'archive')
-__f2format_version__ = os.getenv('F2FORMAT_VERSION', PARSO_VERSION[-1])
+__f2format_version__ = os.getenv('F2FORMAT_VERSION', F2FORMAT_VERSION[-1])
 __f2format_encoding__ = os.getenv('F2FORMAT_ENCODING', LOCALE_ENCODING)
 
 
@@ -54,7 +54,7 @@ def get_parser():
     convert_group.add_argument('-c', '--encoding', action='store', default=__f2format_encoding__, metavar='CODING',
                                help='encoding to open source files (%s)' % __f2format_encoding__)
     convert_group.add_argument('-v', '--python', action='store', metavar='VERSION',
-                               default=__f2format_version__, choices=PARSO_VERSION,
+                               default=__f2format_version__, choices=F2FORMAT_VERSION,
                                help='convert against Python version (%s)' % __f2format_version__)
 
     parser.add_argument('file', nargs='+', metavar='SOURCE', default=__cwd__,

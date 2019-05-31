@@ -25,6 +25,7 @@
         "fstring",
         "getcwd",
         "graminit",
+        "htmlcov",
         "ispy",
         "kwnames",
         "lnum",
@@ -45,6 +46,7 @@
         "tokenisation",
         "tvchld",
         "unindent",
+        "xenial",
         "ziel"
     ],
     "python.pythonPath": ".venv/bin/python",

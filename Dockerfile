@@ -1,6 +1,6 @@
 # basic info
 FROM library/ubuntu
-LABEL version 0.6.0
+LABEL version 0.6.1.dev1
 LABEL description "Ubuntu Environment for F2FORMAT"
 
 # prepare environment
@@ -23,7 +23,7 @@ RUN apt-get update \
 COPY . /tmp/f2format
 RUN cd /tmp/f2format \
  && python3 /f2format/setup.py install \
- && rm -rf /tmp/f2fomat
+ && rm -rf /tmp/f2format
 
 # cleanup
 RUN rm -rf /var/lib/apt/lists/*\
@@ -33,6 +33,9 @@ RUN rm -rf /var/lib/apt/lists/*\
  && apt-get autoremove --yes \
  && apt-get autoclean \
  && apt-get clean
+
+# final setup
+RUN ln -sf /usr/bin/python3.6 /usr/bin/python3
 
 # setup entrypoint
 ENTRYPOINT [ "python3", "-m", "f2format" ]

@@ -11,6 +11,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'lib'))  # noqa
 ###############################################################################
 
 import collections.abc
+import glob
 import io
 import locale
 import re
@@ -24,7 +25,6 @@ sys.path.pop(0)
 
 sys.modules.pop('tokenize', None)
 sys.modules.pop('token', None)
-del sys
 ###############################################################################
 
 __all__ = ['f2format', 'convert', 'ConvertError']
@@ -36,7 +36,12 @@ BOOLEAN_STATES = {'1': True, '0': False,
                   'on': True, 'off': False}
 
 # macros
-PARSO_VERSION = ('3.6', '3.7', '3.8')
+sys_version = '%s.%s' % sys.version_info[:2]
+grammar_regex = re.compile(r"grammar(\d)(\d)\.txt")
+parso_version = filter(lambda version: version >= '3.6',  # when Python starts to have f-string
+                       map(lambda path: '%s.%s' % grammar_regex.match(os.path.split(path)[1]).groups(),
+                           glob.glob(os.path.join(parso.__path__[0], 'python', 'grammar??.txt'))))
+F2FORMAT_VERSION = sorted(filter(lambda version: version <= sys_version, parso_version))
 LOCALE_ENCODING = locale.getpreferredencoding()
 F2FORMAT_QUIET = BOOLEAN_STATES.get(os.getenv('F2FORMAT_QUIET', '0').casefold(), False)
 
@@ -92,11 +97,21 @@ def convert(string, lineno=None):
     def parse(string, error_recovery=False):
         try:
             return parso.parse(string, error_recovery=error_recovery,
-                               version=os.getenv('F2FORMAT_VERSION', PARSO_VERSION[-1]))
+                               version=os.getenv('F2FORMAT_VERSION', F2FORMAT_VERSION[-1]))
         except parso.ParserSyntaxError as error:
             message = '%s: <%s: %r> from %r' % (error.message, error.error_leaf.token_type,
                                                 error.error_leaf.value, string)
             raise ConvertError(message).with_traceback(error.__traceback__)
+
+    def is_tuple(expr):
+        stripped_expr = expr.strip()
+        startswith = stripped_expr.startswith('(')
+        endswith = stripped_expr.endswith(')')
+        if startswith and endswith:  # pragma: no cover
+            return False
+        if not (startswith or endswith):
+            return True
+        raise ConvertError('malformed node or string:: %r' % expr)  # pragma: no cover
 
     source = strarray(string)       # strarray source (mutable)
     f_string = [list()]             # [[token, ...], [...], ...] -> concatenable strings
@@ -146,32 +161,41 @@ def convert(string, lineno=None):
                 # parso.python.tree.PythonNode.children[0] -> parso.python.tree.FStringStart, regex: /^((f|rf|fr)('''|'|"""|"))/
                 # parso.python.tree.PythonNode.children[-1] -> parso.python.tree.FStringEnd, regex: /('''|'|"""|")$/
                 for obj in tmpval.children[1:-1]:               # traverse parso.python.tree.PythonNode.children -> list # noqa
-                    if obj.type == 'fstring_expr':                      # expression part (in braces), parso.python.tree.PythonNode # noqa
-                        obj_children = obj.children                             # parso.python.tree.PythonNode.children -> list
-                                                                                # _[0] -> parso.python.tree.Operator, '{' # noqa
-                                                                                # _[1] -> %undetermined%, expression literal (f_expression) # noqa
-                                                                                # _[2] -> %optional%, parso.python.tree.PythonNode, format specification (format_spec) # noqa
-                                                                                # _[3] -> parso.python.tree.Operator, '}' # noqa
-                        start_expr_pos = obj_children[1].start_pos              # _[1].start_pos -> tuple, (line, offset) # noqa
-                        end_expr_pos = obj_children[1].end_pos                  # _[1].end_pos -> tuple, (line, offset) # noqa
+                    if obj.type != 'fstring_expr':                      # expression part (in braces), parso.python.tree.PythonNode # noqa
+                        continue
 
-                        start_expr = token_lineno[start_expr_pos[0]] + start_expr_pos[1]
-                        end_expr = token_lineno[end_expr_pos[0]] + end_expr_pos[1]
-                        tmpent.append(slice(start_expr, end_expr))              # entry of expression literal (f_expression)
+                    obj_children = obj.children                             # parso.python.tree.PythonNode.children -> list
+                                                                            # _[0] -> parso.python.tree.Operator, '{' # noqa
+                                                                            # _[1] -> %undetermined%, expression literal (f_expression) # noqa
+                                                                            # _[2] -> %optional%, parso.python.tree.PythonNode, conversion (fstring_conversion) # noqa
+                                                                            # _[3] -> %optional%, parso.python.tree.PythonNode, format specification (format_spec) # noqa
+                                                                            # _[4] -> parso.python.tree.Operator, '}' # noqa
+                    start_expr_pos = obj_children[0].end_pos                # _[0].end_pos -> tuple, (line, offset) # noqa
+                    end_expr_pos = obj_children[2].start_pos                # _[2].start_pos -> tuple, (line, offset) # noqa
 
-                        if obj_children[2].type == 'fstring_format_spec':
-                            for node in obj_children[2].children:               # traverse format specifications (format_spec)
-                                if node.type == 'fstring_expr':                         # expression part (in braces), parso.python.tree.PythonNode # noqa
-                                    node_chld = node.children                                   # parso.python.tree.PythonNode.children -> list # noqa
-                                                                                                # _[0] -> parso.python.tree.Operator, '{' # noqa
-                                                                                                # _[1] -> %undetermined%, expression literal (f_expression) # noqa
-                                                                                                # _[2] -> parso.python.tree.Operator, '}' # noqa
-                                    start_spec_pos = node_chld[1].start_pos                     # _[1].start_pos -> tuple, (line, offset) # noqa
-                                    end_spec_pos = node_chld[1].end_pos                         # _[1].end_pos -> tuple, (line, offset) # noqa
+                    start_expr = token_lineno[start_expr_pos[0]] + start_expr_pos[1]
+                    end_expr = token_lineno[end_expr_pos[0]] + end_expr_pos[1]
+                    tmpent.append(slice(start_expr, end_expr))          # entry of expression literal (f_expression)
 
-                                    start_spec = token_lineno[start_spec_pos[0]] + start_spec_pos[1]
-                                    end_spec = token_lineno[end_spec_pos[0]] + end_spec_pos[1]
-                                    tmpent.append(slice(start_spec, end_spec))                  # entry of format specification (format_spec) # noqa
+                    for obj_child in obj_children:
+                        if obj_child.type != 'fstring_format_spec':
+                            continue
+                        for node in obj_child.children:                 # traverse format specifications (format_spec)
+                            if node.type != 'fstring_expr':                 # expression part (in braces), parso.python.tree.PythonNode # noqa
+                                continue
+
+                            node_chld = node.children                       # parso.python.tree.PythonNode.children -> list # noqa
+                                                                            # _[0] -> parso.python.tree.Operator, '{' # noqa
+                                                                            # _[1] -> %undetermined%, expression literal (f_expression) # noqa
+                                                                            # _[2] -> %optional%, parso.python.tree.PythonNode, conversion (fstring_conversion) # noqa
+                                                                            # _[3] -> %optional%, parso.python.tree.PythonNode, format specification (format_spec) # noqa
+                                                                            # _[4] -> parso.python.tree.Operator, '}' # noqa
+                            start_spec_pos = node_chld[0].end_pos           # _[0].end_pos -> tuple, (line, offset) # noqa
+                            end_spec_pos = node_chld[2].start_pos           # _[2].start_pos -> tuple, (line, offset) # noqa
+
+                            start_spec = token_lineno[start_spec_pos[0]] + start_spec_pos[1]
+                            end_spec = token_lineno[end_spec_pos[0]] + end_spec_pos[1]
+                            tmpent.append(slice(start_spec, end_spec))      # entry of format specification (format_spec) # noqa
                     # print('length:', length, '###', token_string[:length], '###', token_string[length:]) ###
             entryl.append((token, tmpent))          # each token with a concatenation entry list
 
@@ -184,9 +208,8 @@ def convert(string, lineno=None):
             # print(token.string, entries) ###
             for entry in entries:       # walk entries
                 temp_expr = token.string[entry]                                 # original expression
-                val = parse(temp_expr, error_recovery=True).children[0]         # parse AST
-                if val.type == 'testlist_star_expr' and \
-                        re.fullmatch(r'\(.*\)', temp_expr, re.DOTALL) is None:  # if expression is implicit tuple
+                val = parse(temp_expr.strip(), error_recovery=True).children[0] # parse AST
+                if val.type == 'testlist_star_expr' and is_tuple(temp_expr):    # if expression is implicit tuple
                     real_expr = '(%s)' % temp_expr                              # add parentheses
                 else:
                     real_expr = temp_expr                                       # or keep original
@@ -197,11 +220,12 @@ def convert(string, lineno=None):
         # pprint.pprint(expr) ###
 
         # convert end of f-string to str.format literal
-        end = lineno[tokens[-1].end[0]] + tokens[-1].end[1]
-        if len(source) == end:
-            source[end:end+1] = '.format(%s)' % (', '.join(expr))
-        else:
-            source[end:end+1] = '.format(%s)%s' % (', '.join(expr), source[end])
+        if expr:
+            end = lineno[tokens[-1].end[0]] + tokens[-1].end[1]
+            if len(source) == end:
+                source[end:end+1] = '.format(%s)' % (', '.join(expr))
+            else:
+                source[end:end+1] = '.format(%s)%s' % (', '.join(expr), source[end])
 
         # for each token, convert expression literals and brace '{}' escape sequences
         for token, entries in reversed(entryl):     # using reversed to keep offset in leading context
@@ -237,7 +261,7 @@ def f2format(filename):
 
     """
     if not F2FORMAT_QUIET:
-        print('Now converting %r...' % filename)  # pragma: no cover
+        print('Now converting %r...' % filename)
 
     # fetch encoding
     encoding = os.getenv('F2FORMAT_ENCODING', LOCALE_ENCODING)

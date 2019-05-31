@@ -6,7 +6,7 @@ import tbtrim
 
 from f2format.core import *
 
-__all__ = ['f2format', 'convert', 'ConvertError']
+__all__ = ['f2format', 'convert']
 
 ROOT = os.path.dirname(os.path.realpath(__file__))
 

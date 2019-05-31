@@ -1,4 +1,4 @@
-.PHONY: clean docker release pipenv pypi setup dist test
+.PHONY: clean docker release pipenv pypi setup dist test coverage
 
 include .env
 
@@ -31,6 +31,11 @@ test-unittest:
 
 test-interactive:
 	pipenv run python test/test_driver.py
+
+coverage:
+	pipenv run coverage run test.py
+	pipenv run coverage html
+	open htmlcov/index.html
 
 # setup pipenv
 setup-pipenv: clean-pipenv
@@ -187,7 +192,7 @@ release:
 		--description "$(message)"
 
 # run distribution process
-dist: test
+dist: test-unittest
 	$(MAKE) message="$(message)" \
 		setup clean pypi \
 		git-upload release setup-formula
