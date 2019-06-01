@@ -1,6 +1,6 @@
 # basic info
 FROM library/ubuntu
-LABEL version 0.6.1.dev1
+LABEL version 0.6.1.dev2
 LABEL description "Ubuntu Environment for F2FORMAT"
 
 # prepare environment

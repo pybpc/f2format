@@ -18,6 +18,8 @@ token    = $(shell python3 -c "print(__import__('token').__spec__.origin)")
 tokenize = $(shell python3 -c "print(__import__('tokenize').__spec__.origin)")
 # commit message
 message  ?= ""
+# pre-release flag
+flag     = $(shell python3 -c "print(__import__('pkg_resources').parse_version('${version}').is_prerelease)")
 
 clean: clean-pyc clean-misc clean-pypi
 docker: setup-version docker-build
@@ -43,7 +45,7 @@ setup-pipenv: clean-pipenv
 
 # update version string
 setup-version:
-	python3 setup-version.py
+	[[ ${flag} -eq "False" ]] && python3 setup-version.py
 
 # update Homebrew Formulae
 setup-formula: pipenv

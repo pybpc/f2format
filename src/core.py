@@ -35,15 +35,16 @@ BOOLEAN_STATES = {'1': True, '0': False,
                   'true': True, 'false': False,
                   'on': True, 'off': False}
 
-# macros
-sys_version = '%s.%s' % sys.version_info[:2]
-grammar_regex = re.compile(r"grammar(\d)(\d)\.txt")
-parso_version = filter(lambda version: version >= '3.6',  # when Python starts to have f-string
-                       map(lambda path: '%s.%s' % grammar_regex.match(os.path.split(path)[1]).groups(),
-                           glob.glob(os.path.join(parso.__path__[0], 'python', 'grammar??.txt'))))
-F2FORMAT_VERSION = sorted(filter(lambda version: version <= sys_version, parso_version))
-LOCALE_ENCODING = locale.getpreferredencoding()
+# environs
 F2FORMAT_QUIET = BOOLEAN_STATES.get(os.getenv('F2FORMAT_QUIET', '0').casefold(), False)
+LOCALE_ENCODING = locale.getpreferredencoding()
+
+# macros
+grammar_regex = re.compile(r"grammar(\d)(\d)\.txt")
+F2FORMAT_VERSION = sorted(filter(lambda version: version >= '3.6',  # when Python starts to have f-string
+                                 map(lambda path: '%s.%s' % grammar_regex.match(os.path.split(path)[1]).groups(),
+                                     glob.glob(os.path.join(parso.__path__[0], 'python', 'grammar??.txt')))))
+del grammar_regex
 
 
 class ConvertError(SyntaxError):
@@ -75,12 +76,42 @@ class strarray(collections.abc.ByteString):
         # print('setitem:', key, value, '###', repr(self)) ###
 
 
-def convert(string, lineno=None):
+def parse(string, error_recovery=False):
+    try:
+        return parso.parse(string, error_recovery=error_recovery,
+                            version=os.getenv('F2FORMAT_VERSION', F2FORMAT_VERSION[-1]))
+    except parso.ParserSyntaxError as error:
+        message = '%s: <%s: %r> from %r' % (error.message, error.error_leaf.token_type,
+                                            error.error_leaf.value, string)
+        raise ConvertError(message).with_traceback(error.__traceback__)
+
+
+def is_tuple(expr):
+    stripped_expr = expr.strip()
+    startswith = stripped_expr.startswith('(')
+    endswith = stripped_expr.endswith(')')
+    if startswith and endswith:  # pragma: no cover
+        return False
+    if not (startswith or endswith):
+        return True
+    raise ConvertError('malformed node or string:: %r' % expr)  # pragma: no cover
+
+
+def walk(module):
+    if hasattr(module, 'children'):
+        for child in module.children:
+            if child.type == 'fstring':
+                return True
+            if walk(child):
+                return True
+    return False
+
+
+def convert(string):
     """The main conversion process.
 
     Args:
      - string -- str, context to be converted
-     - lineno -- dict<int: int>, line number to actual offset mapping
 
     Envs:
      - F2FORMAT_VERSION -- encoding to open source files (same as `--encoding` option in CLI)
@@ -89,29 +120,9 @@ def convert(string, lineno=None):
      - str -- converted string
 
     """
-    if lineno is None:
-        lineno = {1: 0}
-        for lnum, line in enumerate(string.splitlines(True), start=1):
-            lineno[lnum+1] = lineno[lnum] + len(line)
-
-    def parse(string, error_recovery=False):
-        try:
-            return parso.parse(string, error_recovery=error_recovery,
-                               version=os.getenv('F2FORMAT_VERSION', F2FORMAT_VERSION[-1]))
-        except parso.ParserSyntaxError as error:
-            message = '%s: <%s: %r> from %r' % (error.message, error.error_leaf.token_type,
-                                                error.error_leaf.value, string)
-            raise ConvertError(message).with_traceback(error.__traceback__)
-
-    def is_tuple(expr):
-        stripped_expr = expr.strip()
-        startswith = stripped_expr.startswith('(')
-        endswith = stripped_expr.endswith(')')
-        if startswith and endswith:  # pragma: no cover
-            return False
-        if not (startswith or endswith):
-            return True
-        raise ConvertError('malformed node or string:: %r' % expr)  # pragma: no cover
+    lineno = {1: 0}                 # line number -> file offset
+    for lnum, line in enumerate(string.splitlines(True), start=1):
+        lineno[lnum+1] = lineno[lnum] + len(line)
 
     source = strarray(string)       # strarray source (mutable)
     f_string = [list()]             # [[token, ...], [...], ...] -> concatenable strings
@@ -266,16 +277,15 @@ def f2format(filename):
     # fetch encoding
     encoding = os.getenv('F2FORMAT_ENCODING', LOCALE_ENCODING)
 
-    lineno = {1: 0}     # line number -> file offset
-    content = list()    # file content
+    # file content
     with open(filename, 'r', encoding=encoding) as file:
-        for lnum, line in enumerate(file, start=1):
-            content.append(line)
-            lineno[lnum+1] = lineno[lnum] + len(line)
+        text = file.read()
 
     # now, do the dirty works
-    string = ''.join(content)
-    text = convert(string, lineno)
+    module = parse(text)
+    while walk(module):
+        text = convert(text)
+        module = parse(text)
 
     # dump back to the file
     with open(filename, 'w', encoding=encoding) as file:

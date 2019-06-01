@@ -1,4 +1,6 @@
 
+*.pyi
+
 Tap
 *~orig*
 release/
