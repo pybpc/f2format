@@ -114,7 +114,7 @@ def convert(string):
      - string -- str, context to be converted
 
     Envs:
-     - F2FORMAT_VERSION -- encoding to open source files (same as `--encoding` option in CLI)
+     - F2FORMAT_VERSION -- convert against Python version (same as `--python` option in CLI)
 
     Returns:
      - str -- converted string
@@ -267,8 +267,8 @@ def f2format(filename):
 
     Envs:
      - F2FORMAT_QUIET -- run in quiet mode (same as `--quiet` option in CLI)
-     - F2FORMAT_VERSION -- encoding to open source files (same as `--encoding` option in CLI)
-     - F2FORMAT_ENCODING -- convert against Python version (same as `--python` option in CLI)
+     - F2FORMAT_ENCODING -- encoding to open source files (same as `--encoding` option in CLI)
+     - F2FORMAT_VERSION -- convert against Python version (same as `--python` option in CLI)
 
     """
     if not F2FORMAT_QUIET:
