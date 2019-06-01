@@ -123,7 +123,7 @@ information.
 
 ### Bundled Executable
 
- > coming soooooooooooon...
+ > Coming soooooooooooon...
 
 &emsp; For the worst case, we also provide bundled executables of `f2format`. In such case,
 you may simply download it then voila, it's ready for you.
@@ -176,7 +176,7 @@ Args:
 - `filename` -- `str`, file to be converted
 
 ```python
-f2format.convert(string, lineno)
+f2format.convert(string)
 ```
 
  > The main conversion process.
@@ -184,7 +184,6 @@ f2format.convert(string, lineno)
 Args:
 
 - `string` -- `str`, context to be converted
-- `lineno` -- `dict<int: int>`, line number to actual offset mapping
 
 Returns:
 
@@ -204,6 +203,12 @@ even through running with a previous version of Python.
 folder. `test_driver.py` is the main entry point for tests.
 
 &emsp; For unittests, see [`test.py`](https://github.com/JarryShaw/f2format/blob/master/test.py).
+
+## Known bugs
+
+&emsp; Since `f2format` is currently based on [`parso`](https://github.com/davidhalter/parso) project,
+it has encountered a grammar issue as described at [#74](https://github.com/davidhalter/parso/issues/74).
+Please __AVOID__ using such grammar when using *f-string*.
 
 ## Contribution
 

@@ -172,10 +172,10 @@ git-upload:
 
 # update submodules
 git-submodule:
-	cd vendor/cpython && git pull
-	cd vendor/parso && git pull
-	cd vendor/pypy && hg pull && hg update
-	cd vendor/typed_ast && git pull
+	(cd vendor/cpython && git pull)
+	(cd vendor/parso && git pull)
+	(cd vendor/pypy && hg pull && hg update)
+	(cd vendor/typed_ast && git pull)
 
 # upload after distro
 git-aftermath: git-submodule
