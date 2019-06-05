@@ -25,7 +25,8 @@ clean: clean-pyc clean-misc clean-pypi
 docker: setup-version docker-build
 pipenv: update-pipenv
 pypi: dist-pypi dist-upload
-setup: setup-version setup-stdlib setup-manpages
+setup: setup-version setup-manpages
+# setup: setup-version setup-stdlib setup-manpages
 test: test-unittest test-interactive
 
 test-unittest:
@@ -52,10 +53,10 @@ setup-formula: pipenv
 	pipenv run python3 setup-formula.py
 
 # update Python stdlib files
-setup-stdlib:
-	rm -f src/lib/token.py src/lib/tokenize.py
-	mkdir -p src/lib
-	cp -f $(token) $(tokenize) src/lib
+# setup-stdlib:
+# 	rm -f src/lib/token.py src/lib/tokenize.py
+# 	mkdir -p src/lib
+# 	cp -f $(token) $(tokenize) src/lib
 
 # update manpages
 setup-manpages:
