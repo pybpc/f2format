@@ -60,8 +60,8 @@ setup-formula: pipenv
 
 # update manpages
 setup-manpages:
-	rm -f man/f2format.1
-	pipenv run rst2man.py docs/f2format.rst > man/f2format.1
+	rm -f docs/f2format.1
+	pipenv run rst2man.py docs/f2format.rst > docs/f2format.1
 
 # remove *.pyc
 clean-pyc:
@@ -106,9 +106,9 @@ docker-prep:
 	cp setup.py \
 	   setup.cfg \
 	   README.md \
-	   Dockerfile \
 	   MANIFEST.in \
-	   .dockerignore release
+	   docker/Dockerfile \
+	   docker/.dockerignore release
 	DIR=release $(MAKE) clean-pyc
 
 docker-build: docker-prep
@@ -124,22 +124,22 @@ dist-pypi-setup:
 	cd $(DIR)
 	python3 setup.py sdist bdist_wheel
 
-.ONESHELL:
-dist-macos:
-	set -ex
-	cd $(DIR)
-	python3.7 setup.py sdist bdist_egg bdist_wheel --plat-name="$(platform)" --python-tag='cp37'
-	python3.6 setup.py bdist_egg bdist_wheel --plat-name="$(platform)" --python-tag='cp36'
-	python3.5 setup.py bdist_egg bdist_wheel --plat-name="$(platform)" --python-tag='cp35'
-	python3.4 setup.py bdist_egg bdist_wheel --plat-name="$(platform)" --python-tag='cp34'
-	pypy3 setup.py bdist_wheel --plat-name="$(platform)" --python-tag='pp35'
+# .ONESHELL:
+# dist-macos:
+# 	set -ex
+# 	cd $(DIR)
+# 	python3.7 setup.py sdist bdist_egg bdist_wheel --plat-name="$(platform)" --python-tag='cp37'
+# 	python3.6 setup.py bdist_egg bdist_wheel --plat-name="$(platform)" --python-tag='cp36'
+# 	python3.5 setup.py bdist_egg bdist_wheel --plat-name="$(platform)" --python-tag='cp35'
+# 	python3.4 setup.py bdist_egg bdist_wheel --plat-name="$(platform)" --python-tag='cp34'
+# 	pypy3 setup.py bdist_wheel --plat-name="$(platform)" --python-tag='pp35'
 
-.ONESHELL:
-dist-linux:
-	set -ex
-	cd $(DIR)/docker
-	sed -i "s/LABEL version.*/LABEL version $(shell date +%Y.%m.%d)/" Dockerfile
-	docker-compose up --build
+# .ONESHELL:
+# dist-linux:
+# 	set -ex
+# 	cd $(DIR)/docker
+# 	sed -i "s/LABEL version.*/LABEL version $(shell date +%Y.%m.%d)/" Dockerfile
+# 	docker-compose up --build
 
 # upload PyPI distribution
 .ONESHELL:
@@ -165,9 +165,9 @@ git-upload:
 	git pull
 	git add .
 	if [[ -z "$(message)" ]] ; then \
-		git commit -a -S ; \
+	    git commit -a -S ; \
 	else \
-		git commit -a -S -m "$(message)" ; \
+	    git commit -a -S -m "$(message)" ; \
 	fi
 	git push
 
@@ -188,17 +188,17 @@ git-aftermath: git-submodule
 # file new release
 release:
 	go run github.com/aktau/github-release release \
-		--user JarryShaw \
-		--repo f2format \
-		--tag "v$(version)" \
-		--name "f2format v$(version)" \
-		--description "$(message)"
+	    --user JarryShaw \
+	    --repo f2format \
+	    --tag "v$(version)" \
+	    --name "f2format v$(version)" \
+	    --description "$(message)"
 
 # run distribution process
 dist: test-unittest
 	$(MAKE) message="$(message)" \
-		setup clean pypi \
-		git-upload release setup-formula
+	    setup clean pypi \
+	    git-upload release setup-formula
 	$(MAKE) message="f2format: $(version)" DIR=Tap \
-		git-upload
+	    git-upload
 	$(MAKE) update-maintainer git-aftermath

@@ -1,5 +1,13 @@
 # Change Log
 
+## [Unreleased](https://github.com/JarryShaw/f2format/tree/HEAD)
+
+[Full Changelog](https://github.com/JarryShaw/f2format/compare/v0.6.1...HEAD)
+
+**Fixed bugs:**
+
+- Some nested f-strings with double quotes are not converted [\#3](https://github.com/JarryShaw/f2format/issues/3)
+
 ## [v0.6.1](https://github.com/JarryShaw/f2format/tree/v0.6.1) (2019-06-01)
 [Full Changelog](https://github.com/JarryShaw/f2format/compare/v0.6.1.dev2...v0.6.1)
 

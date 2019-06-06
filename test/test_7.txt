@@ -1,0 +1,5 @@
+{a}fake{{fstring}}
+{a}fake{{fstring}}
+a ('foo', 'bar') real {a}fake{{fstring}} fstring
+a ('foo', 'bar') real {a}fake{{fstring}} fstring
+a a foo real bar fstring real a fake fstring fstring

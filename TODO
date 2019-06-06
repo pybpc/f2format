@@ -1,6 +1,10 @@
+### June 6th, 2019
+
+[ ] revise test cases
+
 ### June 1st, 2019
 
-[ ] revise `f2format` implementation to make it works anywhere (drop requirements for `tokenize` & `token`)
+[x] revise `f2format` implementation to make it works anywhere (drop requirements for `tokenize` & `token`)
 
 ### May 7th, 2019
 

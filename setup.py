@@ -8,12 +8,15 @@ try:
 except ImportError:
     from distutils.core import setup
 
+# root path
+ROOT = os.path.dirname(os.path.realpath(__file__))
+
 # README
-with open('./README.md', encoding='utf-8') as file:
+with open(os.path.join(ROOT, './README.md'), encoding='utf-8') as file:
     long_desc = file.read()
 
 # version string
-__version__ = '0.6.1'
+__version__ = '0.7.0'
 
 # set-up script for pip distribution
 setup(
@@ -37,7 +40,6 @@ setup(
     py_modules=['f2format'],
     packages=[
         'f2format',
-        'f2format.lib',
     ],
     entry_points={
         'console_scripts': [

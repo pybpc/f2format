@@ -33,7 +33,7 @@ Also, it always tries to maintain the original layout of source code, and accura
 
 ## Installation
 
-> Note that `f2format` only supports Python versions __since 3.3__ 🐍
+> Note that `f2format` only supports Python versions __since 3.4__ 🐍
 
 &emsp; For macOS users, `f2format` is now available through [Homebrew](https://brew.sh):
 
@@ -118,7 +118,7 @@ var = 'foo{:>5}bar{!r}boo'.format((1+2)*3, ("a", "b"))
 We provide also a Docker image for those poor little guys.
 
 &emsp; See
-[`Dockerfile`](https://github.com/JarryShaw/f2format/blob/master/Dockerfile) for more
+[`Dockerfile`](https://github.com/JarryShaw/f2format/blob/master/docker/Dockerfile) for more
 information.
 
 ### Bundled Executable
@@ -176,7 +176,7 @@ Args:
 - `filename` -- `str`, file to be converted
 
 ```python
-f2format.convert(string)
+f2format.convert(string, source='<unknown>')
 ```
 
  > The main conversion process.
@@ -184,6 +184,7 @@ f2format.convert(string)
 Args:
 
 - `string` -- `str`, context to be converted
+- `source` -- `str`, source of the context
 
 Returns:
 
@@ -191,7 +192,7 @@ Returns:
 
 ### Codec
 
- > NB: this project is now deprecated, because I just cannot figure out how to play w/ codecs :)
+ > NB: this project is now stalled, because I just cannot figure out how to play w/ codecs :)
 
 &emsp; [`f2format-codec`](https://github.com/JarryShaw/f2format-codec) registers a codec in Python
 interpreter, which grants you the compatibility to write directly in Python 3.6 *f-string* syntax

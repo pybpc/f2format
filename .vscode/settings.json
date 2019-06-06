@@ -50,5 +50,6 @@
         "ziel"
     ],
     "python.pythonPath": ".venv/bin/python",
-    "restructuredtext.confPath": "${workspaceFolder}/docs/conf.py"
+    "restructuredtext.confPath": "${workspaceFolder}/docs/conf.py",
+    "python.linting.enabled": true
 }

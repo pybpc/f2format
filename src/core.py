@@ -1,14 +1,9 @@
 # -*- coding: utf-8 -*-
 
-import collections.abc
 import glob
-import io
 import locale
 import os
 import re
-import shutil
-import sys
-import textwrap
 
 import parso
 
@@ -22,7 +17,7 @@ BOOLEAN_STATES = {'1': True, '0': False,
 
 # environs
 F2FORMAT_QUIET = BOOLEAN_STATES.get(os.getenv('F2FORMAT_QUIET', '0').casefold(), False)
-LOCALE_ENCODING = locale.getpreferredencoding()
+LOCALE_ENCODING = locale.getpreferredencoding(False)
 
 # macros
 grammar_regex = re.compile(r"grammar(\d)(\d)\.txt")
@@ -36,11 +31,12 @@ class ConvertError(SyntaxError):
     pass
 
 
-def convert(source):
+def convert(string, source='<unknown>'):
     """The main conversion process.
 
     Args:
-     - source -- str, context to be converted
+     - string -- str, context to be converted
+     - source -- str, source of the context
 
     Envs:
      - F2FORMAT_VERSION -- convert against Python version (same as `--python` option in CLI)
@@ -54,8 +50,8 @@ def convert(source):
             return parso.parse(string, error_recovery=error_recovery,
                                version=os.getenv('F2FORMAT_VERSION', F2FORMAT_VERSION[-1]))
         except parso.ParserSyntaxError as error:
-            message = '%s: <%s: %r> from %r' % (error.message, error.error_leaf.token_type, error.error_leaf.value,
-                                                textwrap.shorten(string, shutil.get_terminal_size().columns))
+            message = '%s: <%s: %r> from %s' % (error.message, error.error_leaf.token_type,
+                                                error.error_leaf.value, source)
             raise ConvertError(message).with_traceback(error.__traceback__)
 
     def extract(node):
@@ -86,11 +82,11 @@ def convert(source):
                         string += '{'
 
                         for spec_expr in spec.children[1:-1]:
-                            if spec_expr.type == 'fstring_conversion':
+                            if spec_expr.type == 'fstring_conversion':  # pragma: no cover
                                 string += spec_expr.get_code()
-                            elif spec_expr.type == 'fstring_format_spec':
+                            elif spec_expr.type == 'fstring_format_spec':  # pragma: no cover
                                 string += spec_expr.get_code()
-                            elif spec_expr.type == 'testlist':
+                            elif spec_expr.type == 'testlist':  # pragma: no cover
                                 spec_str += '(%s)' % spec_expr.get_code()
                             else:
                                 spec_str += spec_expr.get_code()
@@ -105,20 +101,24 @@ def convert(source):
                     if expr:
                         expr_str += '.format(%s)' % ', '.join(expr)
                 elif expr.type == 'strings':
+                    text_temp_list = list()
                     expr_temp_list = list()
                     for expr_child in expr.children:
                         if expr_child.type == 'fstring':
                             text_temp, expr_temp = extract(expr_child)
+                            text_temp_list.append((True, text_temp))
                             expr_temp_list.extend(expr_temp)
                         else:
-                            text_temp = re.sub(r'([{}])', r'\1\1', expr_child.get_code())
-                        expr_str += text_temp
+                            text_temp_list.append((False, expr_child.get_code()))
                     if expr_temp_list:
+                        expr_str += ''.join(map(lambda text: text[1] if text[0] else re.sub(r'([{}])', r'\1\1', text[1]), text_temp_list))
                         expr_str += '.format(%s)' % ', '.join(expr_temp_list)
+                    else:
+                        expr_str += ''.join(map(lambda text: text[1], text_temp_list))
                 else:
                     expr_str += expr.get_code()
 
-            if expr_str:
+            if expr_str:  # pragma: no cover
                 expr_list.append(expr_str)
             if spec_str:
                 expr_list.append(spec_str)
@@ -132,45 +132,46 @@ def convert(source):
         return string, expr_list
 
     def walk(node):
-        nonlocal string
+        string = ''
+
         if node.type == 'strings':
+            text_list = list()
             expr_list = list()
             for child in node.children:
                 if child.type == 'fstring':
                     text, expr = extract(child)
+                    text_list.append((True, text))
                     expr_list.extend(expr)
                 else:
-                    text = re.sub(r'([{}])', r'\1\1', child.get_code())
-                string += text
+                    text_list.append((False, child.get_code()))
             if expr_list:
+                string += ''.join(map(lambda text: text[1] if text[0] else re.sub(r'([{}])', r'\1\1', text[1]), text_list))
                 string += '.format(%s)' % ', '.join(expr_list)
-            return
+            else:
+                string += ''.join(map(lambda text: text[1], text_list))
+            return string
 
         if node.type == 'fstring':
             text, expr = extract(node)
             string += text
             if expr:
                 string += '.format(%s)' % ', '.join(expr)
-            return
+            return string
 
         if isinstance(node, parso.python.tree.PythonLeaf):
             string += node.get_code()
 
         if hasattr(node, 'children'):
             for child in node.children:
-                walk(child)
+                string += walk(child)
 
-        # return modified context
-        return str(source)
+        return string
 
     # parse source string
-    module = parse(source)
-
-    # buffer for converted string
-    string = ''
+    module = parse(string)
 
     # convert source string
-    walk(module)
+    string = walk(module)
 
     # return converted string
     return string
@@ -199,7 +200,7 @@ def f2format(filename):
         text = file.read()
 
     # do the dirty things
-    text = convert(text)
+    text = convert(text, filename)
 
     # dump back to the file
     with open(filename, 'w', encoding=encoding) as file:
