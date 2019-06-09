@@ -14,7 +14,7 @@ import unittest
 class TestF2format(unittest.TestCase):
 
     def test_get_parser(self):
-        from f2format.__main__ import get_parser
+        from f2format import get_parser
 
         parser = get_parser()
         args = parser.parse_args(['-n', '-q', '-p/tmp/',
@@ -36,13 +36,12 @@ class TestF2format(unittest.TestCase):
 
         # reset environ
         del sys.modules['f2format']
-        del sys.modules['f2format.__main__']
 
     def test_main_func(self):
-        from f2format.__main__ import main as main_func
+        from f2format import main as main_func
 
         src_files = glob.glob(os.path.join(os.path.dirname(__file__),
-                                           'test', 'test_?.py'))
+                                           '..', 'test', 'test_?.py'))
         dst_files = list()
 
         with tempfile.TemporaryDirectory() as tempdir:
@@ -69,7 +68,7 @@ class TestF2format(unittest.TestCase):
                     main_func(temp_args)
 
             for dst in dst_files:
-                src = os.path.join(os.path.dirname(__file__), 'test',
+                src = os.path.join(os.path.dirname(__file__), '..', 'test',
                                    '%s.txt' % pathlib.Path(dst).stem)
                 with open(src, 'r') as file:
                     old = file.read()
@@ -78,16 +77,15 @@ class TestF2format(unittest.TestCase):
 
         # reset environ
         del sys.modules['f2format']
-        del sys.modules['f2format.__main__']
 
     @unittest.skipIf(sys.version_info[:2] < (3, 6),
                      "not supported in this Python version")
     def test_core_func(self):
         def test_core_func_main():
-            from f2format.core import f2format as core_func
+            from f2format import f2format as core_func
 
             src_files = glob.glob(os.path.join(os.path.dirname(__file__),
-                                            'test', 'test_?.py'))
+                                               '..', 'test', 'test_?.py'))
 
             with open(os.devnull, 'w') as devnull:
                 with contextlib.redirect_stdout(devnull):
@@ -106,7 +104,6 @@ class TestF2format(unittest.TestCase):
 
             # reset environ
             del sys.modules['f2format']
-            del sys.modules['f2format.core']
 
         os.environ['F2FORMAT_QUIET'] = '1'
         test_core_func_main()
@@ -118,7 +115,7 @@ class TestF2format(unittest.TestCase):
         del os.environ['F2FORMAT_QUIET']
 
     def test_convert(self):
-        from f2format.core import ConvertError, convert
+        from f2format import ConvertError, convert
 
         # normal convertion
         src = """var = f'foo{(1+2)*3:>5}bar{"a", "b"!r}boo'"""
@@ -132,7 +129,6 @@ class TestF2format(unittest.TestCase):
 
         # reset environ
         del sys.modules['f2format']
-        del sys.modules['f2format.core']
         del os.environ['F2FORMAT_VERSION']
 
 

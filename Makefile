@@ -30,15 +30,18 @@ setup: setup-version setup-manpages
 test: test-unittest test-interactive
 
 test-unittest:
-	pipenv run python test.py
+	pipenv run python share/test.py
 
 test-interactive:
 	pipenv run python test/test_driver.py
 
 coverage:
-	pipenv run coverage run test.py
+	pipenv run coverage run share/test.py
 	pipenv run coverage html
 	open htmlcov/index.html
+	read
+	rm -rf htmlcov
+	rm .coverage
 
 # setup pipenv
 setup-pipenv: clean-pipenv
@@ -46,11 +49,11 @@ setup-pipenv: clean-pipenv
 
 # update version string
 setup-version:
-	[[ ${flag} -eq "False" ]] && python3 setup-version.py
+	[[ ${flag} -eq "False" ]] && python3 share/setup-version.py
 
 # update Homebrew Formulae
 setup-formula: pipenv
-	pipenv run python3 setup-formula.py
+	pipenv run python3 share/setup-formula.py
 
 # update Python stdlib files
 # setup-stdlib:
@@ -60,8 +63,8 @@ setup-formula: pipenv
 
 # update manpages
 setup-manpages:
-	rm -f docs/f2format.1
-	pipenv run rst2man.py docs/f2format.rst > docs/f2format.1
+	rm -f share/f2format.1
+	pipenv run rst2man.py share/f2format.rst > share/f2format.1
 
 # remove *.pyc
 clean-pyc:
@@ -102,13 +105,14 @@ update-maintainer:
 docker-prep:
 	rm -rf release
 	mkdir -p release
-	cp -rf src release/f2format
+	# cp -rf src release/f2format
 	cp setup.py \
 	   setup.cfg \
 	   README.md \
 	   MANIFEST.in \
 	   docker/Dockerfile \
-	   docker/.dockerignore release
+	   docker/.dockerignore \
+	   f2format.py release
 	DIR=release $(MAKE) clean-pyc
 
 docker-build: docker-prep

@@ -16,7 +16,7 @@ with open(os.path.join(ROOT, './README.md'), encoding='utf-8') as file:
     long_desc = file.read()
 
 # version string
-__version__ = '0.7.0'
+__version__ = '0.7.1'
 
 # set-up script for pip distribution
 setup(
@@ -38,12 +38,13 @@ setup(
         'tbtrim>=0.2.1',    # traceback trim support
     ],
     py_modules=['f2format'],
-    packages=[
-        'f2format',
-    ],
+    # packages=[
+    #     'f2format',
+    # ],
     entry_points={
         'console_scripts': [
-            'f2format = f2format.__main__:main',
+            # 'f2format = f2format.__main__:main',
+            'f2format = f2format:main',
         ]
     },
     package_data={

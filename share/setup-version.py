@@ -4,7 +4,7 @@ import os
 import re
 import time
 
-with open('./f2format/__main__.py', 'r') as file:
+with open(os.path.join(os.path.dirname(__file__), '..', 'f2format.py')) as file:
     for line in file:
         match = re.match(r"^__version__ = '(.*)'", line)
         if match is None:
@@ -13,7 +13,7 @@ with open('./f2format/__main__.py', 'r') as file:
         break
 
 context = list()
-with open(os.path.join(os.path.dirname(__file__), 'setup.py')) as file:
+with open(os.path.join(os.path.dirname(__file__), '..', 'setup.py')) as file:
     for line in file:
         match = re.match(r"__version__ = '(.*)'", line)
         if match is None:
@@ -21,11 +21,11 @@ with open(os.path.join(os.path.dirname(__file__), 'setup.py')) as file:
         else:
             context.append(f'__version__ = {__version__!r}\n')
 
-with open(os.path.join(os.path.dirname(__file__), 'setup.py'), 'w') as file:
+with open(os.path.join(os.path.dirname(__file__), '..', 'setup.py'), 'w') as file:
     file.writelines(context)
 
 context = list()
-with open(os.path.join(os.path.dirname(__file__), 'docker', 'Dockerfile')) as file:
+with open(os.path.join(os.path.dirname(__file__), '..', 'docker', 'Dockerfile')) as file:
     for line in file:
         match = re.match(r"LABEL version (.*)", line)
         if match is None:
@@ -33,11 +33,11 @@ with open(os.path.join(os.path.dirname(__file__), 'docker', 'Dockerfile')) as fi
         else:
             context.append(f'LABEL version {__version__}\n')
 
-with open(os.path.join(os.path.dirname(__file__), 'docker', 'Dockerfile'), 'w') as file:
+with open(os.path.join(os.path.dirname(__file__), '..', 'docker', 'Dockerfile'), 'w') as file:
     file.writelines(context)
 
 context = list()
-with open(os.path.join(os.path.dirname(__file__), 'docs', 'f2format.rst')) as file:
+with open(os.path.join(os.path.dirname(__file__), '..', 'share', 'f2format.rst')) as file:
     for line in file:
         match = re.match(r":Version: (.*)", line)
         if match is None:
@@ -49,5 +49,5 @@ with open(os.path.join(os.path.dirname(__file__), 'docs', 'f2format.rst')) as fi
         else:
             context.append(f':Version: v{__version__}\n')
 
-with open(os.path.join(os.path.dirname(__file__), 'docs', 'f2format.rst'), 'w') as file:
+with open(os.path.join(os.path.dirname(__file__), '..', 'share', 'f2format.rst'), 'w') as file:
     file.writelines(context)

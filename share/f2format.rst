@@ -6,8 +6,8 @@ f2format
 back-port compiler for Python 3.6 f-string literals
 ---------------------------------------------------
 
-:Version: v0.7.0
-:Date: June 06, 2019
+:Version: v0.7.1
+:Date: June 09, 2019
 :Manual section: 1
 :Author:
     Jarry Shaw, a newbie programmer, is the author, owner and maintainer

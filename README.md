@@ -134,7 +134,7 @@ you may simply download it then voila, it's ready for you.
 
 ### Automator
 
-&emsp; [`make-demo.sh`](https://github.com/JarryShaw/f2format/blob/master/make-demo.sh) provides a
+&emsp; [`make-demo.sh`](https://github.com/JarryShaw/f2format/blob/master/script/make-demo.sh) provides a
 demo script, which may help integrate `f2format` in your development and distribution circle.
 
  > __NB__: `make-demo.sh` is not an integrated automation script. It should be revised by design.
