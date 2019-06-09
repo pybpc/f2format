@@ -1,10 +1,9 @@
 # Change Log
 
-## [Unreleased](https://github.com/JarryShaw/f2format/tree/HEAD)
+## [v0.7.1](https://github.com/JarryShaw/f2format/tree/v0.7.1) (2019-06-09)
+[Full Changelog](https://github.com/JarryShaw/f2format/compare/v0.6.1...v0.7.1)
 
-[Full Changelog](https://github.com/JarryShaw/f2format/compare/v0.6.1...HEAD)
-
-**Fixed bugs:**
+**Closed issues:**
 
 - Some nested f-strings with double quotes are not converted [\#3](https://github.com/JarryShaw/f2format/issues/3)
 
@@ -15,13 +14,13 @@
 [Full Changelog](https://github.com/JarryShaw/f2format/compare/v0.6.1.dev1...v0.6.1.dev2)
 
 ## [v0.6.1.dev1](https://github.com/JarryShaw/f2format/tree/v0.6.1.dev1) (2019-05-31)
-[Full Changelog](https://github.com/JarryShaw/f2format/compare/0.6.0...v0.6.1.dev1)
-
-## [0.6.0](https://github.com/JarryShaw/f2format/tree/0.6.0) (2019-05-04)
-[Full Changelog](https://github.com/JarryShaw/f2format/compare/v0.6.0...0.6.0)
+[Full Changelog](https://github.com/JarryShaw/f2format/compare/v0.6.0...v0.6.1.dev1)
 
 ## [v0.6.0](https://github.com/JarryShaw/f2format/tree/v0.6.0) (2019-05-04)
-[Full Changelog](https://github.com/JarryShaw/f2format/compare/v0.5.5...v0.6.0)
+[Full Changelog](https://github.com/JarryShaw/f2format/compare/0.6.0...v0.6.0)
+
+## [0.6.0](https://github.com/JarryShaw/f2format/tree/0.6.0) (2019-05-04)
+[Full Changelog](https://github.com/JarryShaw/f2format/compare/v0.5.5...0.6.0)
 
 ## [v0.5.5](https://github.com/JarryShaw/f2format/tree/v0.5.5) (2019-05-03)
 [Full Changelog](https://github.com/JarryShaw/f2format/compare/v0.5.4...v0.5.5)
@@ -74,13 +73,13 @@
 [Full Changelog](https://github.com/JarryShaw/f2format/compare/v0.3.0...v)
 
 ## [v0.3.0](https://github.com/JarryShaw/f2format/tree/v0.3.0) (2018-11-28)
-[Full Changelog](https://github.com/JarryShaw/f2format/compare/v0.2.4...v0.3.0)
-
-## [v0.2.4](https://github.com/JarryShaw/f2format/tree/v0.2.4) (2018-11-27)
-[Full Changelog](https://github.com/JarryShaw/f2format/compare/v0.2.3...v0.2.4)
+[Full Changelog](https://github.com/JarryShaw/f2format/compare/v0.2.3...v0.3.0)
 
 ## [v0.2.3](https://github.com/JarryShaw/f2format/tree/v0.2.3) (2018-11-27)
-[Full Changelog](https://github.com/JarryShaw/f2format/compare/v0.2.3.post1...v0.2.3)
+[Full Changelog](https://github.com/JarryShaw/f2format/compare/v0.2.4...v0.2.3)
+
+## [v0.2.4](https://github.com/JarryShaw/f2format/tree/v0.2.4) (2018-11-27)
+[Full Changelog](https://github.com/JarryShaw/f2format/compare/v0.2.3.post1...v0.2.4)
 
 ## [v0.2.3.post1](https://github.com/JarryShaw/f2format/tree/v0.2.3.post1) (2018-11-27)
 
