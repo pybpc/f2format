@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import os
-import re
 
 try:
     from setuptools import setup
@@ -12,7 +11,7 @@ except ImportError:
 ROOT = os.path.dirname(os.path.realpath(__file__))
 
 # README
-with open(os.path.join(ROOT, './README.md'), encoding='utf-8') as file:
+with open(os.path.join(ROOT, 'README.md'), encoding='utf-8') as file:
     long_desc = file.read()
 
 # version string
@@ -56,9 +55,6 @@ setup(
     },
     classifiers=[
         'Development Status :: 5 - Production/Stable',
-        'Environment :: Console',
-        'Environment :: MacOS X',
-        'Environment :: Win32 (MS Windows)',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: Apache Software License',
         'Natural Language :: English',
@@ -70,7 +66,6 @@ setup(
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3 :: Only',
-        'Programming Language :: Python :: Implementation :: CPython',
         'Topic :: Software Development',
         'Topic :: Utilities',
     ]

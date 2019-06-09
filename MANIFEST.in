@@ -6,8 +6,8 @@ global-include *.py
 include README.md
 include LICENSE
 
-exclude setup-formula.py
-exclude setup-version.py
+# exclude setup-formula.py
+# exclude setup-version.py
 
 prune vendor
 prune Cellar
@@ -15,6 +15,7 @@ prune Tap
 
 prune release
 prune archive
+prune share
 prune codec
 prune test
 prune src
