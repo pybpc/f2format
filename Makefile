@@ -11,7 +11,7 @@ DIR   ?= .
 # fetch platform spec
 platform = $(shell python3 -c "import distutils.util; print(distutils.util.get_platform().replace('-', '_').replace('.', '_'))")
 # get version string
-version  = $(shell cat f2format/__main__.py | grep "^__version__" | sed "s/__version__ = '\(.*\)'/\1/")
+version  = $(shell cat f2format.py | grep "^__version__" | sed "s/__version__ = '\(.*\)'/\1/")
 # builtins.token
 token    = $(shell python3 -c "print(__import__('token').__spec__.origin)")
 # builtins.tokenize
