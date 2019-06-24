@@ -13,7 +13,7 @@ install:
 
 # command to run tests
 script:
-  - coverage run test.py
+  - coverage run share/test.py
 
 # coverage
 after_success:
