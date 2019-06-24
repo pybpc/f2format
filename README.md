@@ -207,9 +207,9 @@ folder. `test_driver.py` is the main entry point for tests.
 
 ## Known bugs
 
-&emsp; Since `f2format` is currently based on [`parso`](https://github.com/davidhalter/parso) project,
+&emsp; ~~Since `f2format` is currently based on [`parso`](https://github.com/davidhalter/parso) project,
 it has encountered a grammar issue as described at [#74](https://github.com/davidhalter/parso/issues/74).
-Please __AVOID__ using such grammar when using *f-string*.
+Please __AVOID__ using such grammar when using *f-string*.~~
 
 ## Contribution
 

@@ -31,7 +31,7 @@ finally:    # alias and aftermath
     del multiprocessing
 
 # version string
-__version__ = '0.7.1'
+__version__ = '0.7.2'
 
 # from configparser
 BOOLEAN_STATES = {'1': True, '0': False,
