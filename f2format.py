@@ -31,7 +31,7 @@ finally:    # alias and aftermath
     del multiprocessing
 
 # version string
-__version__ = '0.7.2'
+__version__ = '0.7.3'
 
 # from configparser
 BOOLEAN_STATES = {'1': True, '0': False,
@@ -113,12 +113,14 @@ def convert(string, source='<unknown>'):
             expr_str = ''
             spec_str = ''
             for expr in child.children[1:-1]:
+                # conversion
                 if expr.type == 'fstring_conversion':
-                    string += expr.get_code()
+                    string += expr.get_code().strip()
+                # format specification
                 elif expr.type == 'fstring_format_spec':
                     for spec in expr.children:
                         if spec.type != 'fstring_expr':
-                            string += spec.get_code()
+                            string += spec.get_code().strip()
                             continue
 
                         # <Operator: {>
@@ -126,9 +128,9 @@ def convert(string, source='<unknown>'):
 
                         for spec_expr in spec.children[1:-1]:
                             if spec_expr.type == 'fstring_conversion':  # pragma: no cover
-                                string += spec_expr.get_code()
+                                string += spec_expr.get_code().strip()
                             elif spec_expr.type == 'fstring_format_spec':  # pragma: no cover
-                                string += spec_expr.get_code()
+                                string += spec_expr.get_code().strip()
                             elif spec_expr.type == 'testlist':  # pragma: no cover
                                 spec_str += '(%s)' % spec_expr.get_code()
                             else:
@@ -136,13 +138,16 @@ def convert(string, source='<unknown>'):
 
                         # <Operator: }>
                         string += '}'
+                # implicit tuple
                 elif expr.type == 'testlist':
                     expr_str += '(%s)' % expr.get_code()
+                # embedded f-string
                 elif expr.type == 'fstring':
                     text, expr = extract(expr)
                     expr_str += text
                     if expr:
                         expr_str += '.format(%s)' % ', '.join(expr)
+                # concatenable strings
                 elif expr.type == 'strings':
                     text_temp_list = list()
                     expr_temp_list = list()
@@ -159,6 +164,16 @@ def convert(string, source='<unknown>'):
                         expr_str += '.format(%s)' % ', '.join(expr_temp_list)
                     else:
                         expr_str += ''.join(map(lambda text: text[1], text_temp_list))
+                # regular expression / debug f-string
+                elif expr.type == 'operator' and expr.value == '=':
+                    next_sibling = expr.get_next_sibling()
+                    if (next_sibling.type == 'operator' and next_sibling.value == '}') \
+                        or next_sibling.type in ['fstring_conversion', 'fstring_format_spec']:
+                        expr_tmp = expr_str + expr.get_code() + re.sub(r'\S+.*$', r'', next_sibling.get_code()) + '{}'
+                        expr_str = '%r.format(%s)' % (expr_tmp, expr_str)
+                    else:  # pragma: no cover
+                        expr_str += expr.get_code()
+                # regular expression
                 else:
                     expr_str += expr.get_code()
 

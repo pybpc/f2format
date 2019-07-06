@@ -1,21 +1,26 @@
 [[source]]
+name = "sjtu"
+url = "https://mirrors.sjtug.sjtu.edu.cn/pypi/web/simple"
+verify_ssl = true
+
+[[source]]
 url = "https://pypi.org/simple"
 verify_ssl = true
 name = "pypi"
 
 [packages]
-parso = "~=0.4.0"
+parso = "~=0.5.0"
 tbtrim = ">=0.2.1"
-pyinstaller = "*"
 
 [dev-packages]
 f2format = {editable = true,path = "."}
 ipython = "*"
-homebrew-pypi-poet = "*"
 requests = "*"
 autopep8 = "*"
 coverage = "*"
 codecov = "*"
+pylint = "*"
+pyinstaller = "*"
 
 [requires]
 python_version = "3.7"

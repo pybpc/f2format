@@ -125,10 +125,37 @@ class TestF2format(unittest.TestCase):
         # error convertion
         os.environ['F2FORMAT_VERSION'] = '3.7'
         with self.assertRaises(ConvertError):
-            convert("""var = f'foo{{(1+2)*3:>5}bar{"a", "b"!r}boo'""")
+            convert("f'a {async} b'")
 
         # reset environ
         del sys.modules['f2format']
+        del os.environ['F2FORMAT_VERSION']
+
+    @unittest.skipIf(sys.version_info[:2] < (3, 8),
+                     "not supported in this Python version")
+    def test_debug_fstring(self):
+        from f2format import f2format as core_func
+
+        # set up environment
+        os.environ['F2FORMAT_QUIET'] = '1'
+        os.environ['F2FORMAT_VERSION'] = '3.8'
+
+        with tempfile.TemporaryDirectory() as tempdir:
+            tmp_file = os.path.join(tempdir, 'temp.py')
+            with open(tmp_file, 'w') as file:
+                print('b = 1', file=file)
+                print("print(f'a {b = :>2} c')")
+                print("print(f'a {b = !r:>2} c'")
+            old = subprocess.check_output([sys.executable, tmp_file], encoding='utf-8')
+
+            # convert Python 3.8 debug f-string
+            core_func(tmp_file)
+            new = subprocess.check_output([sys.executable, tmp_file], encoding='utf-8')
+            self.assertEqual(old, new)
+
+        # reset environ
+        del sys.modules['f2format']
+        del os.environ['F2FORMAT_QUIET']
         del os.environ['F2FORMAT_VERSION']
 
 
