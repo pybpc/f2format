@@ -40,7 +40,6 @@ BOOLEAN_STATES = {'1': True, '0': False,
                   'on': True, 'off': False}
 
 # environs
-F2FORMAT_QUIET = BOOLEAN_STATES.get(os.getenv('F2FORMAT_QUIET', '0').casefold(), False)
 LOCALE_ENCODING = locale.getpreferredencoding(False)
 
 # macros
@@ -249,6 +248,7 @@ def f2format(filename):
      - F2FORMAT_VERSION -- convert against Python version (same as `--python` option in CLI)
 
     """
+    F2FORMAT_QUIET = BOOLEAN_STATES.get(os.getenv('F2FORMAT_QUIET', '0').casefold(), False)
     if not F2FORMAT_QUIET:
         print('Now converting %r...' % filename)
 
@@ -316,8 +316,9 @@ def main(argv=None):
     archive = (not args.no_archive)
     os.environ['F2FORMAT_VERSION'] = args.python
     os.environ['F2FORMAT_ENCODING'] = args.encoding
-    if os.getenv('F2FORMAT_QUIET') is None:
-        os.environ['F2FORMAT_QUIET'] = '1' if args.quiet else '0'
+
+    F2FORMAT_QUIET = os.getenv('F2FORMAT_QUIET')
+    os.environ['F2FORMAT_QUIET'] = '1' if args.quiet else ('0' if F2FORMAT_QUIET is None else F2FORMAT_QUIET)
 
     def find(root):  # pragma: no cover
         """Recursively find all files under root."""
@@ -357,7 +358,7 @@ def main(argv=None):
             filelist.extend(find(path))
 
     # check if file is Python source code
-    def ispy(file): return (os.path.isfile(file) and (os.path.splitext(file)[1] in ('.py', '.pyw')))
+    ispy = lambda file: (os.path.isfile(file) and (os.path.splitext(file)[1] in ('.py', '.pyw')))
     filelist = sorted(filter(ispy, filelist))
 
     # if no file supplied
