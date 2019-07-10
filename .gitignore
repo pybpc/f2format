@@ -6,7 +6,8 @@ Tap
 release/
 Pipfile.lock
 
-# Created by https://www.gitignore.io/api/python,macos
+# Created by https://www.gitignore.io/api/python,macos,mercurial
+# Edit at https://www.gitignore.io/?templates=python,macos,mercurial
 
 ### macOS ###
 # General
@@ -36,6 +37,14 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
+### Mercurial ###
+.hg/
+.hgignore
+.hgsigs
+.hgsub
+.hgsubstate
+.hgtags
+
 ### Python ###
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -59,6 +68,8 @@ parts/
 sdist/
 var/
 wheels/
+pip-wheel-metadata/
+share/python-wheels/
 *.egg-info/
 .installed.cfg
 *.egg
@@ -77,6 +88,7 @@ pip-delete-this-directory.txt
 # Unit test / coverage reports
 htmlcov/
 .tox/
+.nox/
 .coverage
 .coverage.*
 .cache
@@ -94,6 +106,7 @@ coverage.xml
 *.log
 local_settings.py
 db.sqlite3
+db.sqlite3-journal
 
 # Flask stuff:
 instance/
@@ -117,6 +130,13 @@ ipython_config.py
 
 # pyenv
 .python-version
+
+# pipenv
+#   According to pypa/pipenv#598, it is recommended to include Pipfile.lock in version control.
+#   However, in case of collaboration, if having platform-specific dependencies or dependencies
+#   having no cross-platform support, pipenv may install dependencies that don't work, or not
+#   install all needed dependencies.
+#Pipfile.lock
 
 # celery beat schedule file
 celerybeat-schedule
@@ -148,22 +168,7 @@ venv.bak/
 .dmypy.json
 dmypy.json
 
-### Python Patch ###
-.venv/
+# Pyre type checker
+.pyre/
 
-### Python.VirtualEnv Stack ###
-# Virtualenv
-# http://iamzed.com/2009/05/07/a-primer-on-virtualenv/
-[Bb]in
-#[Ii]nclude
-[Ll]ib
-[Ll]ib64
-[Ll]ocal
-[Ss]cripts
-pyvenv.cfg
-pip-selfcheck.json
-
-
-# End of https://www.gitignore.io/api/python,macos
-
-!lib
+# End of https://www.gitignore.io/api/python,macos,mercurial
