@@ -84,7 +84,7 @@ clean-pipenv:
 clean-pypi:
 	set -ex
 	cd $(DIR)
-	mkdir -p sdist eggs wheels
+	mkdir -p dist sdist eggs wheels
 	find dist -iname '*.egg' -exec mv {} eggs \;
 	find dist -iname '*.whl' -exec mv {} wheels \;
 	find dist -iname '*.tar.gz' -exec mv {} sdist \;
