@@ -1,5 +1,8 @@
 # Change Log
 
+## [v0.7.3](https://github.com/JarryShaw/f2format/tree/v0.7.3) (2019-07-10)
+[Full Changelog](https://github.com/JarryShaw/f2format/compare/v0.7.2...v0.7.3)
+
 ## [v0.7.2](https://github.com/JarryShaw/f2format/tree/v0.7.2) (2019-06-24)
 [Full Changelog](https://github.com/JarryShaw/f2format/compare/v0.7.1...v0.7.2)
 
@@ -76,13 +79,13 @@
 [Full Changelog](https://github.com/JarryShaw/f2format/compare/v0.3.0...v)
 
 ## [v0.3.0](https://github.com/JarryShaw/f2format/tree/v0.3.0) (2018-11-28)
-[Full Changelog](https://github.com/JarryShaw/f2format/compare/v0.2.3...v0.3.0)
-
-## [v0.2.3](https://github.com/JarryShaw/f2format/tree/v0.2.3) (2018-11-27)
-[Full Changelog](https://github.com/JarryShaw/f2format/compare/v0.2.4...v0.2.3)
+[Full Changelog](https://github.com/JarryShaw/f2format/compare/v0.2.4...v0.3.0)
 
 ## [v0.2.4](https://github.com/JarryShaw/f2format/tree/v0.2.4) (2018-11-27)
-[Full Changelog](https://github.com/JarryShaw/f2format/compare/v0.2.3.post1...v0.2.4)
+[Full Changelog](https://github.com/JarryShaw/f2format/compare/v0.2.3...v0.2.4)
+
+## [v0.2.3](https://github.com/JarryShaw/f2format/tree/v0.2.3) (2018-11-27)
+[Full Changelog](https://github.com/JarryShaw/f2format/compare/v0.2.3.post1...v0.2.3)
 
 ## [v0.2.3.post1](https://github.com/JarryShaw/f2format/tree/v0.2.3.post1) (2018-11-27)
 
