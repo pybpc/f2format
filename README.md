@@ -21,7 +21,7 @@ provides an intelligent, yet imperfect, solution of a **backport compiler** by c
 *f-string*s to `str.format` literals, which guarantees you to always write *f-string* in Python
 3.6 flavour then compile for compatibility later.
 
-&emsp; `f2format` is inspired and assisted by my pal [@gousaiyang](https://github.com/gousaiyang).
+&emsp; `f2format` is inspired and assisted by my good mate [@gousaiyang](https://github.com/gousaiyang).
 It functions by tokenising and parsing Python code into multiple abstract syntax trees (AST),
 through which it shall synthesise and extract expressions from *f-string* literals, and then
 reassemble the original string using `str.format` method. Besides
@@ -33,7 +33,7 @@ Also, it always tries to maintain the original layout of source code, and accura
 
 ## Installation
 
-> Note that `f2format` only supports Python versions __since 3.4__ 🐍
+> Note that `f2format` only supports Python versions __since 3.3__ 🐍
 
 &emsp; For macOS users, `f2format` is now available through [Homebrew](https://brew.sh):
 
@@ -126,7 +126,7 @@ information.
  > Coming soooooooooooon...
 
 &emsp; For the worst case, we also provide bundled executables of `f2format`. In such case,
-you may simply download it then voila, it's ready for you.
+you may simply download it then, voilà, it's ready for you.
 
 &emsp; Special thanks to [PyInstaller](https://www.pyinstaller.org) ❤️
 
@@ -165,30 +165,55 @@ demo script, which may help integrate `f2format` in your development and distrib
 
 ### APIs
 
-```python
-f2format.f2format(filename)
-```
+#### `f2format` -- wrapper works for conversion
 
- > Wrapper works for conversion.
+```python
+f2format(filename)
+```
 
 Args:
 
 - `filename` -- `str`, file to be converted
 
-```python
-f2format.convert(string, source='<unknown>')
-```
+Envs:
 
- > The main conversion process.
+- `F2FORMAT_QUIET` -- run in quiet mode (same as `--quiet` option in CLI)
+- `F2FORMAT_ENCODING` -- encoding to open source files (same as `--encoding` option in CLI)
+- `F2FORMAT_VERSION`-- convert against Python version (same as `--python` option in CLI)
+
+Raises:
+
+- `ConvertError `-- when `parso.ParserSyntaxError` raised
+
+#### `convert` -- the main conversion process
+
+```python
+convert(string, source='<unknown>')
+```
 
 Args:
 
 - `string` -- `str`, context to be converted
 - `source` -- `str`, source of the context
 
+Envs:
+
+- `F2FORMAT_VERSION`-- convert against Python version (same as `--python` option in CLI)
+
 Returns:
 
 - `str` -- converted string
+
+Raises:
+
+- `ConvertError `-- when `parso.ParserSyntaxError` raised
+
+#### `ConvertError` -- `f2format` internal exception
+
+```python
+class ConvertError(SyntaxError):
+    pass
+```
 
 ### Codec
 
@@ -203,16 +228,24 @@ even through running with a previous version of Python.
 &emsp; The current test samples are under [`/test`](https://github.com/JarryShaw/f2format/blob/master/test)
 folder. `test_driver.py` is the main entry point for tests.
 
-&emsp; For unittests, see [`test.py`](https://github.com/JarryShaw/f2format/blob/master/test.py).
+&emsp; For unittests, see [`test.py`](https://github.com/JarryShaw/f2format/blob/master/share/test.py).
 
 ## Known bugs
 
 &emsp; ~~Since `f2format` is currently based on [`parso`](https://github.com/davidhalter/parso) project,
 it has encountered a grammar issue as described at [#74](https://github.com/davidhalter/parso/issues/74).
-Please __AVOID__ using such grammar when using *f-string*.~~
+Please __AVOID__ using such grammar when using *f-string*.~~ This issue has been resolved since [`parso`]
+version __0.5.0__.
 
 ## Contribution
 
 &emsp; Contributions are very welcome, especially fixing bugs and providing test cases, which
 [@gousaiyang](https://github.com/gousaiyang) is to help with, so to speak. Note that code must
 remain valid and reasonable.
+
+## See Also
+
+- [`babel`](https://github.com/jarryshaw/babel)
+- [`poseur`](https://github.com/jarryshaw/poseur)
+- [`walrus`](https://github.com/jarryshaw/walrus)
+- [`vermin`](https://github.com/netromdk/vermin)

@@ -12,7 +12,7 @@ import uuid
 import parso
 import tbtrim
 
-__all__ = ['f2format', 'convert']
+__all__ = ['f2format', 'convert', 'ConvertError']
 
 # multiprocessing may not be supported
 try:        # try first
@@ -31,7 +31,7 @@ finally:    # alias and aftermath
     del multiprocessing
 
 # version string
-__version__ = '0.7.3'
+__version__ = '0.7.3.post1'
 
 # from configparser
 BOOLEAN_STATES = {'1': True, '0': False,
@@ -264,6 +264,9 @@ def convert(string, source='<unknown>'):
     Returns:
      - str -- converted string
 
+    Raises:
+     - ConvertError -- when `parso.ParserSyntaxError` raised
+
     """
     # parse source string
     module = parse(string, source)
@@ -285,6 +288,9 @@ def f2format(filename):
      - F2FORMAT_QUIET -- run in quiet mode (same as `--quiet` option in CLI)
      - F2FORMAT_ENCODING -- encoding to open source files (same as `--encoding` option in CLI)
      - F2FORMAT_VERSION -- convert against Python version (same as `--python` option in CLI)
+
+    Raises:
+     - ConvertError -- when `parso.ParserSyntaxError` raised
 
     """
     F2FORMAT_QUIET = BOOLEAN_STATES.get(os.getenv('F2FORMAT_QUIET', '0').casefold(), False)
@@ -356,6 +362,14 @@ def main(argv=None):
 
     Args:
      - argv -- list[str], CLI arguments (default: None)
+
+    Envs:
+     - F2FORMAT_QUIET -- run in quiet mode (same as `--quiet` option in CLI)
+     - F2FORMAT_ENCODING -- encoding to open source files (same as `--encoding` option in CLI)
+     - F2FORMAT_VERSION -- convert against Python version (same as `--python` option in CLI)
+
+    Raises:
+     - ConvertError -- when `parso.ParserSyntaxError` raised
 
     """
     parser = get_parser()

@@ -6,8 +6,8 @@ f2format
 back-port compiler for Python 3.6 f-string literals
 ---------------------------------------------------
 
-:Version: v0.7.3
-:Date: July 10, 2019
+:Version: v0.7.3.post1
+:Date: July 14, 2019
 :Manual section: 1
 :Author:
     Jarry Shaw, a newbie programmer, is the author, owner and maintainer
@@ -76,8 +76,13 @@ compatibility configuration for none-unicode files
 ENVIRONMENT
 ===========
 
-``f2format`` currently supports two environment variables.
+``f2format`` currently supports three environment variables.
 
 :F2FORMAT_ENCODING:   encoding to open source files
 :F2FORMAT_VERSION:    convert against Python version
 :F2FORMAT_QUIET:      run in quiet mode
+
+SEE ALSO
+========
+
+babel(1), poseur(1), walrus(1), vermin(1)
