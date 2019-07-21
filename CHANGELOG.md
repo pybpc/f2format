@@ -1,5 +1,11 @@
 # Change Log
 
+## [v0.7.3.post2](https://github.com/JarryShaw/f2format/tree/v0.7.3.post2) (2019-07-21)
+[Full Changelog](https://github.com/JarryShaw/f2format/compare/v0.7.3.post1...v0.7.3.post2)
+
+## [v0.7.3.post1](https://github.com/JarryShaw/f2format/tree/v0.7.3.post1) (2019-07-14)
+[Full Changelog](https://github.com/JarryShaw/f2format/compare/v0.7.3...v0.7.3.post1)
+
 ## [v0.7.3](https://github.com/JarryShaw/f2format/tree/v0.7.3) (2019-07-10)
 [Full Changelog](https://github.com/JarryShaw/f2format/compare/v0.7.2...v0.7.3)
 
