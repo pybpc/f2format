@@ -31,7 +31,7 @@ finally:    # alias and aftermath
     del multiprocessing
 
 # version string
-__version__ = '0.7.3.post1'
+__version__ = '0.7.3.post2'
 
 # from configparser
 BOOLEAN_STATES = {'1': True, '0': False,
@@ -357,6 +357,45 @@ def get_parser():
     return parser
 
 
+def find(root):  # pragma: no cover
+    """Recursively find all files under root.
+
+    Args:
+     - root -- os.PathLike, root path to search
+
+    Returns:
+     - typing.Generator -- yield all files under the root path
+
+    """
+    flst = list()
+    temp = os.listdir(root)
+    for file in temp:
+        path = os.path.join(root, file)
+        if os.path.isdir(path):
+            flst.extend(find(path))
+        elif os.path.isfile(path):
+            flst.append(path)
+        elif os.path.islink(path):  # exclude symbolic links
+            continue
+    yield from flst
+
+
+def rename(path, root):
+    """Rename file for archiving.
+
+    Args:
+     - path -- os.PathLike, file to rename
+     - root -- os.PathLike, archive path
+
+    Returns:
+     - str -- the archiving path
+
+    """
+    stem, ext = os.path.splitext(path)
+    name = '%s-%s%s' % (stem, uuid.uuid4(), ext)
+    return os.path.join(root, name)
+
+
 def main(argv=None):
     """Entry point for f2format.
 
@@ -384,25 +423,6 @@ def main(argv=None):
     F2FORMAT_QUIET = os.getenv('F2FORMAT_QUIET')
     os.environ['F2FORMAT_QUIET'] = '1' if args.quiet else ('0' if F2FORMAT_QUIET is None else F2FORMAT_QUIET)
 
-    def find(root):  # pragma: no cover
-        """Recursively find all files under root."""
-        flst = list()
-        temp = os.listdir(root)
-        for file in temp:
-            path = os.path.join(root, file)
-            if os.path.isdir(path):
-                flst.extend(find(path))
-            elif os.path.isfile(path):
-                flst.append(path)
-            elif os.path.islink(path):  # exclude symbolic links
-                continue
-        yield from flst
-
-    def rename(path):
-        stem, ext = os.path.splitext(path)
-        name = '%s-%s%s' % (stem, uuid.uuid4(), ext)
-        return os.path.join(ARCHIVE, name)
-
     # make archive directory
     if archive:
         os.makedirs(ARCHIVE, exist_ok=True)
@@ -412,13 +432,13 @@ def main(argv=None):
     for path in args.file:
         if os.path.isfile(path):
             if archive:
-                dest = rename(path)
+                dest = rename(path, root=ARCHIVE)
                 os.makedirs(os.path.dirname(dest), exist_ok=True)
                 shutil.copy(path, dest)
             filelist.append(path)
         if os.path.isdir(path):
             if archive:
-                shutil.copytree(path, rename(path))
+                shutil.copytree(path, rename(path, root=ARCHIVE))
             filelist.extend(find(path))
 
     # check if file is Python source code
