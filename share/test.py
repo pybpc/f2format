@@ -17,13 +17,13 @@ class TestF2format(unittest.TestCase):
         from f2format import get_parser
 
         parser = get_parser()
-        args = parser.parse_args(['-n', '-q', '-p/tmp/',
+        args = parser.parse_args(['-na', '-q', '-p/tmp/',
                                   '-cgb2312', '-v3.6',
                                   'test1.py', 'test2.py'])
 
         self.assertIs(args.quiet, True,
                       'run in quiet mode')
-        self.assertIs(args.no_archive, True,
+        self.assertIs(args.archive, False,
                       'do not archive original files')
         self.assertEqual(args.archive_path, '/tmp/',
                          'path to archive original files')

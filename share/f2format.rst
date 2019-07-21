@@ -6,7 +6,7 @@ f2format
 back-port compiler for Python 3.6 f-string literals
 ---------------------------------------------------
 
-:Version: v0.7.3.post2
+:Version: v0.8.0
 :Date: July 21, 2019
 :Manual section: 1
 :Author:
@@ -57,7 +57,7 @@ archive options
 
 duplicate original files in case there's any issue
 
--n, --no-archive      do not archive original files
+-na, --no-archive     do not archive original files
 
 -p *PATH*, --archive-path *PATH*
                       path to archive original files

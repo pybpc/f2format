@@ -31,7 +31,7 @@ finally:    # alias and aftermath
     del multiprocessing
 
 # version string
-__version__ = '0.7.3.post2'
+__version__ = '0.8.0'
 
 # from configparser
 BOOLEAN_STATES = {'1': True, '0': False,
@@ -338,7 +338,7 @@ def get_parser():
 
     archive_group = parser.add_argument_group(title='archive options',
                                               description="duplicate original files in case there's any issue")
-    archive_group.add_argument('-n', '--no-archive', action='store_true',
+    archive_group.add_argument('-na', '--no-archive', action='store_false', dest='archive',
                                help='do not archive original files')
     archive_group.add_argument('-p', '--archive-path', action='store', default=__archive__, metavar='PATH',
                                help='path to archive original files (%s)' % __archive__)
@@ -416,7 +416,6 @@ def main(argv=None):
 
     # set up variables
     ARCHIVE = args.archive_path
-    archive = (not args.no_archive)
     os.environ['F2FORMAT_VERSION'] = args.python
     os.environ['F2FORMAT_ENCODING'] = args.encoding
 
@@ -424,20 +423,20 @@ def main(argv=None):
     os.environ['F2FORMAT_QUIET'] = '1' if args.quiet else ('0' if F2FORMAT_QUIET is None else F2FORMAT_QUIET)
 
     # make archive directory
-    if archive:
+    if args.archive:
         os.makedirs(ARCHIVE, exist_ok=True)
 
     # fetch file list
     filelist = list()
     for path in args.file:
         if os.path.isfile(path):
-            if archive:
+            if args.archive:
                 dest = rename(path, root=ARCHIVE)
                 os.makedirs(os.path.dirname(dest), exist_ok=True)
                 shutil.copy(path, dest)
             filelist.append(path)
         if os.path.isdir(path):
-            if archive:
+            if args.archive:
                 shutil.copytree(path, rename(path, root=ARCHIVE))
             filelist.extend(find(path))
 
