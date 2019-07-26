@@ -75,6 +75,7 @@ clean-pypi:
 
 # update pipenv
 update-pipenv:
+	pipenv run pip install -U pip setuptools wheel
 	pipenv update
 	pipenv install --dev
 	pipenv clean
