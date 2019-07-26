@@ -31,7 +31,7 @@ finally:    # alias and aftermath
     del multiprocessing
 
 # version string
-__version__ = '0.8.0'
+__version__ = '0.8.1'
 
 # from configparser
 BOOLEAN_STATES = {'1': True, '0': False,
@@ -64,7 +64,7 @@ ROOT = os.path.dirname(os.path.realpath(__file__))
 def predicate(filename):  # pragma: no cover
     if os.path.basename(filename) == 'f2format':
         return True
-    return (ROOT in os.path.realpath(filename))
+    return ROOT in os.path.realpath(filename)
 
 
 tbtrim.set_trim_rule(predicate, strict=True, target=ConvertError)
@@ -77,23 +77,23 @@ def parse(string, source, error_recovery=False):
     """Parse source string.
 
     Args:
-     - string -- str, context to be converted
-     - source -- str, source of the context
-     - error_recovery -- bool, see `parso.Grammar.parse` (default: `False`)
+     - `string` -- `str`, context to be converted
+     - `source` -- `str`, source of the context
+     - `error_recovery` -- `bool`, see `parso.Grammar.parse`
 
     Envs:
-     - F2FORMAT_VERSION -- convert against Python version (same as `--python` option in CLI)
+     - `F2FORMAT_VERSION` -- convert against Python version (same as `--python` option in CLI)
 
     Returns:
-     - parso.python.tree.Module -- parso AST
+     - `parso.python.tree.Module` -- parso AST
 
     Raises:
-     - ConvertError -- when `parso.ParserSyntaxError` raised
+     - `ConvertError` -- when `parso.ParserSyntaxError` raised
 
     """
     try:
         return parso.parse(string, error_recovery=error_recovery,
-                            version=os.getenv('F2FORMAT_VERSION', F2FORMAT_VERSION[-1]))
+                           version=os.getenv('F2FORMAT_VERSION', F2FORMAT_VERSION[-1]))
     except parso.ParserSyntaxError as error:
         message = '%s: <%s: %r> from %s' % (error.message, error.error_leaf.token_type,
                                             error.error_leaf.value, source)
@@ -104,11 +104,11 @@ def extract(node):
     """Extract f-string components.
 
     Args:
-     - node -- parso.python.tree.PythonNode, parso AST for f-string
+     - `node` -- `parso.python.tree.PythonNode`, parso AST for f-string
 
     Returns:
-     - str -- extracted f-string string components
-     - list[str] -- extracted f-string expressions
+     - `str` -- extracted f-string string components
+     - `List[str]` -- extracted f-string expressions
 
     """
     # FStringStart
@@ -208,10 +208,10 @@ def walk(node):
     """Walk parso AST.
 
     Args:
-     - node -- parso.python.tree.Module, parso AST
+     - `node` -- `parso.python.tree.Module`, parso AST
 
     Returns:
-     - str -- converted string
+     - `str` -- converted string
 
     """
     string = ''
@@ -227,8 +227,7 @@ def walk(node):
             else:
                 text_list.append((False, child.get_code()))
         if expr_list:
-            string += ''.join(map(lambda text: text[1] if text[0]
-                                    else re.sub(r'([{}])', r'\1\1', text[1]), text_list))
+            string += ''.join(map(lambda text: text[1] if text[0] else re.sub(r'([{}])', r'\1\1', text[1]), text_list))
             string += '.format(%s)' % ', '.join(expr_list)
         else:
             string += ''.join(map(lambda text: text[1], text_list))
@@ -255,17 +254,17 @@ def convert(string, source='<unknown>'):
     """The main conversion process.
 
     Args:
-     - string -- str, context to be converted
-     - source -- str, source of the context
+     - `string` -- `str`, context to be converted
+     - `source` -- `str`, source of the context
 
     Envs:
-     - F2FORMAT_VERSION -- convert against Python version (same as `--python` option in CLI)
+     - `F2FORMAT_VERSION` -- convert against Python version (same as `--python` option in CLI)
 
     Returns:
-     - str -- converted string
+     - `str` -- converted string
 
     Raises:
-     - ConvertError -- when `parso.ParserSyntaxError` raised
+     - `ConvertError` -- when `parso.ParserSyntaxError` raised
 
     """
     # parse source string
@@ -282,15 +281,15 @@ def f2format(filename):
     """Wrapper works for conversion.
 
     Args:
-     - filename -- str, file to be converted
+     - `filename` -- `str`, file to be converted
 
     Envs:
-     - F2FORMAT_QUIET -- run in quiet mode (same as `--quiet` option in CLI)
-     - F2FORMAT_ENCODING -- encoding to open source files (same as `--encoding` option in CLI)
-     - F2FORMAT_VERSION -- convert against Python version (same as `--python` option in CLI)
+     - `F2FORMAT_QUIET` -- run in quiet mode (same as `--quiet` option in CLI)
+     - `F2FORMAT_ENCODING` -- encoding to open source files (same as `--encoding` option in CLI)
+     - `F2FORMAT_VERSION` -- convert against Python version (same as `--python` option in CLI)
 
     Raises:
-     - ConvertError -- when `parso.ParserSyntaxError` raised
+     - `ConvertError` -- when `parso.ParserSyntaxError` raised
 
     """
     F2FORMAT_QUIET = BOOLEAN_STATES.get(os.getenv('F2FORMAT_QUIET', '0').casefold(), False)
@@ -326,7 +325,7 @@ def get_parser():
     """Generate CLI parser.
 
     Returns:
-     - argparse.ArgumentParser -- CLI parser for f2format
+     - `argparse.ArgumentParser` -- CLI parser for f2format
 
     """
     parser = argparse.ArgumentParser(prog='f2format',
@@ -361,10 +360,10 @@ def find(root):  # pragma: no cover
     """Recursively find all files under root.
 
     Args:
-     - root -- os.PathLike, root path to search
+     - `root` -- os.PathLike, root path to search
 
     Returns:
-     - typing.Generator -- yield all files under the root path
+     - `Generator[str, None, None]` -- yield all files under the root path
 
     """
     flst = list()
@@ -384,11 +383,11 @@ def rename(path, root):
     """Rename file for archiving.
 
     Args:
-     - path -- os.PathLike, file to rename
-     - root -- os.PathLike, archive path
+     - `path` -- `os.PathLike`, file to rename
+     - `root` -- `os.PathLike`, archive path
 
     Returns:
-     - str -- the archiving path
+     - `str` -- the archiving path
 
     """
     stem, ext = os.path.splitext(path)
@@ -400,15 +399,15 @@ def main(argv=None):
     """Entry point for f2format.
 
     Args:
-     - argv -- list[str], CLI arguments (default: None)
+     - `argv` -- `List[str]`, CLI arguments (default: None)
 
     Envs:
-     - F2FORMAT_QUIET -- run in quiet mode (same as `--quiet` option in CLI)
-     - F2FORMAT_ENCODING -- encoding to open source files (same as `--encoding` option in CLI)
-     - F2FORMAT_VERSION -- convert against Python version (same as `--python` option in CLI)
+     - `F2FORMAT_QUIET` -- run in quiet mode (same as `--quiet` option in CLI)
+     - `F2FORMAT_ENCODING` -- encoding to open source files (same as `--encoding` option in CLI)
+     - `F2FORMAT_VERSION` -- convert against Python version (same as `--python` option in CLI)
 
     Raises:
-     - ConvertError -- when `parso.ParserSyntaxError` raised
+     - `ConvertError` -- when `parso.ParserSyntaxError` raised
 
     """
     parser = get_parser()
@@ -445,12 +444,12 @@ def main(argv=None):
     filelist = sorted(filter(ispy, filelist))
 
     # if no file supplied
-    if len(filelist) == 0:
+    if not filelist:
         parser.error('argument PATH: no valid source file found')
 
     # process files
     if mp is None or CPU_CNT <= 1:
-        [f2format(filename) for filename in filelist]  # pragma: no cover
+        [f2format(filename) for filename in filelist]  # pylint: disable=expression-not-assigned # pragma: no cover
     else:
         mp.Pool(processes=CPU_CNT).map(f2format, filelist)
 

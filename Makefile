@@ -6,18 +6,11 @@ export PIPENV_VENV_IN_PROJECT
 export CODECOV_TOKEN
 
 SHELL := /usr/local/bin/bash
-DIR   ?= .
 
 # fetch platform spec
 platform = $(shell python3 -c "import distutils.util; print(distutils.util.get_platform().replace('-', '_').replace('.', '_'))")
 # get version string
 version  = $(shell cat f2format.py | grep "^__version__" | sed "s/__version__ = '\(.*\)'/\1/")
-# builtins.token
-token    = $(shell python3 -c "print(__import__('token').__spec__.origin)")
-# builtins.tokenize
-tokenize = $(shell python3 -c "print(__import__('tokenize').__spec__.origin)")
-# commit message
-message  ?= ""
 # pre-release flag
 flag     = $(shell python3 -c "print(__import__('pkg_resources').parse_version('${version}').is_prerelease)")
 
@@ -26,7 +19,6 @@ docker: setup-version docker-build
 pipenv: update-pipenv
 pypi: dist-pypi dist-upload
 setup: setup-version setup-manpages
-# setup: setup-version setup-stdlib setup-manpages
 test: test-unittest test-interactive
 
 test-unittest:
@@ -55,12 +47,6 @@ setup-version:
 setup-formula: pipenv
 	pipenv run python3 share/setup-formula.py
 
-# update Python stdlib files
-# setup-stdlib:
-# 	rm -f src/lib/token.py src/lib/tokenize.py
-# 	mkdir -p src/lib
-# 	cp -f $(token) $(tokenize) src/lib
-
 # update manpages
 setup-manpages:
 	rm -f share/f2format.1
@@ -68,22 +54,19 @@ setup-manpages:
 
 # remove *.pyc
 clean-pyc:
-	find $(DIR) -iname __pycache__ | xargs rm -rf
-	find $(DIR) -iname '*.pyc' | xargs rm -f
+	find . -iname __pycache__ | xargs rm -rf
+	find . -iname '*.pyc' | xargs rm -f
 
 # remove devel files
 clean-misc: clean-pyc
-	find $(DIR) -iname .DS_Store | xargs rm -f
+	find . -iname .DS_Store | xargs rm -f
 
 # remove pipenv
 clean-pipenv:
 	pipenv --rm
 
 # prepare for PyPI distribution
-.ONESHELL:
 clean-pypi:
-	set -ex
-	cd $(DIR)
 	mkdir -p dist sdist eggs wheels
 	find dist -iname '*.egg' -exec mv {} eggs \;
 	find dist -iname '*.whl' -exec mv {} wheels \;
@@ -105,7 +88,6 @@ update-maintainer:
 docker-prep:
 	rm -rf release
 	mkdir -p release
-	# cp -rf src release/f2format
 	cp setup.py \
 	   setup.cfg \
 	   README.md \
@@ -119,60 +101,22 @@ docker-build: docker-prep
 	docker build --tag f2format:$(version) --tag f2format:latest release
 
 # make PyPI distribution
-#dist-pypi: clean-pypi dist-macos dist-linux
 dist-pypi: clean-pypi dist-pypi-setup
 
-.ONESHELL:
 dist-pypi-setup:
-	set -ex
-	cd $(DIR)
 	python3 setup.py sdist bdist_wheel
 
-# .ONESHELL:
-# dist-macos:
-# 	set -ex
-# 	cd $(DIR)
-# 	python3.7 setup.py sdist bdist_egg bdist_wheel --plat-name="$(platform)" --python-tag='cp37'
-# 	python3.6 setup.py bdist_egg bdist_wheel --plat-name="$(platform)" --python-tag='cp36'
-# 	python3.5 setup.py bdist_egg bdist_wheel --plat-name="$(platform)" --python-tag='cp35'
-# 	python3.4 setup.py bdist_egg bdist_wheel --plat-name="$(platform)" --python-tag='cp34'
-# 	pypy3 setup.py bdist_wheel --plat-name="$(platform)" --python-tag='pp35'
-
-# .ONESHELL:
-# dist-linux:
-# 	set -ex
-# 	cd $(DIR)/docker
-# 	sed -i "s/LABEL version.*/LABEL version $(shell date +%Y.%m.%d)/" Dockerfile
-# 	docker-compose up --build
-
 # upload PyPI distribution
-.ONESHELL:
 dist-upload:
-	set -ex
-	cd $(DIR)
 	twine check dist/* || true
 	twine upload dist/* -r pypi --skip-existing
 	twine upload dist/* -r pypitest --skip-existing
 
-# add tag
-.ONESHELL:
-git-tag:
-	set -ex
-	cd $(DIR)
-	git tag "v$(version)"
-
 # upload to GitHub
-.ONESHELL:
 git-upload:
-	set -ex
-	cd $(DIR)
 	git pull
 	git add .
-	if [[ -z "$(message)" ]] ; then \
-	    git commit -a -S ; \
-	else \
-	    git commit -a -S -m "$(message)" ; \
-	fi
+	git commit -a -S
 	git push
 
 # update submodules
@@ -190,19 +134,28 @@ git-aftermath: git-submodule
 	git push
 
 # file new release
+.ONESHELL:
 release:
+	message=$$(git log -1 --pretty=%B)
 	go run github.com/aktau/github-release release \
 	    --user JarryShaw \
 	    --repo f2format \
 	    --tag "v$(version)" \
 	    --name "f2format v$(version)" \
-	    --description "$(message)"
+	    --description "$$(message)"
 
 # run distribution process
-dist: test-unittest
-	$(MAKE) message="$(message)" \
-	    setup clean pypi \
-	    git-upload release setup-formula
-	$(MAKE) message="f2format: $(version)" DIR=Tap \
-	    git-upload
-	$(MAKE) update-maintainer git-aftermath
+dist: dist_1st dist_2nd dist_3rd
+
+dist_1st: test-unittest setup clean pypi git-upload release
+
+.ONESHELL:
+dist_2nd: setup-formula
+	set -ae
+	cd Tap
+	git pull
+	git add Formula/poseur.rb
+	git commit -S -m "poseur: $(version)"
+	git push
+
+dist_3rd: update-maintainer git-aftermath
