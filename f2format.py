@@ -31,7 +31,7 @@ finally:    # alias and aftermath
     del multiprocessing
 
 # version string
-__version__ = '0.8.1'
+__version__ = '0.8.2'
 
 # from configparser
 BOOLEAN_STATES = {'1': True, '0': False,
@@ -297,7 +297,7 @@ def f2format(filename):
         print('Now converting %r...' % filename)
 
     # fetch encoding
-    encoding = os.getenv('F2FORMAT_ENCODING', LOCALE_ENCODING)
+    encoding = os.getenv('F2FORMAT_ENCODING')
 
     # file content
     with open(filename, 'r', encoding=encoding) as file:
