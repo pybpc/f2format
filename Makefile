@@ -135,15 +135,14 @@ git-aftermath: git-submodule
 	git push
 
 # file new release
-.ONESHELL:
 release:
-	message=$$(git log -1 --pretty=%B)
+	$(eval message := $(shell git log -1 --pretty=%B))
 	go run github.com/aktau/github-release release \
 	    --user JarryShaw \
 	    --repo f2format \
 	    --tag "v$(version)" \
 	    --name "f2format v$(version)" \
-	    --description "$$(message)"
+	    --description "$(message)"
 
 # run distribution process
 dist: dist_1st dist_2nd dist_3rd
@@ -155,8 +154,8 @@ dist_2nd: setup-formula
 	set -ae
 	cd Tap
 	git pull
-	git add Formula/poseur.rb
-	git commit -S -m "poseur: $(version)"
+	git add Formula/f2format.rb
+	git commit -S -m "f2format: $(version)"
 	git push
 
 dist_3rd: update-maintainer git-aftermath

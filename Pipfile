@@ -20,6 +20,7 @@ tbtrim = ">=0.2.1"
 [dev-packages]
 f2format = {editable = true,path = "."}
 ipython = "*"
+homebrew-pypi-poet = "*"
 requests = "*"
 autopep8 = "*"
 coverage = "*"
