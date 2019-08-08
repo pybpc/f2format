@@ -136,13 +136,12 @@ git-aftermath: git-submodule
 
 # file new release
 release:
-	$(eval message := $(shell git log -1 --pretty=%B))
 	go run github.com/aktau/github-release release \
 	    --user JarryShaw \
 	    --repo f2format \
 	    --tag "v$(version)" \
 	    --name "f2format v$(version)" \
-	    --description "$(message)"
+	    --description "$$(shasum -a256 $(archive) | cut -c -6)"
 
 # run distribution process
 dist: dist_1st dist_2nd dist_3rd
