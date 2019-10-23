@@ -141,7 +141,7 @@ release:
 	    --repo f2format \
 	    --tag "v$(version)" \
 	    --name "f2format v$(version)" \
-	    --description "$$(shasum -a256 $(archive) | cut -c -6)"
+	    --description "$$(git log -1 --pretty=%B)"
 
 # run distribution process
 dist: dist_1st dist_2nd dist_3rd
