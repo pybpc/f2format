@@ -31,7 +31,7 @@ finally:    # alias and aftermath
     del multiprocessing
 
 # version string
-__version__ = '0.8.2'
+__version__ = '0.8.3'
 
 # from configparser
 BOOLEAN_STATES = {'1': True, '0': False,
@@ -451,8 +451,8 @@ def main(argv=None):
     if mp is None or CPU_CNT <= 1:
         [f2format(filename) for filename in filelist]  # pylint: disable=expression-not-assigned # pragma: no cover
     else:
-        with mp.Pool(processes=CPU_CNT) as p:
-            p.map(f2format, filelist)
+        with mp.Pool(processes=CPU_CNT) as pool:
+            pool.map(f2format, filelist)
 
 
 if __name__ == '__main__':
