@@ -451,7 +451,8 @@ def main(argv=None):
     if mp is None or CPU_CNT <= 1:
         [f2format(filename) for filename in filelist]  # pylint: disable=expression-not-assigned # pragma: no cover
     else:
-        mp.Pool(processes=CPU_CNT).map(f2format, filelist)
+        with mp.Pool(processes=CPU_CNT) as p:
+            p.map(f2format, filelist)
 
 
 if __name__ == '__main__':
