@@ -31,7 +31,7 @@ finally:    # alias and aftermath
     del multiprocessing
 
 # version string
-__version__ = '0.8.3'
+__version__ = '0.8.4'
 
 # from configparser
 BOOLEAN_STATES = {'1': True, '0': False,
@@ -51,7 +51,7 @@ del grammar_regex
 
 
 class ConvertError(SyntaxError):
-    pass
+    """Parso syntax error."""
 
 
 ###############################################################################
