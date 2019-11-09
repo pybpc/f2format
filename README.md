@@ -232,10 +232,15 @@ folder. `test_driver.py` is the main entry point for tests.
 
 ## Known bugs
 
-&emsp; ~~Since `f2format` is currently based on [`parso`](https://github.com/davidhalter/parso) project,
-it has encountered a grammar issue as described at [#74](https://github.com/davidhalter/parso/issues/74).
-Please __AVOID__ using such grammar when using *f-string*.~~ This issue has been resolved since [`parso`]
-version __0.5.0__.
+&emsp; Since `f2format` is currently based on [`parso`](https://github.com/davidhalter/parso) project,
+it had encountered several compatibility and parsing issues.
+
+* ~~Parsing f-strings with nested format specifiers produces incorrect SyntaxError ([#74](https://github.com/davidhalter/parso/issues/74))~~
+  This issue has been resolved since `parso` version __0.5.0__.
+
+* Parsing f-strings with invalid quotes in expression part does not raise SyntaxError ([#86](https://github.com/davidhalter/parso/issues/86))
+
+* Parsing f-strings with seeming assignment expressions produces incorrect SyntaxError ([#87](https://github.com/davidhalter/parso/issues/87))
 
 ## Contribution
 
