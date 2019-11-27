@@ -230,7 +230,7 @@ folder. `test_driver.py` is the main entry point for tests.
 
 &emsp; For unittests, see [`test.py`](https://github.com/JarryShaw/f2format/blob/master/share/test.py).
 
-## Known bugs
+## Known issues
 
 &emsp; Since `f2format` is currently based on [`parso`](https://github.com/davidhalter/parso) project,
 it had encountered several compatibility and parsing issues.
