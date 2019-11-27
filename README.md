@@ -208,11 +208,11 @@ Raises:
 
 - `ConvertError `-- when `parso.ParserSyntaxError` raised
 
-#### `ConvertError` -- `f2format` internal exception
+#### Internal exceptions
 
 ```python
 class ConvertError(SyntaxError):
-    pass
+    """Parso syntax error."""
 ```
 
 ### Codec
