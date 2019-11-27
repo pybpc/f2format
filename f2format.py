@@ -70,6 +70,38 @@ def predicate(filename):  # pragma: no cover
 tbtrim.set_trim_rule(predicate, strict=True, target=ConvertError)
 
 ###############################################################################
+# UUID 4 generator wrapper
+
+
+class UUID4Generator:
+    """UUID 4 generator wrapper to prevent UUID collisions."""
+
+    def __init__(self, dash=True):
+        """Constructor of UUID 4 generator wrapper.
+        Args:
+         - `dash` -- `bool`, whether the generated UUID string has dashes or not
+        """
+        self.used_uuids = set()
+        self.dash = dash
+
+    def gen(self):
+        """Generate a new UUID 4 string that is guaranteed not to collide with used UUIDs.
+        Returns:
+         - `str` -- a new UUID 4 string
+        """
+        while True:
+            nuid = uuid.uuid4()
+            nuid = str(nuid) if self.dash else nuid.hex
+            if nuid not in self.used_uuids:
+                break
+        self.used_uuids.add(nuid)
+        return nuid
+
+
+# Initialise a UUID4Generator for filename UUIDs.
+uuid_gen = UUID4Generator(dash=True)
+
+###############################################################################
 # Main convertion implementation
 
 
@@ -391,7 +423,7 @@ def rename(path, root):
 
     """
     stem, ext = os.path.splitext(path)
-    name = '%s-%s%s' % (stem, uuid.uuid4(), ext)
+    name = '%s-%s%s' % (stem, uuid_gen.gen(), ext)
     return os.path.join(root, name)
 
 
