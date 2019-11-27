@@ -10,7 +10,7 @@
 [![License](https://img.shields.io/github/license/jarryshaw/f2format.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 [![LICENSE](https://img.shields.io/badge/license-Anti%20996-blue.svg)](https://github.com/996icu/996.ICU/blob/master/LICENSE)
 
- > Write *f-string* in Python 3.6 flavour, and let `f2format` worry about back-port issues :beer:
+> Write *f-string* in Python 3.6 flavour, and let `f2format` worry about back-port issues :beer:
 
 &emsp; Since [PEP 498](https://www.python.org/dev/peps/pep-0498/), Python introduced
 *[f-string](https://docs.python.org/3/reference/lexical_analysis.html#formatted-string-literals)*
@@ -66,7 +66,7 @@ git pull
 
 &emsp; It is fairly straightforward to use `f2format`:
 
- > context in `${...}` changes dynamically according to runtime environment
+> context in `${...}` changes dynamically according to runtime environment
 
 ```man
 usage: f2format [options] <python source files and folders...>
@@ -112,9 +112,9 @@ var = 'foo{:>5}bar{!r}boo'.format((1+2)*3, ("a", "b"))
 
 ### Docker
 
- > Well... it's not published to the Docker Hub yet ;)
+> Well... it's not published to the Docker Hub yet ;)
 
-&emsp; Considering `f2format` may be used in scenerios where Python is not reachable.
+&emsp; Considering `f2format` may be used in scenarios where Python is not reachable.
 We provide also a Docker image for those poor little guys.
 
 &emsp; See
@@ -123,7 +123,7 @@ information.
 
 ### Bundled Executable
 
- > Coming soooooooooooon...
+> Coming soooooooooooon...
 
 &emsp; For the worst case, we also provide bundled executables of `f2format`. In such case,
 you may simply download it then, voilà, it's ready for you.
@@ -137,7 +137,7 @@ you may simply download it then, voilà, it's ready for you.
 &emsp; [`make-demo.sh`](https://github.com/JarryShaw/f2format/blob/master/script/make-demo.sh) provides a
 demo script, which may help integrate `f2format` in your development and distribution circle.
 
- > __NB__: `make-demo.sh` is not an integrated automation script. It should be revised by design.
+> __NB__: `make-demo.sh` is not an integrated automation script. It should be revised by design.
 
 &emsp; It assumes
 
@@ -179,11 +179,11 @@ Envs:
 
 - `F2FORMAT_QUIET` -- run in quiet mode (same as `--quiet` option in CLI)
 - `F2FORMAT_ENCODING` -- encoding to open source files (same as `--encoding` option in CLI)
-- `F2FORMAT_VERSION`-- convert against Python version (same as `--python` option in CLI)
+- `F2FORMAT_VERSION` -- convert against Python version (same as `--python` option in CLI)
 
 Raises:
 
-- `ConvertError `-- when `parso.ParserSyntaxError` raised
+- `ConvertError` -- when `parso.ParserSyntaxError` raised
 
 #### `convert` -- the main conversion process
 
@@ -198,7 +198,7 @@ Args:
 
 Envs:
 
-- `F2FORMAT_VERSION`-- convert against Python version (same as `--python` option in CLI)
+- `F2FORMAT_VERSION` -- convert against Python version (same as `--python` option in CLI)
 
 Returns:
 
@@ -206,7 +206,7 @@ Returns:
 
 Raises:
 
-- `ConvertError `-- when `parso.ParserSyntaxError` raised
+- `ConvertError` -- when `parso.ParserSyntaxError` raised
 
 #### Internal exceptions
 
@@ -217,7 +217,7 @@ class ConvertError(SyntaxError):
 
 ### Codec
 
- > NB: this project is now stalled, because I just cannot figure out how to play w/ codecs :)
+> NB: this project is now stalled, because I just cannot figure out how to play w/ codecs :)
 
 &emsp; [`f2format-codec`](https://github.com/JarryShaw/f2format-codec) registers a codec in Python
 interpreter, which grants you the compatibility to write directly in Python 3.6 *f-string* syntax
