@@ -65,7 +65,7 @@ duplicate original files in case there's any issue
 convert options
 ---------------
 
-compatibility configuration for none-unicode files
+compatibility configuration for non-unicode files
 
 -c *CODING*, --encoding *CODING*
                       encoding to open source files

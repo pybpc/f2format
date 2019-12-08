@@ -89,7 +89,7 @@ archive options:
                         path to archive original files (${CWD}/archive)
 
 convert options:
-  compatibility configuration for none-unicode files
+  compatibility configuration for non-unicode files
 
   -c CODING, --encoding CODING
                         encoding to open source files (${LOCALE_ENCODING})

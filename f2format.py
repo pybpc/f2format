@@ -381,18 +381,18 @@ def get_parser():
     archive_group.add_argument('-na', '--no-archive', action='store_false', dest='archive',
                                help='do not archive original files')
     archive_group.add_argument('-p', '--archive-path', action='store', default=__archive__, metavar='PATH',
-                               help='path to archive original files (%s)' % __archive__)
+                               help='path to archive original files (%(default)s)')
 
     convert_group = parser.add_argument_group(title='convert options',
-                                              description='compatibility configuration for none-unicode files')
+                                              description='compatibility configuration for non-unicode files')
     convert_group.add_argument('-c', '--encoding', action='store', default=__f2format_encoding__, metavar='CODING',
-                               help='encoding to open source files (%s)' % __f2format_encoding__)
+                               help='encoding to open source files (%(default)s)')
     convert_group.add_argument('-v', '--python', action='store', metavar='VERSION',
                                default=__f2format_version__, choices=F2FORMAT_VERSION,
-                               help='convert against Python version (%s)' % __f2format_version__)
+                               help='convert against Python version (%(default)s)')
 
     parser.add_argument('file', nargs='+', metavar='SOURCE', default=__cwd__,
-                        help='python source files and folders to be converted (%s)' % __cwd__)
+                        help='python source files and folders to be converted (%(default)s)')
 
     return parser
 
