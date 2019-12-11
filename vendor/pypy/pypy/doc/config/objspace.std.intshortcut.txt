@@ -1,2 +1,0 @@
-Optimize the addition and subtraction of two integers. Enabling this
-option gives small speedups.
