@@ -1,12 +1,3 @@
 [submodule "codec"]
 	path = codec
 	url = https://github.com/JarryShaw/f2format-codec.git
-[submodule "vendor/cpython"]
-	path = vendor/cpython
-	url = https://github.com/python/cpython.git
-[submodule "vendor/typed_ast"]
-	path = vendor/typed_ast
-	url = https://github.com/python/typed_ast.git
-[submodule "vendor/parso"]
-	path = vendor/parso
-	url = https://github.com/davidhalter/parso.git
