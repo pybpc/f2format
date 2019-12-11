@@ -123,7 +123,7 @@ git-upload:
 	git push
 
 # upload after distro
-git-aftermath: git-submodule
+git-aftermath:
 	git pull
 	git add .
 	git commit -a -S -m "Regular update after distribution"
