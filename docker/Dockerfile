@@ -1,6 +1,6 @@
 # basic info
 FROM library/ubuntu
-LABEL version 0.8.5.post1
+LABEL version 0.8.6
 LABEL description "Ubuntu Environment for F2FORMAT"
 
 # prepare environment
