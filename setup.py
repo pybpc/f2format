@@ -33,7 +33,7 @@ setup(
     # include_package_data=True,
     zip_safe=True,
     install_requires=[
-        'parso~=0.5.0',     # universal AST support
+        'parso~=0.5.2',     # universal AST support
         'tbtrim>=0.2.1',    # traceback trim support
     ],
     py_modules=['f2format'],

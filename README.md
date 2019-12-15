@@ -238,9 +238,11 @@ it had encountered several compatibility and parsing issues.
 * ~~Parsing f-strings with nested format specifiers produces incorrect SyntaxError ([#74](https://github.com/davidhalter/parso/issues/74))~~
   This issue has been resolved since `parso` version __0.5.0__.
 
-* Parsing f-strings with invalid quotes in expression part does not raise SyntaxError ([#86](https://github.com/davidhalter/parso/issues/86))
+* ~~Parsing f-strings with invalid quotes in expression part does not raise SyntaxError ([#86](https://github.com/davidhalter/parso/issues/86))~~
+  This issue has been resolved since `parso` version __0.5.2__.
 
-* Parsing f-strings with seeming assignment expressions produces incorrect SyntaxError ([#87](https://github.com/davidhalter/parso/issues/87))
+* ~~Parsing f-strings with seeming assignment expressions produces incorrect SyntaxError ([#87](https://github.com/davidhalter/parso/issues/87))~~
+  This issue has been resolved since `parso` version __0.5.2__.
 
 ## Contribution
 

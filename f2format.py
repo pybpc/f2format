@@ -2,7 +2,6 @@
 """Back-port compiler for Python 3.6 f-string literals."""
 
 import argparse
-import contextlib
 import glob
 import locale
 import os
@@ -126,13 +125,7 @@ def parse(string, source):
     """
     grammar = parso.load_grammar(version=os.getenv('F2FORMAT_VERSION', F2FORMAT_VERSION[-1]))
     module = grammar.parse(string, error_recovery=True)
-
-    # suppress parso debug outputs
-    # see https://github.com/davidhalter/parso/commit/ee2995c1108028cd8c6d56df3a00170c93dc9ce6
-    # TODO: remove this redirect after a new version of parso is released
-    with open(os.devnull, 'w') as nul_file:
-        with contextlib.redirect_stdout(nul_file):
-            errors = grammar.iter_errors(module)
+    errors = grammar.iter_errors(module)
 
     if errors:
         error_messages = '\n'.join('[L%dC%d] %s' % (*error.start_pos, error.message) for error in errors)
