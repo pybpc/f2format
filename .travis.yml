@@ -13,8 +13,7 @@ git:
 
 # command to install dependencies
 install:
-  - pip install coverage
-  - pip install -r requirements.txt
+  - pip install -r requirements-ci.txt
 
 # command to run tests
 script:

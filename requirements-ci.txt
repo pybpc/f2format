@@ -1,0 +1,11 @@
+parso~=0.5.2
+tbtrim>=0.2.1
+-e .
+ipython
+homebrew-pypi-poet
+requests
+autopep8
+coverage
+codecov
+pylint
+pyinstaller
