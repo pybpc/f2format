@@ -23,7 +23,7 @@ setup(
     version=__version__,
     author='Jarry Shaw',
     author_email='jarryshaw@icloud.com',
-    url='https://github.com/JarryShaw/f2format',
+    url='https://github.com/pybpc/f2format',
     license='Apache Software License',
     keywords='fstring format conversion',
     description='Back-port compiler for Python 3.6 f-string literals.',

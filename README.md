@@ -53,7 +53,7 @@ pip install f2format
 &emsp; Or install the latest version from the git repository:
 
 ```sh
-git clone https://github.com/JarryShaw/f2format.git
+git clone https://github.com/pybpc/f2format.git
 cd f2format
 pip install -e .
 # and to update at any time

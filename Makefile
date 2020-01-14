@@ -132,7 +132,7 @@ git-aftermath:
 # file new release
 release:
 	go run github.com/aktau/github-release release \
-	    --user JarryShaw \
+	    --user pybpc \
 	    --repo f2format \
 	    --tag "v$(version)" \
 	    --name "f2format v$(version)" \

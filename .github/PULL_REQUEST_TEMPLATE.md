@@ -4,7 +4,7 @@
 - Put an `x` into all the boxes [ ] relevant to your *pull request* (like that [x])
 - Use *Preview* tab to see how your *pull request* will actually look like
 
-- [ ] [Searched](https://github.com/JarryShaw/f2format/search?q=is%3Apr&type=Issues) for similar pull requests
+- [ ] [Searched](https://github.com/pybpc/f2format/search?q=is%3Apr&type=Issues) for similar pull requests
 - [ ] Followed PEP8 coding style
 - [ ] Tested with proper test samples
 

@@ -1,3 +1,3 @@
 [submodule "codec"]
 	path = codec
-	url = https://github.com/JarryShaw/f2format-codec.git
+	url = https://github.com/pybpc/f2format-codec.git
