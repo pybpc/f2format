@@ -16,6 +16,7 @@ verify_ssl = true
 [packages]
 parso = "~=0.5.2"
 tbtrim = ">=0.2.1"
+bpc-utils = "*"
 
 [dev-packages]
 f2format = {editable = true,path = "."}

@@ -3,45 +3,18 @@
 
 import argparse
 import glob
-import locale
 import os
 import re
-import shutil
 import sys
-import uuid
 
 import parso
 import tbtrim
+from bpc_utils import BOOLEAN_STATES, CPU_CNT, LOCALE_ENCODING, archive_files, detect_files, mp
 
 __all__ = ['f2format', 'convert', 'ConvertError']
 
-# multiprocessing may not be supported
-try:        # try first
-    import multiprocessing
-except ImportError:  # pragma: no cover
-    multiprocessing = None
-else:       # CPU number if multiprocessing supported
-    if os.name == 'posix' and 'SC_NPROCESSORS_CONF' in os.sysconf_names:  # pragma: no cover
-        CPU_CNT = os.sysconf('SC_NPROCESSORS_CONF')
-    elif 'sched_getaffinity' in os.__all__:  # pragma: no cover
-        CPU_CNT = len(os.sched_getaffinity(0))  # pylint: disable=E1101
-    else:  # pragma: no cover
-        CPU_CNT = os.cpu_count() or 1
-finally:    # alias and aftermath
-    mp = multiprocessing
-    del multiprocessing
-
 # version string
 __version__ = '0.8.6'
-
-# from configparser
-BOOLEAN_STATES = {'1': True, '0': False,
-                  'yes': True, 'no': False,
-                  'true': True, 'false': False,
-                  'on': True, 'off': False}
-
-# environs
-LOCALE_ENCODING = locale.getpreferredencoding(False)
 
 # macros
 grammar_regex = re.compile(r"grammar(\d)(\d)\.txt")
@@ -69,38 +42,6 @@ def predicate(filename):  # pragma: no cover
 
 
 tbtrim.set_trim_rule(predicate, strict=True, target=ConvertError)
-
-###############################################################################
-# UUID 4 generator wrapper
-
-
-class UUID4Generator:
-    """UUID 4 generator wrapper to prevent UUID collisions."""
-
-    def __init__(self, dash=True):
-        """Constructor of UUID 4 generator wrapper.
-        Args:
-         - `dash` -- `bool`, whether the generated UUID string has dashes or not
-        """
-        self.used_uuids = set()
-        self.dash = dash
-
-    def gen(self):
-        """Generate a new UUID 4 string that is guaranteed not to collide with used UUIDs.
-        Returns:
-         - `str` -- a new UUID 4 string
-        """
-        while True:
-            nuid = uuid.uuid4()
-            nuid = str(nuid) if self.dash else nuid.hex
-            if nuid not in self.used_uuids:
-                break
-        self.used_uuids.add(nuid)
-        return nuid
-
-
-# Initialise a UUID4Generator for filename UUIDs.
-uuid_gen = UUID4Generator(dash=True)
 
 ###############################################################################
 # Main convertion implementation
@@ -366,8 +307,7 @@ def get_parser():
                                      usage='f2format [options] <python source files and folders...>',
                                      description='Convert f-string to str.format for Python 3 compatibility.')
     parser.add_argument('-V', '--version', action='version', version=__version__)
-    parser.add_argument('-q', '--quiet', action='store_true',
-                        help='run in quiet mode')
+    parser.add_argument('-q', '--quiet', action='store_true', help='run in quiet mode')
 
     archive_group = parser.add_argument_group(title='archive options',
                                               description="duplicate original files in case there's any issue")
@@ -388,45 +328,6 @@ def get_parser():
                         help='python source files and folders to be converted (%(default)s)')
 
     return parser
-
-
-def find(root):  # pragma: no cover
-    """Recursively find all files under root.
-
-    Args:
-     - `root` -- os.PathLike, root path to search
-
-    Returns:
-     - `Generator[str, None, None]` -- yield all files under the root path
-
-    """
-    flst = list()
-    temp = os.listdir(root)
-    for file in temp:
-        path = os.path.join(root, file)
-        if os.path.isdir(path):
-            flst.extend(find(path))
-        elif os.path.isfile(path):
-            flst.append(path)
-        elif os.path.islink(path):  # exclude symbolic links
-            continue
-    yield from flst
-
-
-def rename(path, root):
-    """Rename file for archiving.
-
-    Args:
-     - `path` -- `os.PathLike`, file to rename
-     - `root` -- `os.PathLike`, archive path
-
-    Returns:
-     - `str` -- the archiving path
-
-    """
-    stem, ext = os.path.splitext(path)
-    name = '%s-%s%s' % (stem, uuid_gen.gen(), ext)
-    return os.path.join(root, name)
 
 
 def main(argv=None):
@@ -455,31 +356,16 @@ def main(argv=None):
     F2FORMAT_QUIET = os.getenv('F2FORMAT_QUIET')
     os.environ['F2FORMAT_QUIET'] = '1' if args.quiet else ('0' if F2FORMAT_QUIET is None else F2FORMAT_QUIET)
 
-    # make archive directory
-    if args.archive:
-        os.makedirs(ARCHIVE, exist_ok=True)
-
     # fetch file list
-    filelist = list()
-    for path in args.file:
-        if os.path.isfile(path):
-            if args.archive:
-                dest = rename(path, root=ARCHIVE)
-                os.makedirs(os.path.dirname(dest), exist_ok=True)
-                shutil.copy(path, dest)
-            filelist.append(path)
-        if os.path.isdir(path):
-            if args.archive:
-                shutil.copytree(path, rename(path, root=ARCHIVE))
-            filelist.extend(find(path))
-
-    # check if file is Python source code
-    ispy = lambda file: (os.path.isfile(file) and (os.path.splitext(file)[1] in ('.py', '.pyw')))
-    filelist = sorted(filter(ispy, filelist))
+    filelist = sorted(detect_files(args.file))
 
     # if no file supplied
     if not filelist:
-        parser.error('argument PATH: no valid source file found')
+        parser.error('no valid source file found')
+
+    # make archive
+    if args.archive:
+        archive_files(filelist, ARCHIVE)
 
     # process files
     if mp is None or CPU_CNT <= 1:

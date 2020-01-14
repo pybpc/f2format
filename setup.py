@@ -35,6 +35,7 @@ setup(
     install_requires=[
         'parso~=0.5.2',     # universal AST support
         'tbtrim>=0.2.1',    # traceback trim support
+        'bpc-utils',        # utility library
     ],
     py_modules=['f2format'],
     # packages=[

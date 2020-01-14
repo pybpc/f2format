@@ -10,12 +10,18 @@ import sys
 import tempfile
 import unittest
 
+# root path
+ROOT = os.path.dirname(os.path.realpath(__file__))
+sys.path.insert(0, os.path.abspath(os.path.join(ROOT, '..')))
+from f2format import ConvertError, convert
+from f2format import f2format as core_func
+from f2format import get_parser
+from f2format import main as main_func
+sys.path.pop(0)
+
 
 class TestF2format(unittest.TestCase):
-
     def test_get_parser(self):
-        from f2format import get_parser
-
         parser = get_parser()
         args = parser.parse_args(['-na', '-q', '-p/tmp/',
                                   '-cgb2312', '-v3.6',
@@ -34,12 +40,7 @@ class TestF2format(unittest.TestCase):
         self.assertEqual(args.file, ['test1.py', 'test2.py'],
                          'python source files and folders to be converted')
 
-        # reset environ
-        del sys.modules['f2format']
-
     def test_main_func(self):
-        from f2format import main as main_func
-
         src_files = glob.glob(os.path.join(os.path.dirname(__file__),
                                            '..', 'test', 'test_?.py'))
         dst_files = list()
@@ -75,15 +76,10 @@ class TestF2format(unittest.TestCase):
                 new = subprocess.run([sys.executable, dst], stdout=subprocess.PIPE)
                 self.assertEqual(old, new.stdout.decode())
 
-        # reset environ
-        del sys.modules['f2format']
-
     @unittest.skipIf(sys.version_info[:2] < (3, 6),
                      "not supported in this Python version")
     def test_core_func(self):
         def test_core_func_main():
-            from f2format import f2format as core_func
-
             src_files = glob.glob(os.path.join(os.path.dirname(__file__),
                                                '..', 'test', 'test_?.py'))
 
@@ -102,9 +98,6 @@ class TestF2format(unittest.TestCase):
                             new = subprocess.run([sys.executable, dst], stdout=subprocess.PIPE)
                             self.assertEqual(old.stdout.decode(), new.stdout.decode())
 
-            # reset environ
-            del sys.modules['f2format']
-
         os.environ['F2FORMAT_QUIET'] = '1'
         test_core_func_main()
 
@@ -115,8 +108,6 @@ class TestF2format(unittest.TestCase):
         del os.environ['F2FORMAT_QUIET']
 
     def test_convert(self):
-        from f2format import ConvertError, convert
-
         # normal convertion
         src = """var = f'foo{(1+2)*3:>5}bar{"a", "b"!r}boo'"""
         dst = convert(src)
@@ -128,14 +119,11 @@ class TestF2format(unittest.TestCase):
             convert("f'a {async} b'")
 
         # reset environ
-        del sys.modules['f2format']
         del os.environ['F2FORMAT_VERSION']
 
     @unittest.skipIf(sys.version_info[:2] < (3, 8),
                      "not supported in this Python version")
     def test_debug_fstring(self):
-        from f2format import f2format as core_func
-
         # set up environment
         os.environ['F2FORMAT_QUIET'] = '1'
         os.environ['F2FORMAT_VERSION'] = '3.8'
@@ -154,7 +142,6 @@ class TestF2format(unittest.TestCase):
             self.assertEqual(old, new)
 
         # reset environ
-        del sys.modules['f2format']
         del os.environ['F2FORMAT_QUIET']
         del os.environ['F2FORMAT_VERSION']
 

@@ -171,3 +171,7 @@ dmypy.json
 .pyre/
 
 # End of https://www.gitignore.io/api/python,macos,mercurial
+
+# Ignore our archives
+/archive/*.tar
+/archive/*.tar.gz
