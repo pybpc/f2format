@@ -5,9 +5,9 @@
 [![PyPI - Format](https://img.shields.io/pypi/format/f2format.svg)](https://pypi.org/project/f2format)
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/f2format.svg)](https://pypi.org/project/f2format)
 
-[![Travis CI - Status](https://travis-ci.com/JarryShaw/f2format.svg)](https://travis-ci.org/JarryShaw/f2format)
-[![Codecov - Coverage](https://codecov.io/gh/JarryShaw/f2format/branch/master/graph/badge.svg)](https://codecov.io/gh/JarryShaw/f2format)
-[![License](https://img.shields.io/github/license/jarryshaw/f2format.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
+[![Travis CI - Status](https://travis-ci.com/pybpc/f2format.svg)](https://travis-ci.org/pybpc/f2format)
+[![Codecov - Coverage](https://codecov.io/gh/pybpc/f2format/branch/master/graph/badge.svg)](https://codecov.io/gh/pybpc/f2format)
+[![License](https://img.shields.io/github/license/pybpc/f2format.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 [![LICENSE](https://img.shields.io/badge/license-Anti%20996-blue.svg)](https://github.com/996icu/996.ICU/blob/master/LICENSE)
 
 > Write *f-string* in Python 3.6 flavour, and let `f2format` worry about back-port issues :beer:
