@@ -118,7 +118,7 @@ var = 'foo{:>5}bar{!r}boo'.format((1+2)*3, ("a", "b"))
 We provide also a Docker image for those poor little guys.
 
 &emsp; See
-[`Dockerfile`](https://github.com/JarryShaw/f2format/blob/master/docker/Dockerfile) for more
+[`Dockerfile`](https://github.com/pybpc/f2format/blob/master/docker/Dockerfile) for more
 information.
 
 ### Bundled Executable
@@ -134,7 +134,7 @@ you may simply download it then, voilà, it's ready for you.
 
 ### Automator
 
-&emsp; [`make-demo.sh`](https://github.com/JarryShaw/f2format/blob/master/share/make-demo.sh) provides a
+&emsp; [`make-demo.sh`](https://github.com/pybpc/f2format/blob/master/share/make-demo.sh) provides a
 demo script, which may help integrate `f2format` in your development and distribution circle.
 
 > __NB__: `make-demo.sh` is not an integrated automation script. It should be revised by design.
@@ -217,18 +217,18 @@ class ConvertError(SyntaxError):
 
 ### Codec
 
-> NB: this project is now stalled, because I just cannot figure out how to play w/ codecs :)
+> NB: this project is now stalled, because I just cannot figure out how to play w/ codecs :(
 
-&emsp; [`f2format-codec`](https://github.com/JarryShaw/f2format-codec) registers a codec in Python
+&emsp; [`f2format-codec`](https://github.com/pybpc/f2format-codec) registers a codec in Python
 interpreter, which grants you the compatibility to write directly in Python 3.6 *f-string* syntax
 even through running with a previous version of Python.
 
 ## Test
 
-&emsp; The current test samples are under [`/test`](https://github.com/JarryShaw/f2format/blob/master/test)
+&emsp; The current test samples are under [`/test`](https://github.com/pybpc/f2format/blob/master/test)
 folder. `test_driver.py` is the main entry point for tests.
 
-&emsp; For unittests, see [`test.py`](https://github.com/JarryShaw/f2format/blob/master/share/test.py).
+&emsp; For unittests, see [`test.py`](https://github.com/pybpc/f2format/blob/master/share/test.py).
 
 ## Known issues
 
@@ -252,7 +252,7 @@ remain valid and reasonable.
 
 ## See Also
 
-- [`babel`](https://github.com/jarryshaw/babel)
-- [`poseur`](https://github.com/jarryshaw/poseur)
-- [`walrus`](https://github.com/jarryshaw/walrus)
+- [`pybpc`](https://github.com/pybpc/bpc) (formerly known as `python-babel`)
+- [`poseur`](https://github.com/pybpc/poseur)
+- [`walrus`](https://github.com/pybpc/walrus)
 - [`vermin`](https://github.com/netromdk/vermin)
