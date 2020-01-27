@@ -14,7 +14,7 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [packages]
-parso = "~=0.5.2"
+parso = ">=0.6.0"
 tbtrim = ">=0.2.1"
 bpc-utils = "*"
 
