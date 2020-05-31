@@ -4,7 +4,7 @@ bpc-utils==0.6.2
 -e .
 ipython==7.15.0
 homebrew-pypi-poet==0.10.0
-requests
+requests==2.23.0
 autopep8
 coverage
 codecov
