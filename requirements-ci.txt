@@ -3,7 +3,7 @@ tbtrim>=0.2.1
 bpc-utils==0.6.2
 -e .
 ipython==7.15.0
-homebrew-pypi-poet
+homebrew-pypi-poet==0.10.0
 requests
 autopep8
 coverage
