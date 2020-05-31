@@ -5,7 +5,7 @@ bpc-utils==0.6.2
 ipython==7.15.0
 homebrew-pypi-poet==0.10.0
 requests==2.23.0
-autopep8
+autopep8==1.5.2
 coverage
 codecov
 pylint
