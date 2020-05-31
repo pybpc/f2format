@@ -1,6 +1,6 @@
 parso>=0.6.0
 tbtrim>=0.2.1
-bpc-utils
+bpc-utils==0.6.2
 -e .
 ipython
 homebrew-pypi-poet
