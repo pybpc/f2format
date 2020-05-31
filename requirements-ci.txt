@@ -6,7 +6,7 @@ ipython==7.15.0
 homebrew-pypi-poet==0.10.0
 requests==2.23.0
 autopep8==1.5.2
-coverage
+coverage==5.1
 codecov
 pylint
 pyinstaller
