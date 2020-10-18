@@ -2,77 +2,173 @@
 """Back-port compiler for Python 3.6 f-string literals."""
 
 import argparse
-import glob
 import os
+import pathlib
 import re
 import sys
+import traceback
 
-import parso
 import tbtrim
-from bpc_utils import BOOLEAN_STATES, CPU_CNT, LOCALE_ENCODING, archive_files, detect_files, mp
+from bpc_utils import (BaseContext, BPCSyntaxError, Config, TaskLock, archive_files,
+                       detect_encoding, detect_files, first_non_none,
+                       get_parso_grammar_versions, map_tasks, parse_boolean_state,
+                       parse_positive_integer, parso_parse, recover_files)
 
-__all__ = ['f2format', 'convert', 'ConvertError']
+__all__ = ['main', 'f2format', 'convert']  # pylint: disable=undefined-all-variable
 
 # version string
 __version__ = '0.8.6'
 
-# macros
-grammar_regex = re.compile(r"grammar(\d)(\d)\.txt")
-F2FORMAT_VERSION = sorted(filter(lambda version: version >= '3.6',  # when Python starts to have f-string
-                                 map(lambda path: '%s.%s' % grammar_regex.match(os.path.split(path)[1]).groups(),
-                                     glob.glob(os.path.join(parso.__path__[0], 'python', 'grammar??.txt')))))
-del grammar_regex
+##############################################################################
+# Auxiliaries
+
+#: Get supported source versions.
+#:
+#: .. seealso:: :func:`bpc_utils.get_parso_grammar_versions`
+F2FORMAT_SOURCE_VERSIONS = get_parso_grammar_versions(minimum='3.6')
+
+# option default values
+#: Default value for the ``quiet`` option.
+_default_quiet = False
+#: Default value for the ``concurrency`` option.
+_default_concurrency = None  # auto detect
+#: Default value for the ``do_archive`` option.
+_default_do_archive = True
+#: Default value for the ``archive_path`` option.
+_default_archive_path = 'archive'
+#: Default value for the ``source_version`` option.
+_default_source_version = F2FORMAT_SOURCE_VERSIONS[-1]
+
+# option getter utility functions
+# option value precedence is: explicit value (CLI/API arguments) > environment variable > default value
 
 
-class ConvertError(SyntaxError):
-    """Parso syntax error."""
-
-
-###############################################################################
-# Traceback trim (tbtrim)
-
-# root path
-ROOT = os.path.dirname(os.path.realpath(__file__))
-
-
-def predicate(filename):  # pragma: no cover
-    if os.path.basename(filename) == 'f2format':
-        return True
-    return ROOT in os.path.realpath(filename)
-
-
-tbtrim.set_trim_rule(predicate, strict=True, target=ConvertError)
-
-###############################################################################
-# Main convertion implementation
-
-
-def parse(string, source):
-    """Parse source string.
+def _get_quiet_option(explicit=None):
+    """Get the value for the ``quiet`` option.
 
     Args:
-     - `string` -- `str`, context to be converted
-     - `source` -- `str`, source of the context
-
-    Envs:
-     - `F2FORMAT_VERSION` -- convert against Python version (same as `--python` option in CLI)
+        explicit (Optional[bool]): the value explicitly specified by user,
+            :data:`None` if not specified
 
     Returns:
-     - `parso.python.tree.Module` -- parso AST
+        bool: the value for the ``quiet`` option
 
-    Raises:
-     - `ConvertError` -- when source code contains syntax errors
+    :Environment Variables:
+        :envvar:`F2FORMAT_QUIET` -- the value in environment variable
+
+    See Also:
+        :data:`_default_quiet`
 
     """
-    grammar = parso.load_grammar(version=os.getenv('F2FORMAT_VERSION', F2FORMAT_VERSION[-1]))
-    module = grammar.parse(string, error_recovery=True)
-    errors = grammar.iter_errors(module)
+    # We need lazy evaluation, so first_non_none(a, b, c) does not work here
+    # with PEP 505 we can simply write a ?? b ?? c
+    def _option_layers():
+        yield explicit
+        yield parse_boolean_state(os.getenv('F2FORMAT_QUIET'))
+        yield _default_quiet
+    return first_non_none(_option_layers())
 
-    if errors:
-        error_messages = '\n'.join('[L%dC%d] %s' % (*error.start_pos, error.message) for error in errors)
-        raise ConvertError('source file %r contains following syntax errors:\n' % source + error_messages)
 
-    return module
+def _get_concurrency_option(explicit=None):
+    """Get the value for the ``concurrency`` option.
+
+    Args:
+        explicit (Optional[int]): the value explicitly specified by user,
+            :data:`None` if not specified
+
+    Returns:
+        Optional[int]: the value for the ``concurrency`` option;
+        :data:`None` means *auto detection* at runtime
+
+    :Environment Variables:
+        :envvar:`F2FORMAT_CONCURRENCY` -- the value in environment variable
+
+    See Also:
+        :data:`_default_concurrency`
+
+    """
+    return parse_positive_integer(explicit or os.getenv('F2FORMAT_CONCURRENCY') or _default_concurrency)
+
+
+def _get_do_archive_option(explicit=None):
+    """Get the value for the ``do_archive`` option.
+
+    Args:
+        explicit (Optional[bool]): the value explicitly specified by user,
+            :data:`None` if not specified
+
+    Returns:
+        bool: the value for the ``do_archive`` option
+
+    :Environment Variables:
+        :envvar:`F2FORMAT_DO_ARCHIVE` -- the value in environment variable
+
+    See Also:
+        :data:`_default_do_archive`
+
+    """
+    def _option_layers():
+        yield explicit
+        yield parse_boolean_state(os.getenv('F2FORMAT_DO_ARCHIVE'))
+        yield _default_do_archive
+    return first_non_none(_option_layers())
+
+
+def _get_archive_path_option(explicit=None):
+    """Get the value for the ``archive_path`` option.
+
+    Args:
+        explicit (Optional[str]): the value explicitly specified by user,
+            :data:`None` if not specified
+
+    Returns:
+        str: the value for the ``archive_path`` option
+
+    :Environment Variables:
+        :envvar:`F2FORMAT_ARCHIVE_PATH` -- the value in environment variable
+
+    See Also:
+        :data:`_default_archive_path`
+
+    """
+    return explicit or os.getenv('F2FORMAT_ARCHIVE_PATH') or _default_archive_path
+
+
+def _get_source_version_option(explicit=None):
+    """Get the value for the ``source_version`` option.
+
+    Args:
+        explicit (Optional[str]): the value explicitly specified by user,
+            :data:`None` if not specified
+
+    Returns:
+        str: the value for the ``source_version`` option
+
+    :Environment Variables:
+        :envvar:`F2FORMAT_SOURCE_VERSION` -- the value in environment variable
+
+    See Also:
+        :data:`_default_source_version`
+
+    """
+    return explicit or os.getenv('F2FORMAT_SOURCE_VERSION') or _default_source_version
+
+
+###############################################################################
+# Traceback Trimming (tbtrim)
+
+# root path
+ROOT = pathlib.Path(__file__).resolve().parent
+
+
+def predicate(filename):
+    return pathlib.Path(filename).parent == ROOT
+
+
+tbtrim.set_trim_rule(predicate, strict=True, target=BPCSyntaxError)
+
+###############################################################################
+# Obsoleted code
 
 
 def extract(node):
@@ -225,154 +321,329 @@ def walk(node):
     return string
 
 
-def convert(string, source='<unknown>'):
-    """The main conversion process.
+###############################################################################
+# Main convertion implementation
+
+
+class Context(BaseContext):
+    """General conversion context.
 
     Args:
-     - `string` -- `str`, context to be converted
-     - `source` -- `str`, source of the context
+        node (parso.tree.NodeOrLeaf): parso AST
+        config (Config): conversion configurations
 
-    Envs:
-     - `F2FORMAT_VERSION` -- convert against Python version (same as `--python` option in CLI)
+    Keyword Args:
+        raw (bool): raw processing flag
+
+    Important:
+        ``raw`` should be :data:`True` only if the ``node`` is in the clause of another *context*,
+        where the converted wrapper functions should be inserted.
+
+        However, this parameter is currently not in use.
+
+    For the :class:`Context` class of :mod:`f2format` module,
+    it will process nodes with following methods:
+
+    * :token:`stringliteral`
+
+      * :meth:`Context._process_strings`
+      * :meth:`Context._process_string_context`
+
+    * :token:`f_string`
+
+      * :meth:`Context._process_fstring`
+
+    """
+
+    def _process_strings(self, node):
+        """Process concatenable strings (:token:`stringliteral`).
+
+        Args:
+            node (parso.python.tree.PythonNode): concatentable strings node
+
+        As in Python, adjacent string literals can be concatenated in certain
+        cases, as described in the `documentation`_. Such concatenable strings
+        may contain formatted string literals (:term:`f-string`) within its scope.
+
+        _documentation: https://docs.python.org/3/reference/lexical_analysis.html#string-literal-concatenation
+
+        """
+
+    def _process_fstring(self, node):
+        """Process formatted strings (:token:`f_string`).
+
+        Args:
+            node (parso.python.tree.PythonNode): formatted strings node
+
+        """
+
+    def _concat(self):
+        """Concatenate final string.
+
+        This method tries to concatenate final result based on the very location
+        where starts to contain formatted string literals, i.e. between the converted
+        code as :attr:`self._prefix <Context._prefix>` and :attr:`self._suffix <Context._suffix>`.
+
+        """
+        # no-op
+        self._buffer = self._prefix + self._suffix
+
+    @staticmethod
+    def has_expr(node):
+        """Check if node has formatted string literals.
+
+        Args:
+            node (parso.tree.NodeOrLeaf): parso AST
+
+        Returns:
+            bool: if ``node`` has formatted string literals
+
+        """
+
+    # backward compatibility and auxiliary alias
+    has_f2format = has_expr
+    has_fstring = has_expr
+
+    @staticmethod
+    def has_debug_fstring(node):
+        """Check if node has *debug* formatted string literals.
+
+        Args:
+            node (parso.tree.NodeOrLeaf): parso AST
+
+        Returns:
+            bool: if ``node`` has debug formatted string literals
+
+        """
+
+
+def convert(code, filename=None, *, source_version=None):
+    """Convert the given Python source code string.
+
+    Args:
+        code (Union[str, bytes]): the source code to be converted
+        filename (Optional[str]): an optional source file name to provide a context in case of error
+
+    Keyword Args:
+        source_version (Optional[str]): parse the code as this Python version (uses the latest version by default)
+
+    :Environment Variables:
+     - :envvar:`F2FORMAT_SOURCE_VERSION` -- same as the ``source_version`` argument and the ``--source-version`` option
+        in CLI
 
     Returns:
-     - `str` -- converted string
-
-    Raises:
-     - `ConvertError` -- when `parso.ParserSyntaxError` raised
+        str: converted source code
 
     """
     # parse source string
-    module = parse(string, source)
+    source_version = _get_source_version_option(source_version)
+    module = parso_parse(code, filename=filename, version=source_version)
+
+    # pack conversion configuration
+    config = Config(filename=filename, source_version=source_version)
 
     # convert source string
-    string = walk(module)
+    result = Context(module, config).string
 
-    # return converted string
-    return string
+    # return conversion result
+    return result
 
 
-def f2format(filename):
-    """Wrapper works for conversion.
+def f2format(filename, *, source_version=None, quiet=None, dry_run=False):
+    """Convert the given Python source code file. The file will be overwritten.
 
     Args:
-     - `filename` -- `str`, file to be converted
+        filename (str): the file to convert
 
-    Envs:
-     - `F2FORMAT_QUIET` -- run in quiet mode (same as `--quiet` option in CLI)
-     - `F2FORMAT_ENCODING` -- encoding to open source files (same as `--encoding` option in CLI)
-     - `F2FORMAT_VERSION` -- convert against Python version (same as `--python` option in CLI)
+    Keyword Args:
+        source_version (Optional[str]): parse the code as this Python version (uses the latest version by default)
+        linesep (Optional[str]): line separator of code (``LF``, ``CRLF``, ``CR``) (auto detect by default)
+        indentation (Optional[Union[int, str]]): code indentation style, specify an integer for the number of spaces,
+            or ``'t'``/``'tab'`` for tabs (auto detect by default)
+        pep8 (Optional[bool]): whether to make code insertion :pep:`8` compliant
+        quiet (Optional[bool]): whether to run in quiet mode
+        dry_run (bool): if :data:`True`, only print the name of the file to convert but do not perform any conversion
 
-    Raises:
-     - `ConvertError` -- when `parso.ParserSyntaxError` raised
+    :Environment Variables:
+     - :envvar:`F2FORMAT_SOURCE_VERSION` -- same as the ``source-version`` argument and the ``--source-version`` option
+        in CLI
+     - :envvar:`F2FORMAT_QUIET` -- same as the ``quiet`` argument and the ``--quiet`` option in CLI
 
     """
-    F2FORMAT_QUIET = BOOLEAN_STATES.get(os.getenv('F2FORMAT_QUIET', '0').casefold(), False)
-    if not F2FORMAT_QUIET:
-        print('Now converting %r...' % filename)
+    quiet = _get_quiet_option(quiet)
+    if not quiet:
+        with TaskLock():
+            print('Now converting: %r' % filename, file=sys.stderr)
+    if dry_run:
+        return
 
-    # fetch encoding
-    encoding = os.getenv('F2FORMAT_ENCODING')
+    # read file content
+    with open(filename, 'rb') as file:
+        content = file.read()
 
-    # file content
-    with open(filename, 'r', encoding=encoding) as file:
-        text = file.read()
+    # detect source code encoding
+    encoding = detect_encoding(content)
 
     # do the dirty things
-    text = convert(text, filename)
+    result = convert(content, filename=filename, source_version=source_version)
 
-    # dump back to the file
-    with open(filename, 'w', encoding=encoding) as file:
-        file.write(text)
+    # overwrite the file with conversion result
+    with open(filename, 'w', encoding=encoding, newline='') as file:
+        file.write(result)
 
 
 ###############################################################################
-# CLI & entry point
+# CLI & Entry Point
 
-# default values
+# option values display
+# these values are only intended for argparse help messages
+# this shows default values by default, environment variables may override them
 __cwd__ = os.getcwd()
-__archive__ = os.path.join(__cwd__, 'archive')
-__f2format_version__ = os.getenv('F2FORMAT_VERSION', F2FORMAT_VERSION[-1])
-__f2format_encoding__ = os.getenv('F2FORMAT_ENCODING', LOCALE_ENCODING)
+__f2format_quiet__ = 'quiet mode' if _get_quiet_option() else 'non-quiet mode'
+__f2format_concurrency__ = _get_concurrency_option() or 'auto detect'
+__f2format_do_archive__ = 'will do archive' if _get_do_archive_option() else 'will not do archive'
+__f2format_archive_path__ = os.path.join(__cwd__, _get_archive_path_option())
+__f2format_source_version__ = _get_source_version_option()
 
 
 def get_parser():
     """Generate CLI parser.
 
     Returns:
-     - `argparse.ArgumentParser` -- CLI parser for f2format
+        argparse.ArgumentParser: CLI parser for f2format
 
     """
     parser = argparse.ArgumentParser(prog='f2format',
-                                     usage='f2format [options] <python source files and folders...>',
-                                     description='Convert f-string to str.format for Python 3 compatibility.')
+                                     usage='f2format [options] <Python source files and directories...>',
+                                     description='Back-port compiler for Python 3.8 position-only parameters.')
     parser.add_argument('-V', '--version', action='version', version=__version__)
-    parser.add_argument('-q', '--quiet', action='store_true', help='run in quiet mode')
+    parser.add_argument('-q', '--quiet', action='store_true', default=None,
+                        help='run in quiet mode (current: %s)' % __f2format_quiet__)
+    parser.add_argument('-C', '--concurrency', action='store', type=int, metavar='N',
+                        help='the number of concurrent processes for conversion (current: %s)' % __f2format_concurrency__)
+    parser.add_argument('--dry-run', action='store_true',
+                        help='list the files to be converted without actually performing conversion and archiving')
+    parser.add_argument('-s', '--simple', action='store', nargs='?', dest='simple_args', const='', metavar='FILE',
+                        help='this option tells the program to operate in "simple mode"; '
+                             'if a file name is provided, the program will convert the file but print conversion '
+                             'result to standard output instead of overwriting the file; '
+                             'if no file names are provided, read code for conversion from standard input and print '
+                             'conversion result to standard output; '
+                             'in "simple mode", no file names shall be provided via positional arguments')
 
     archive_group = parser.add_argument_group(title='archive options',
-                                              description="duplicate original files in case there's any issue")
-    archive_group.add_argument('-na', '--no-archive', action='store_false', dest='archive',
-                               help='do not archive original files')
-    archive_group.add_argument('-p', '--archive-path', action='store', default=__archive__, metavar='PATH',
-                               help='path to archive original files (%(default)s)')
+                                              description="backup original files in case there're any issues")
+    archive_group.add_argument('-na', '--no-archive', action='store_false', dest='do_archive', default=None,
+                               help='do not archive original files (current: %s)' % __f2format_do_archive__)
+    archive_group.add_argument('-k', '--archive-path', action='store', default=__f2format_archive_path__, metavar='PATH',
+                               help='path to archive original files (current: %(default)s)')
+    archive_group.add_argument('-r', '--recover', action='store', dest='recover_file', metavar='ARCHIVE_FILE',
+                               help='recover files from a given archive file')
+    archive_group.add_argument('-r2', action='store_true', help='remove the archive file after recovery')
+    archive_group.add_argument('-r3', action='store_true', help='remove the archive file after recovery, '
+                                                                'and remove the archive directory if it becomes empty')
 
-    convert_group = parser.add_argument_group(title='convert options',
-                                              description='compatibility configuration for non-unicode files')
-    convert_group.add_argument('-c', '--encoding', action='store', default=__f2format_encoding__, metavar='CODING',
-                               help='encoding to open source files (%(default)s)')
-    convert_group.add_argument('-v', '--python', action='store', metavar='VERSION',
-                               default=__f2format_version__, choices=F2FORMAT_VERSION,
-                               help='convert against Python version (%(default)s)')
+    convert_group = parser.add_argument_group(title='convert options', description='conversion configuration')
+    convert_group.add_argument('-vs', '-vf', '--source-version', '--from-version', action='store', metavar='VERSION',
+                               default=__f2format_source_version__, choices=F2FORMAT_SOURCE_VERSIONS,
+                               help='parse source code as this Python version (current: %(default)s)')
 
-    parser.add_argument('file', nargs='+', metavar='SOURCE', default=__cwd__,
-                        help='python source files and folders to be converted (%(default)s)')
+    parser.add_argument('files', action='store', nargs='*', metavar='<Python source files and directories...>',
+                        help='Python source files and directories to be converted')
 
     return parser
+
+
+def do_f2format(filename, **kwargs):
+    """Wrapper function to catch exceptions."""
+    try:
+        f2format(filename, **kwargs)
+    except Exception:  # pylint: disable=broad-except
+        with TaskLock():
+            print('Failed to convert file: %r' % filename, file=sys.stderr)
+            traceback.print_exc()
 
 
 def main(argv=None):
     """Entry point for f2format.
 
     Args:
-     - `argv` -- `List[str]`, CLI arguments (default: None)
+        argv (Optional[List[str]]): CLI arguments
 
-    Envs:
-     - `F2FORMAT_QUIET` -- run in quiet mode (same as `--quiet` option in CLI)
-     - `F2FORMAT_ENCODING` -- encoding to open source files (same as `--encoding` option in CLI)
-     - `F2FORMAT_VERSION` -- convert against Python version (same as `--python` option in CLI)
-
-    Raises:
-     - `ConvertError` -- when `parso.ParserSyntaxError` raised
+    :Environment Variables:
+     - :envvar:`F2FORMAT_QUIET` -- same as the ``--quiet`` option in CLI
+     - :envvar:`F2FORMAT_CONCURRENCY` -- same as the ``--concurrency`` option in CLI
+     - :envvar:`F2FORMAT_DO_ARCHIVE` -- same as the ``--no-archive`` option in CLI (logical negation)
+     - :envvar:`F2FORMAT_ARCHIVE_PATH` -- same as the ``--archive-path`` option in CLI
+     - :envvar:`F2FORMAT_SOURCE_VERSION` -- same as the ``--source-version`` option in CLI
 
     """
     parser = get_parser()
     args = parser.parse_args(argv)
 
-    # set up variables
-    ARCHIVE = args.archive_path
-    os.environ['F2FORMAT_VERSION'] = args.python
-    os.environ['F2FORMAT_ENCODING'] = args.encoding
+    options = {
+        'source_version': args.source_version,
+        'linesep': args.linesep,
+        'indentation': args.indentation,
+        'pep8': args.pep8,
+    }
 
-    F2FORMAT_QUIET = os.getenv('F2FORMAT_QUIET')
-    os.environ['F2FORMAT_QUIET'] = '1' if args.quiet else ('0' if F2FORMAT_QUIET is None else F2FORMAT_QUIET)
+    # check if running in simple mode
+    if args.simple_args is not None:
+        if args.files:
+            parser.error('no Python source files or directories shall be given as positional arguments in simple mode')
+        if not args.simple_args:  # read from stdin
+            code = sys.stdin.read()
+        else:  # read from file
+            filename = args.simple_args
+            options['filename'] = filename
+            with open(filename, 'rb') as file:
+                code = file.read()
+        sys.stdout.write(convert(code, **options))  # print conversion result to stdout
+        return
+
+    # get options
+    quiet = _get_quiet_option(args.quiet)
+    processes = _get_concurrency_option(args.concurrency)
+    do_archive = _get_do_archive_option(args.do_archive)
+    archive_path = _get_archive_path_option(args.archive_path)
+
+    # check if doing recovery
+    if args.recover_file:
+        recover_files(args.recover_file)
+        if not args.quiet:
+            print('Recovered files from archive: %r' % args.recover_file, file=sys.stderr)
+        # TODO: maybe implement deletion in bpc-utils?
+        if args.r2 or args.r3:
+            os.remove(args.recover_file)
+            if args.r3:
+                archive_dir = os.path.dirname(os.path.realpath(args.recover_file))
+                if not os.listdir(archive_dir):
+                    os.rmdir(archive_dir)
+        return
 
     # fetch file list
-    filelist = sorted(detect_files(args.file))
+    if not args.files:
+        parser.error('no Python source files or directories are given')
+    filelist = sorted(detect_files(args.files))
 
-    # if no file supplied
+    # terminate if no valid Python source files detected
     if not filelist:
-        parser.error('no valid source file found')
+        if not args.quiet:
+            # TODO: maybe use parser.error?
+            print('Warning: no valid Python source files found in %r' % args.files, file=sys.stderr)
+        return
 
     # make archive
-    if args.archive:
-        archive_files(filelist, ARCHIVE)
+    if do_archive and not args.dry_run:
+        archive_files(filelist, archive_path)
 
     # process files
-    if mp is None or CPU_CNT <= 1:
-        [f2format(filename) for filename in filelist]  # pylint: disable=expression-not-assigned # pragma: no cover
-    else:
-        with mp.Pool(processes=CPU_CNT) as pool:
-            pool.map(f2format, filelist)
+    options.update({
+        'quiet': quiet,
+        'dry_run': args.dry_run,
+    })
+    map_tasks(do_f2format, filelist, kwargs=options, processes=processes)
 
 
 if __name__ == '__main__':
