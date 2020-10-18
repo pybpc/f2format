@@ -1,1 +1,0 @@
-/usr/local/Homebrew/Library/Taps/jarryshaw/homebrew-tap/Generator/scripts/f2format.py

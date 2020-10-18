@@ -13,21 +13,26 @@ name = "pypi"
 url = "https://pypi.org/simple"
 verify_ssl = true
 
-[packages]
-parso = ">=0.6.0"
-tbtrim = ">=0.2.1"
-bpc-utils = "*"
-
 [dev-packages]
 f2format = {editable = true,path = "."}
-ipython = "*"
-homebrew-pypi-poet = "*"
-requests = "*"
 autopep8 = "*"
-coverage = "*"
+bandit = "*"
 codecov = "*"
+coverage = "*"
+homebrew-pypi-poet = "*"
+ipython = "*"
+mypy = "*"
 pylint = "*"
-pyinstaller = "*"
+requests = "*"
+rstcheck = "*"
+sphinx = "*"
+sphinxemoji = "*"
+sphinx-autodoc-typehints = "*"
+
+[packages]
+tbtrim = "*"
+parso = ">=0.6.0"
+bpc-utils = {git = "https://github.com/pybpc/bpc-utils.git"}
 
 [requires]
 python_version = "3.8"

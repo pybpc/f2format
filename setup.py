@@ -19,7 +19,7 @@ __version__ = '0.8.6'
 
 # set-up script for pip distribution
 setup(
-    name='f2format',
+    name='bpc-f2format',
     version=__version__,
     author='Jarry Shaw',
     author_email='jarryshaw@icloud.com',
@@ -67,6 +67,7 @@ setup(
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
         'Programming Language :: Python :: 3 :: Only',
         'Topic :: Software Development',
         'Topic :: Utilities',
