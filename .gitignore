@@ -6,6 +6,9 @@ Tap
 release/
 .vscode/
 
+temp
+archive
+
 # Created by https://www.gitignore.io/api/python,macos,mercurial
 # Edit at https://www.gitignore.io/?templates=python,macos,mercurial
 

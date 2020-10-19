@@ -1,6 +1,11 @@
+### October 19th, 2020
+
+- [ ] draft and revise documentations
+- [ ] revise the test suite
+
 ### June 6th, 2019
 
-- [ ] revise test cases
+- [ ] ~revise test cases~
 
 ### June 1st, 2019
 
@@ -8,7 +13,7 @@
 
 ### May 7th, 2019
 
-- [ ] Deal with files with coding cookie.
-- [ ] f-strings with Python 3.8 assignment expressions: https://github.com/python/peps/commit/6a705de78ecbb61ff54ddd4ea798a13b2f4fa378
+- [x] Deal with files with coding cookie.
+- [x] f-strings with Python 3.8 assignment expressions: https://github.com/python/peps/commit/6a705de78ecbb61ff54ddd4ea798a13b2f4fa378
 - [x] Python 3.8 add f-string debugging using '=': https://github.com/python/cpython/pull/13123/files
 - [ ] Test reference: https://github.com/python/cpython/blob/master/Lib/test/test_fstring.py

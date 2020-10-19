@@ -8,11 +8,13 @@ import re
 import sys
 import traceback
 
+import parso
 import tbtrim
 from bpc_utils import (BaseContext, BPCSyntaxError, Config, TaskLock, archive_files,
-                       detect_encoding, detect_files, first_non_none,
-                       get_parso_grammar_versions, map_tasks, parse_boolean_state,
-                       parse_positive_integer, parso_parse, recover_files)
+                       detect_encoding, detect_files, detect_indentation, detect_linesep,
+                       first_non_none, get_parso_grammar_versions, map_tasks, parse_boolean_state,
+                       parse_indentation, parse_linesep, parse_positive_integer, parso_parse,
+                       recover_files)
 
 __all__ = ['main', 'f2format', 'convert']  # pylint: disable=undefined-all-variable
 
@@ -38,6 +40,12 @@ _default_do_archive = True
 _default_archive_path = 'archive'
 #: Default value for the ``source_version`` option.
 _default_source_version = F2FORMAT_SOURCE_VERSIONS[-1]
+#: Default value for the ``linesep`` option.
+_default_linesep = None  # auto detect
+#: Default value for the ``indentation`` option.
+_default_indentation = None  # auto detect
+#: Default value for the ``pep8`` option.
+_default_pep8 = True
 
 # option getter utility functions
 # option value precedence is: explicit value (CLI/API arguments) > environment variable > default value
@@ -154,6 +162,72 @@ def _get_source_version_option(explicit=None):
     return explicit or os.getenv('F2FORMAT_SOURCE_VERSION') or _default_source_version
 
 
+def _get_linesep_option(explicit=None):
+    r"""Get the value for the ``linesep`` option.
+
+    Args:
+        explicit (Optional[str]): the value explicitly specified by user,
+            :data:`None` if not specified
+
+    Returns:
+        Optional[Literal['\\n', '\\r\\n', '\\r']]: the value for the ``linesep`` option;
+        :data:`None` means *auto detection* at runtime
+
+    :Environment Variables:
+        :envvar:`F2FORMAT_LINESEP` -- the value in environment variable
+
+    See Also:
+        :data:`_default_linesep`
+
+    """
+    return parse_linesep(explicit or os.getenv('F2FORMAT_LINESEP') or _default_linesep)
+
+
+def _get_indentation_option(explicit=None):
+    """Get the value for the ``indentation`` option.
+
+    Args:
+        explicit (Optional[Union[str, int]]): the value explicitly specified by user,
+            :data:`None` if not specified
+
+    Returns:
+        Optional[str]: the value for the ``indentation`` option;
+        :data:`None` means *auto detection* at runtime
+
+    :Environment Variables:
+        :envvar:`F2FORMAT_INDENTATION` -- the value in environment variable
+
+    See Also:
+        :data:`_default_indentation`
+
+    """
+    return parse_indentation(explicit or os.getenv('F2FORMAT_INDENTATION') or _default_indentation)
+
+
+def _get_pep8_option(explicit=None):
+    """Get the value for the ``pep8`` option.
+
+    Args:
+        explicit (Optional[bool]): the value explicitly specified by user,
+            :data:`None` if not specified
+
+    Returns:
+        bool: the value for the ``pep8`` option
+
+    :Environment Variables:
+        :envvar:`F2FORMAT_PEP8` -- the value in environment variable
+
+    See Also:
+        :data:`_default_pep8`
+
+    """
+    def _option_layers():
+        yield explicit
+        yield parse_boolean_state(os.getenv('F2FORMAT_PEP8'))
+        yield _default_pep8
+    return first_non_none(_option_layers())
+
+
 ###############################################################################
 # Traceback Trimming (tbtrim)
 
@@ -166,159 +240,6 @@ def predicate(filename):
 
 
 tbtrim.set_trim_rule(predicate, strict=True, target=BPCSyntaxError)
-
-###############################################################################
-# Obsoleted code
-
-
-def extract(node):
-    """Extract f-string components.
-
-    Args:
-     - `node` -- `parso.python.tree.PythonNode`, parso AST for f-string
-
-    Returns:
-     - `str` -- extracted f-string string components
-     - `List[str]` -- extracted f-string expressions
-
-    """
-    # FStringStart
-    string = re.sub(r'[fF]', '', node.children[0].get_code())
-
-    expr_list = list()
-    for child in node.children[1:-1]:
-        if child.type != 'fstring_expr':
-            string += child.get_code()
-            continue
-
-        # <Operator: {>
-        string += '{'
-
-        expr_str = ''
-        spec_str = ''
-        for expr in child.children[1:-1]:
-            # conversion
-            if expr.type == 'fstring_conversion':
-                string += expr.get_code().strip()
-            # format specification
-            elif expr.type == 'fstring_format_spec':
-                for spec in expr.children:
-                    if spec.type != 'fstring_expr':
-                        string += spec.get_code().strip()
-                        continue
-
-                    # <Operator: {>
-                    string += '{'
-
-                    for spec_expr in spec.children[1:-1]:
-                        if spec_expr.type == 'fstring_conversion':  # pragma: no cover
-                            string += spec_expr.get_code().strip()
-                        elif spec_expr.type == 'fstring_format_spec':  # pragma: no cover
-                            string += spec_expr.get_code().strip()
-                        elif spec_expr.type == 'testlist':  # pragma: no cover
-                            spec_str += '(%s)' % spec_expr.get_code()
-                        else:
-                            spec_str += spec_expr.get_code()
-
-                    # <Operator: }>
-                    string += '}'
-            # implicit tuple
-            elif expr.type == 'testlist':
-                expr_str += '(%s)' % expr.get_code()
-            # embedded f-string
-            elif expr.type == 'fstring':
-                text, expr = extract(expr)
-                expr_str += text
-                if expr:
-                    expr_str += '.format(%s)' % ', '.join(expr)
-            # concatenable strings
-            elif expr.type == 'strings':
-                text_temp_list = list()
-                expr_temp_list = list()
-                for expr_child in expr.children:
-                    if expr_child.type == 'fstring':
-                        text_temp, expr_temp = extract(expr_child)
-                        text_temp_list.append((True, text_temp))
-                        expr_temp_list.extend(expr_temp)
-                    else:
-                        text_temp_list.append((False, expr_child.get_code()))
-                if expr_temp_list:
-                    expr_str += ''.join(map(lambda text: text[1] if text[0]
-                                            else re.sub(r'([{}])', r'\1\1', text[1]), text_temp_list))
-                    expr_str += '.format(%s)' % ', '.join(expr_temp_list)
-                else:
-                    expr_str += ''.join(map(lambda text: text[1], text_temp_list))
-            # regular expression / debug f-string
-            elif expr.type == 'operator' and expr.value == '=':
-                next_sibling = expr.get_next_sibling()
-                if (next_sibling.type == 'operator' and next_sibling.value == '}') \
-                    or next_sibling.type in ['fstring_conversion', 'fstring_format_spec']:
-                    expr_tmp = expr_str + expr.get_code() + re.sub(r'\S+.*$', r'', next_sibling.get_code()) + '{}'
-                    expr_str = '%r.format(%s)' % (expr_tmp, expr_str)
-                else:  # pragma: no cover
-                    expr_str += expr.get_code()
-            # regular expression
-            else:
-                expr_str += expr.get_code()
-
-        if expr_str:  # pragma: no cover
-            expr_list.append(expr_str)
-        if spec_str:
-            expr_list.append(spec_str)
-
-        # <Operator: }>
-        string += '}'
-
-    # FStringEnd
-    string += node.children[-1].get_code()
-
-    return string, expr_list
-
-
-def walk(node):
-    """Walk parso AST.
-
-    Args:
-     - `node` -- `parso.python.tree.Module`, parso AST
-
-    Returns:
-     - `str` -- converted string
-
-    """
-    string = ''
-
-    if node.type == 'strings':
-        text_list = list()
-        expr_list = list()
-        for child in node.children:
-            if child.type == 'fstring':
-                text, expr = extract(child)
-                text_list.append((True, text))
-                expr_list.extend(expr)
-            else:
-                text_list.append((False, child.get_code()))
-        if expr_list:
-            string += ''.join(map(lambda text: text[1] if text[0] else re.sub(r'([{}])', r'\1\1', text[1]), text_list))
-            string += '.format(%s)' % ', '.join(expr_list)
-        else:
-            string += ''.join(map(lambda text: text[1], text_list))
-        return string
-
-    if node.type == 'fstring':
-        text, expr = extract(node)
-        string += text
-        if expr:
-            string += '.format(%s)' % ', '.join(expr)
-        return string
-
-    if isinstance(node, parso.python.tree.PythonLeaf):
-        string += node.get_code()
-
-    if hasattr(node, 'children'):
-        for child in node.children:
-            string += walk(child)
-
-    return string
 
 
 ###############################################################################
@@ -338,8 +259,6 @@ class Context(BaseContext):
     Important:
         ``raw`` should be :data:`True` only if the ``node`` is in the clause of another *context*,
         where the converted wrapper functions should be inserted.
-
-        However, this parameter is currently not in use.
 
     For the :class:`Context` class of :mod:`f2format` module,
     it will process nodes with following methods:
@@ -368,6 +287,13 @@ class Context(BaseContext):
         _documentation: https://docs.python.org/3/reference/lexical_analysis.html#string-literal-concatenation
 
         """
+        if not self.has_expr(node):
+            self += node.get_code()
+            return
+
+        # initialise new context
+        ctx = StringContext(node, self.config, indent_level=self._indent_level, raw=False)
+        self += ctx.string
 
     def _process_fstring(self, node):
         """Process formatted strings (:token:`f_string`).
@@ -376,6 +302,9 @@ class Context(BaseContext):
             node (parso.python.tree.PythonNode): formatted strings node
 
         """
+        # initialise new context
+        ctx = StringContext(node, self.config, indent_level=self._indent_level, raw=False)
+        self += ctx.string
 
     def _concat(self):
         """Concatenate final string.
@@ -388,8 +317,8 @@ class Context(BaseContext):
         # no-op
         self._buffer = self._prefix + self._suffix
 
-    @staticmethod
-    def has_expr(node):
+    @classmethod
+    def has_expr(cls, node):
         """Check if node has formatted string literals.
 
         Args:
@@ -399,13 +328,20 @@ class Context(BaseContext):
             bool: if ``node`` has formatted string literals
 
         """
+        if node.type.startswith('fstring'):
+            return True
+
+        if hasattr(node, 'children'):
+            for child in node.children:
+                if cls.has_expr(child):
+                    return True
+        return False
 
     # backward compatibility and auxiliary alias
     has_f2format = has_expr
-    has_fstring = has_expr
 
-    @staticmethod
-    def has_debug_fstring(node):
+    @classmethod
+    def has_debug_fstring(cls, node):
         """Check if node has *debug* formatted string literals.
 
         Args:
@@ -415,9 +351,218 @@ class Context(BaseContext):
             bool: if ``node`` has debug formatted string literals
 
         """
+        if node.type == 'fstring_expr':
+            for expr in node:
+                if expr.type == 'operator' and expr.value == '=':
+                    next_sibling = expr.get_next_sibling()
+                    if next_sibling.type == 'operator' and next_sibling.value == '}' \
+                        or next_sibling.type in ('fstring_conversion', 'fstring_format_spec'):
+                        return True
+            return False
+
+        if hasattr(node, 'children'):
+            for child in node.children:
+                if cls.has_debug_fstring(child):
+                    return True
+        return False
 
 
-def convert(code, filename=None, *, source_version=None):
+class StringContext(Context):
+    """String (f-string) conversion context.
+
+    This class is mainly used for converting **formatted string literals**.
+
+    Args:
+        node (parso.python.tree.PythonNode): parso AST
+        config (Config): conversion configurations
+
+    Keyword Args:
+        has_fstring (bool): flag if contains actual formatted
+            string literals (with expressions)
+        indent_level (int): current indentation level
+        raw (Literal[False]): raw processing flag
+
+    Note:
+        * ``raw`` should always be :data:`False`.
+
+    """
+    #: re.Pattern: Pattern matches the formatted string literal prefix (``f``).
+    fstring_start = re.compile(r'[fF]', flags=re.ASCII)
+    #: re.Pattern: Pattern matches single brackets in the formatted string literal (``{}``).
+    fstring_bracket = re.compile(r'([{}])', flags=re.ASCII)
+
+    @property
+    def expr(self):
+        """Expressions extracted from the formatted string literal.
+
+        :rtype: List[str]
+        """
+        return self._expr
+
+    def __init__(self, node, config, *, has_fstring=None, indent_level=0, raw=False):
+        if has_fstring is None:
+            has_fstring = self.has_fstring(node)
+
+        #: List[str]: Expressions extracted from the formatted string literal.
+        self._expr = list()
+        #: bool: Flag if contains actual formatted string literals (with expressions).
+        self._flag = has_fstring
+
+        # call super init
+        super().__init__(node, config, indent_level=indent_level, raw=raw)
+
+    def _process_fstring(self, node):
+        """Process formatted strings (:token:`f_string`).
+
+        Args:
+            node (parso.python.tree.PythonNode): formatted strings node
+
+        """
+        # initialise new context
+        ctx = StringContext(node, self.config, has_fstring=self._flag,
+                            indent_level=self._indent_level, raw=True)
+        self += ctx.string
+        self._expr.extend(ctx.expr)
+
+    def _process_string(self, node):
+        """Process string node (:token:`stringliteral`).
+
+        Args:
+            node (parso.python.tree.PythonNode): string node
+
+        """
+        if self._flag:
+            self += self.fstring_bracket.sub(r'\1\1', node.get_code())
+            return
+
+        self += node.get_code()
+
+    def _process_fstring_start(self, node):
+        """Process formatted string literal starting node (:token:`stringprefix`).
+
+        Args:
+            node (parso.python.tree.PythonNode): formatted literal starting node
+
+        """
+        # <FStringStart: ...>
+        self += self.fstring_start.sub('', node.get_code())
+
+    def _process_fstring_string(self, node):
+        """Process formatted string literal string node (:token:`stringliteral`).
+
+        Args:
+            node (parso.python.tree.PythonNode): formatted string literal string node
+
+        """
+        if self._flag:
+            self += node.get_code()
+            return
+
+        self += node.get_code().replace('{{', '{').replace('}}', '}')
+
+    def _process_fstring_expr(self, node):
+        """Process formatted string literal expression node (:token:`f_expression`).
+
+        Args:
+            node (parso.python.tree.PythonNode): formatted literal expression node
+
+        """
+        # <Operator: {>
+        self += node.children[0].get_code().rstrip()
+
+        expr_str = ''
+        spec_str = ''
+
+        # testlist ['='] [ fstring_conversion ] [ fstring_format_spec ]
+        for child in node.children[1:-1]:
+            # conversion
+            if child.type == 'fstring_conversion':
+                self += child.get_code().strip()
+            # format specification
+            elif child.type == 'fstring_format_spec':
+                # initialise new context
+                ctx = StringContext(child, self.config, has_fstring=None,
+                                    indent_level=self._indent_level, raw=True)
+                self += ctx.string.strip()
+                spec_str += ''.join(ctx.expr)
+            # implicit tuple
+            elif child.type == 'testlist':
+                expr_str += '(%s)' % child.get_code().strip()
+            # embedded f-string
+            elif child.type == 'fstring':
+                # initialise new context
+                ctx = StringContext(child, self.config, has_fstring=None,
+                                    indent_level=self._indent_level, raw=False)
+                expr_str += ctx.string
+            # concatenable strings
+            elif child.type == 'strings':
+                # initialise new context
+                ctx = StringContext(child, self.config, has_fstring=None,
+                                    indent_level=self._indent_level, raw=False)
+                expr_str += ctx.string
+            # debug f-string / normal expression
+            elif child.type == 'operator' and child.value == '=':
+                next_sibling = child.get_next_sibling()
+                if (next_sibling.type == 'operator' and next_sibling.value == '}') \
+                    or next_sibling.type in ['fstring_conversion', 'fstring_format_spec']:
+                    expr_tmp = expr_str + child.get_code() + self.extrace_whitespaces(next_sibling.get_code())[0] + '{}'
+                    expr_str = '%r.format(%s)' % (expr_tmp, expr_str)
+                else:
+                    expr_str += child.get_code()
+            # normal expression
+            else:
+                expr_str += child.get_code()
+
+        if expr_str:
+            self._expr.append(expr_str)
+        if spec_str:
+            self._expr.append(spec_str)
+
+        # <Operator: }>
+        self += node.children[-1].get_code().lstrip()
+
+    def _concat(self):
+        """Concatenate final string.
+
+        This method tries to concatenate final result based on the very location
+        where starts to contain formatted string literals, i.e. between the converted
+        code as :attr:`self._prefix <Context._prefix>` and :attr:`self._suffix <Context._suffix>`.
+
+        """
+        if self._expr:
+            if self._pep8:
+                self._buffer = self._prefix + self._suffix.rstrip() + \
+                    '.format(%s)' % ', '.join(map(lambda s: s.strip(), self._expr))
+            else:
+                self._buffer = self._prefix + self._suffix + '.format(%s)' % ', '.join(self._expr)
+            return
+
+        # no-op
+        self._buffer = self._prefix + self._suffix
+
+    @classmethod
+    def has_fstring(cls, node):
+        """Check if node has actual formatted string literals.
+
+        Args:
+            node (parso.tree.NodeOrLeaf): parso AST
+
+        Returns:
+            bool: if ``node`` has actual formatted string literals
+                (with expressions in the literals)
+
+        """
+        if node.type == 'fstring_expr':
+            return True
+
+        if hasattr(node, 'children'):
+            for child in node.children:
+                if cls.has_fstring(child):
+                    return True
+        return False
+
+
+def convert(code, filename=None, *, source_version=None, linesep=None, indentation=None, pep8=None):
     """Convert the given Python source code string.
 
     Args:
@@ -430,6 +575,9 @@ def convert(code, filename=None, *, source_version=None):
     :Environment Variables:
      - :envvar:`F2FORMAT_SOURCE_VERSION` -- same as the ``source_version`` argument and the ``--source-version`` option
         in CLI
+     - :envvar:`F2FORMAT_LINESEP` -- same as the ``linesep`` argument and the ``--linesep`` option in CLI
+     - :envvar:`F2FORMAT_INDENTATION` -- same as the ``indentation`` argument and the ``--indentation`` option in CLI
+     - :envvar:`F2FORMAT_PEP8` -- same as the ``pep8`` argument and the ``--no-pep8`` option in CLI (logical negation)
 
     Returns:
         str: converted source code
@@ -439,8 +587,18 @@ def convert(code, filename=None, *, source_version=None):
     source_version = _get_source_version_option(source_version)
     module = parso_parse(code, filename=filename, version=source_version)
 
+    # get linesep, indentation and pep8 options
+    linesep = _get_linesep_option(linesep)
+    indentation = _get_indentation_option(indentation)
+    if linesep is None:
+        linesep = detect_linesep(code)
+    if indentation is None:
+        indentation = detect_indentation(code)
+    pep8 = _get_pep8_option(pep8)
+
     # pack conversion configuration
-    config = Config(filename=filename, source_version=source_version)
+    config = Config(linesep=linesep, indentation=indentation, pep8=pep8,
+                    filename=filename, source_version=source_version)
 
     # convert source string
     result = Context(module, config).string
@@ -449,7 +607,7 @@ def convert(code, filename=None, *, source_version=None):
     return result
 
 
-def f2format(filename, *, source_version=None, quiet=None, dry_run=False):
+def f2format(filename, *, source_version=None, quiet=None, linesep=None, indentation=None, pep8=None, dry_run=False):
     """Convert the given Python source code file. The file will be overwritten.
 
     Args:
@@ -467,6 +625,9 @@ def f2format(filename, *, source_version=None, quiet=None, dry_run=False):
     :Environment Variables:
      - :envvar:`F2FORMAT_SOURCE_VERSION` -- same as the ``source-version`` argument and the ``--source-version`` option
         in CLI
+     - :envvar:`F2FORMAT_LINESEP` -- same as the ``linesep`` argument and the ``--linesep`` option in CLI
+     - :envvar:`F2FORMAT_INDENTATION` -- same as the ``indentation`` argument and the ``--indentation`` option in CLI
+     - :envvar:`F2FORMAT_PEP8` -- same as the ``pep8`` argument and the ``--no-pep8`` option in CLI (logical negation)
      - :envvar:`F2FORMAT_QUIET` -- same as the ``quiet`` argument and the ``--quiet`` option in CLI
 
     """
@@ -484,8 +645,19 @@ def f2format(filename, *, source_version=None, quiet=None, dry_run=False):
     # detect source code encoding
     encoding = detect_encoding(content)
 
+    # get linesep and indentation
+    linesep = _get_linesep_option(linesep)
+    indentation = _get_indentation_option(indentation)
+    if linesep is None or indentation is None:
+        with open(filename, 'r', encoding=encoding) as file:
+            if linesep is None:
+                linesep = detect_linesep(file)
+            if indentation is None:
+                indentation = detect_indentation(file)
+
     # do the dirty things
-    result = convert(content, filename=filename, source_version=source_version)
+    result = convert(content, filename=filename, source_version=source_version,
+                     linesep=linesep, indentation=indentation, pep8=pep8)
 
     # overwrite the file with conversion result
     with open(filename, 'w', encoding=encoding, newline='') as file:
@@ -504,6 +676,20 @@ __f2format_concurrency__ = _get_concurrency_option() or 'auto detect'
 __f2format_do_archive__ = 'will do archive' if _get_do_archive_option() else 'will not do archive'
 __f2format_archive_path__ = os.path.join(__cwd__, _get_archive_path_option())
 __f2format_source_version__ = _get_source_version_option()
+__f2format_linesep__ = {
+    '\n': 'LF',
+    '\r\n': 'CRLF',
+    '\r': 'CR',
+    None: 'auto detect'
+}[_get_linesep_option()]
+__f2format_indentation__ = _get_indentation_option()
+if __f2format_indentation__ is None:
+    __f2format_indentation__ = 'auto detect'
+elif __f2format_indentation__ == '\t':
+    __f2format_indentation__ = 'tab'
+else:
+    __f2format_indentation__ = '%d spaces' % len(__f2format_indentation__)
+__f2format_pep8__ = 'will conform to PEP 8' if _get_pep8_option() else 'will not conform to PEP 8'
 
 
 def get_parser():
@@ -547,6 +733,14 @@ def get_parser():
     convert_group.add_argument('-vs', '-vf', '--source-version', '--from-version', action='store', metavar='VERSION',
                                default=__f2format_source_version__, choices=F2FORMAT_SOURCE_VERSIONS,
                                help='parse source code as this Python version (current: %(default)s)')
+    convert_group.add_argument('-l', '--linesep', action='store',
+                               help='line separator (LF, CRLF, CR) to read '
+                                    'source files (current: %s)' % __f2format_linesep__)
+    convert_group.add_argument('-t', '--indentation', action='store', metavar='INDENT',
+                               help='code indentation style, specify an integer for the number of spaces, '
+                                    "or 't'/'tab' for tabs (current: %s)" % __f2format_indentation__)
+    convert_group.add_argument('-n8', '--no-pep8', action='store_false', dest='pep8', default=None,
+                               help='do not make code insertion PEP 8 compliant (current: %s)' % __f2format_pep8__)
 
     parser.add_argument('files', action='store', nargs='*', metavar='<Python source files and directories...>',
                         help='Python source files and directories to be converted')
@@ -576,6 +770,9 @@ def main(argv=None):
      - :envvar:`F2FORMAT_DO_ARCHIVE` -- same as the ``--no-archive`` option in CLI (logical negation)
      - :envvar:`F2FORMAT_ARCHIVE_PATH` -- same as the ``--archive-path`` option in CLI
      - :envvar:`F2FORMAT_SOURCE_VERSION` -- same as the ``--source-version`` option in CLI
+     - :envvar:`F2FORMAT_LINESEP` -- same as the ``--linesep`` option in CLI
+     - :envvar:`F2FORMAT_INDENTATION` -- same as the ``--indentation`` option in CLI
+     - :envvar:`F2FORMAT_PEP8` -- same as the ``--no-pep8`` option in CLI (logical negation)
 
     """
     parser = get_parser()

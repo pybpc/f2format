@@ -27,7 +27,7 @@ for file in sorted(filter(ispy, os.listdir('.'))):
     subprocess.run([sys.executable, '-m', 'f2format', file])
 
     stem, ext = os.path.splitext(file)
-    name = glob.glob('archive/%s*' % stem)[0]
+    name = '%s.pyw' % stem
 
     new = subprocess.run([sys.executable, file], stdout=subprocess.PIPE)
     old = subprocess.run([sys.executable, name], stdout=subprocess.PIPE)

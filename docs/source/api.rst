@@ -1,9 +1,9 @@
 API Reference
 =============
 
-.. module:: poseur
+.. module:: f2format
 
-.. .. automodule:: poseur
+.. .. automodule:: f2format
 ..    :members:
 ..    :undoc-members:
 ..    :show-inheritance:
@@ -11,80 +11,70 @@ API Reference
 Public Interface
 ----------------
 
-.. autofunction:: poseur.convert
+.. autofunction:: f2format.convert
 
-.. autofunction:: poseur.poseur
+.. autofunction:: f2format.f2format
 
-.. autofunction:: poseur.main
+.. autofunction:: f2format.main
 
 Exported Decorator
 ------------------
 
 As you may wish to provide runtime positional-only parameter checks for
-your own code, ``poseur`` exposed the decorator function for developers
+your own code, ``f2format`` exposed the decorator function for developers
 to use by themselves.
 
-.. autofunction:: poseur.decorator
+.. autofunction:: f2format.decorator
 
 Conversion Implementation
 -------------------------
 
-The main logic of the ``poseur`` conversion is to
+The main logic of the ``f2format`` conversion is to extract the expressions
+part from *formatted string literals* and rewrite the original *f-string*
+using ``str.format`` syntax.
 
 For conversion algorithms and details, please refer to :doc:`algorithms`.
 
-Conversion Templates
-~~~~~~~~~~~~~~~~~~~~
-
-For general conversion scenarios, the converted wrapper functions will be
-rendered based on the following templates.
-
-Conversion Contexts
-~~~~~~~~~~~~~~~~~~~
-
-.. autoclass:: poseur.Context
+.. autoclass:: f2format.Context
    :members:
    :undoc-members:
    :private-members:
    :show-inheritance:
 
-.. autoclass:: poseur.StringContext
+.. autoclass:: f2format.StringContext
    :members:
    :undoc-members:
    :private-members:
    :show-inheritance:
-
-Internal Auxiliaries
---------------------
 
 Options & Defaults
 ~~~~~~~~~~~~~~~~~~
 
-.. autodata:: poseur.poseur_SOURCE_VERSIONS
+.. autodata:: f2format.f2format_SOURCE_VERSIONS
 
 Below are option getter utility functions. Option value precedence is::
 
    explicit value (CLI/API arguments) > environment variable > default value
 
-.. autofunction:: poseur._get_quiet_option
-.. autofunction:: poseur._get_concurrency_option
-.. autofunction:: poseur._get_do_archive_option
-.. autofunction:: poseur._get_archive_path_option
-.. autofunction:: poseur._get_source_version_option
-.. autofunction:: poseur._get_linesep_option
-.. autofunction:: poseur._get_indentation_option
-.. autofunction:: poseur._get_pep8_option
+.. autofunction:: f2format._get_quiet_option
+.. autofunction:: f2format._get_concurrency_option
+.. autofunction:: f2format._get_do_archive_option
+.. autofunction:: f2format._get_archive_path_option
+.. autofunction:: f2format._get_source_version_option
+.. autofunction:: f2format._get_linesep_option
+.. autofunction:: f2format._get_indentation_option
+.. autofunction:: f2format._get_pep8_option
 
 The following variables are used for fallback default values of options.
 
-.. autodata:: poseur._default_quiet
-.. autodata:: poseur._default_concurrency
-.. autodata:: poseur._default_do_archive
-.. autodata:: poseur._default_archive_path
-.. autodata:: poseur._default_source_version
-.. autodata:: poseur._default_linesep
-.. autodata:: poseur._default_indentation
-.. autodata:: poseur._default_pep8
+.. autodata:: f2format._default_quiet
+.. autodata:: f2format._default_concurrency
+.. autodata:: f2format._default_do_archive
+.. autodata:: f2format._default_archive_path
+.. autodata:: f2format._default_source_version
+.. autodata:: f2format._default_linesep
+.. autodata:: f2format._default_indentation
+.. autodata:: f2format._default_pep8
 
 .. important::
 
@@ -94,67 +84,67 @@ The following variables are used for fallback default values of options.
 CLI Utilities
 ~~~~~~~~~~~~~
 
-.. autofunction:: poseur.get_parser
+.. autofunction:: f2format.get_parser
 
 The following variables are used for help messages in the argument parser.
 
-.. data:: poseur.__cwd__
+.. data:: f2format.__cwd__
    :type: str
 
    Current working directory returned by :func:`os.getcwd`.
 
-.. data:: poseur.__poseur_quiet__
+.. data:: f2format.__f2format_quiet__
    :type: Literal[\'quiet mode\', \'non-quiet mode\']
 
    Default value for the ``--quiet`` option.
 
-   .. seealso:: :func:`poseur._get_quiet_option`
+   .. seealso:: :func:`f2format._get_quiet_option`
 
-.. data:: poseur.__poseur_concurrency__
+.. data:: f2format.__f2format_concurrency__
    :type: Union[int, Literal[\'auto detect\']]
 
    Default value for the ``--concurrency`` option.
 
-   .. seealso:: :func:`poseur._get_concurrency_option`
+   .. seealso:: :func:`f2format._get_concurrency_option`
 
-.. data:: poseur.__poseur_do_archive__
+.. data:: f2format.__f2format_do_archive__
    :type: Literal[\'will do archive\', \'will not do archive\']
 
    Default value for the ``--no-archive`` option.
 
-   .. seealso:: :func:`poseur._get_do_archive_option`
+   .. seealso:: :func:`f2format._get_do_archive_option`
 
-.. data:: poseur.__poseur_archive_path__
+.. data:: f2format.__f2format_archive_path__
    :type: str
 
    Default value for the ``--archive-path`` option.
 
-   .. seealso:: :func:`poseur._get_archive_path_option`
+   .. seealso:: :func:`f2format._get_archive_path_option`
 
-.. data:: poseur.__poseur_source_version__
+.. data:: f2format.__f2format_source_version__
    :type: str
 
    Default value for the ``--source-version`` option.
 
-   .. seealso:: :func:`poseur._get_source_version_option`
+   .. seealso:: :func:`f2format._get_source_version_option`
 
-.. data:: poseur.__poseur_linesep__
+.. data:: f2format.__f2format_linesep__
    :type: Literal[\'LF\', \'CRLF\', \'CR\', \'auto detect\']
 
    Default value for the ``--linesep`` option.
 
-   .. seealso:: :func:`poseur._get_linesep_option`
+   .. seealso:: :func:`f2format._get_linesep_option`
 
-.. data:: poseur.__poseur_indentation__
+.. data:: f2format.__f2format_indentation__
    :type: str
 
    Default value for the ``--indentation`` option.
 
-   .. seealso:: :func:`poseur._get_indentation_option`
+   .. seealso:: :func:`f2format._get_indentation_option`
 
-.. data:: poseur.__poseur_pep8__
+.. data:: f2format.__f2format_pep8__
    :type: Literal[\'will conform to PEP 8\', \'will not conform to PEP 8\']
 
    Default value for the ``--no-pep8`` option.
 
-   .. seealso:: :func:`poseur._get_pep8_option`
+   .. seealso:: :func:`f2format._get_pep8_option`

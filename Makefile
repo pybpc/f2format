@@ -1,11 +1,11 @@
 .PHONY: clean docker release pipenv pypi setup dist test coverage
 
-include .env
+-include .env
 
 export PIPENV_VENV_IN_PROJECT
 export CODECOV_TOKEN
 
-SHELL := /usr/local/bin/bash
+#SHELL := /usr/local/bin/bash
 
 # fetch platform spec
 platform = $(shell python3 -c "import distutils.util; print(distutils.util.get_platform().replace('-', '_').replace('.', '_'))")

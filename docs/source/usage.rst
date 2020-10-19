@@ -10,21 +10,21 @@ To convert a single file:
 
    $ cat myscript.py
    print(hello := 'world')
-   $ poseur myscript.py
+   $ f2format myscript.py
    Now converting: '/path/to/project/myscript.py'
    $ cat myscript.py  # file overwritten with conversion result
    if False:
        hello = NotImplemented
 
 
-   def __poseur_wrapper_hello_5adbf5ee911449cba75e35b9ef97ea80(expr):
+   def __f2format_wrapper_hello_5adbf5ee911449cba75e35b9ef97ea80(expr):
        """Wrapper function for assignment expression."""
        global hello
        hello = expr
        return hello
 
 
-   print(__poseur_wrapper_hello_5adbf5ee911449cba75e35b9ef97ea80('world'))
+   print(__f2format_wrapper_hello_5adbf5ee911449cba75e35b9ef97ea80('world'))
 
 
 To convert the whole project at the current working directory (overwrites all
@@ -32,17 +32,17 @@ Python source files inside):
 
 .. code-block:: console
 
-   $ poseur .
+   $ f2format .
 
 Multiple files and directories may be supplied at the same time:
 
 .. code-block:: console
 
-   $ poseur script_without_py_extension /path/to/another/project
+   $ f2format script_without_py_extension /path/to/another/project
 
 .. note::
 
-   When converting a directory, ``poseur`` will recursively find all the
+   When converting a directory, ``f2format`` will recursively find all the
    Python source files in the directory (and its subdirectories, if any).
    Whether a file is a Python source file is determined by its file extension
    (``.py`` or ``.pyw``). If you want to convert a file without a Python
@@ -55,18 +55,18 @@ Simple mode with no arguments (read from stdin, write to stdout):
 
 .. code-block:: console
 
-   $ printf 'print(hello := "world")\n' | python3 poseur.py -s
+   $ printf 'print(hello := "world")\n' | python3 f2format.py -s
    if False:
        hello = NotImplemented
 
 
-   def __poseur_wrapper_hello_fbf3a9dabd2b40348815e3f2b22a1683(expr):
+   def __f2format_wrapper_hello_fbf3a9dabd2b40348815e3f2b22a1683(expr):
        """Wrapper function for assignment expression."""
        global hello
        hello = expr
        return hello
 
-   print(__poseur_wrapper_hello_fbf3a9dabd2b40348815e3f2b22a1683("world"))
+   print(__f2format_wrapper_hello_fbf3a9dabd2b40348815e3f2b22a1683("world"))
 
 Simple mode with a file name argument (read from file, write to stdout):
 
@@ -74,18 +74,18 @@ Simple mode with a file name argument (read from file, write to stdout):
 
    $ cat myscript.py
    print(hello := 'world')
-   $ poseur -s myscript.py
+   $ f2format -s myscript.py
    if False:
        hello = NotImplemented
 
 
-   def __poseur_wrapper_hello_d1e6c2a11a76400aa9745bd90b3fb52a(expr):
+   def __f2format_wrapper_hello_d1e6c2a11a76400aa9745bd90b3fb52a(expr):
        """Wrapper function for assignment expression."""
        global hello
        hello = expr
        return hello
 
-   print(__poseur_wrapper_hello_d1e6c2a11a76400aa9745bd90b3fb52a('world'))
+   print(__f2format_wrapper_hello_d1e6c2a11a76400aa9745bd90b3fb52a('world'))
    $ cat myscript.py
    print(hello := 'world')
 
@@ -94,25 +94,25 @@ In simple mode, no file names shall be provided via positional arguments.
 Archiving And Recovering Files
 ------------------------------
 
-If you are not using the simple mode, ``poseur`` overwrites Python source
+If you are not using the simple mode, ``f2format`` overwrites Python source
 files, which could potentially cause data loss. Therefore, a built-in archiving
 functionality is enabled by default. The original copies of the Python source
 files to be converted will be packed into an archive file and placed under the
 ``archive`` subdirectory of the current working directory.
 
 To opt out of archiving, use the CLI option ``-na`` (``--no-archive``), or set
-environment variable ``POSEUR_DO_ARCHIVE=0``.
+environment variable ``F2FORMAT_DO_ARCHIVE=0``.
 
 To use an alternative name for the archive directory (other than ``archive``),
 use the CLI option ``-k`` (``--archive-path``), or set the environment
-variable ``POSEUR_ARCHIVE_PATH``.
+variable ``F2FORMAT_ARCHIVE_PATH``.
 
 To recover files from an archive file, use the CLI option ``-r``
 (``--recover``):
 
 .. code-block:: console
 
-   $ poseur -r archive/archive-20200814222751-f3a514d40d69c6d5.tar.gz
+   $ f2format -r archive/archive-20200814222751-f3a514d40d69c6d5.tar.gz
    Recovered files from archive: 'archive/archive-20200814222751-f3a514d40d69c6d5.tar.gz'
    $ ls archive/
    archive-20200814222751-f3a514d40d69c6d5.tar.gz
@@ -122,7 +122,7 @@ would like it to be removed after recovery, specify the CLI option ``-r2``:
 
 .. code-block:: console
 
-   $ poseur -r archive/archive-20200814222751-f3a514d40d69c6d5.tar.gz -r2
+   $ f2format -r archive/archive-20200814222751-f3a514d40d69c6d5.tar.gz -r2
    Recovered files from archive: 'archive/archive-20200814222751-f3a514d40d69c6d5.tar.gz'
    $ ls archive/
 
@@ -131,7 +131,7 @@ the CLI option ``-r3``:
 
 .. code-block:: console
 
-   $ poseur -r archive/archive-20200814222751-f3a514d40d69c6d5.tar.gz -r3
+   $ f2format -r archive/archive-20200814222751-f3a514d40d69c6d5.tar.gz -r3
    Recovered files from archive: 'archive/archive-20200814222751-f3a514d40d69c6d5.tar.gz'
    $ ls archive/
    ls: cannot access 'archive/': No such file or directory
@@ -148,52 +148,52 @@ the CLI option ``-r3``:
 Conversion Options
 ------------------
 
-By default, ``poseur`` automatically detects file line endings and use the
+By default, ``f2format`` automatically detects file line endings and use the
 same line ending for code insertion. If you want to manually specify the line
 ending to be used, use the CLI option ``-l`` (``--linesep``) or the
-``POSEUR_LINESEP`` environment variable.
+``F2FORMAT_LINESEP`` environment variable.
 
-By default, ``poseur`` automatically detects file indentations and use the
+By default, ``f2format`` automatically detects file indentations and use the
 same indentation for code insertion. If you want to manually specify the
 indentation to be used, use the CLI option ``-t`` (``--indentation``) or the
-``POSEUR_INDENTATION`` environment variable.
+``F2FORMAT_INDENTATION`` environment variable.
 
-By default, ``poseur`` parse Python source files as the latest version.
+By default, ``f2format`` parse Python source files as the latest version.
 If you want to manually specify a version for parsing, use the CLI option
 ``-vs`` (``-vf``, ``--source-version``, ``--from-version``) or the
-``POSEUR_SOURCE_VERSION`` environment variable.
+``F2FORMAT_SOURCE_VERSION`` environment variable.
 
-By default, code insertion of ``poseur`` conforms to :pep:`8`. To opt out
+By default, code insertion of ``f2format`` conforms to :pep:`8`. To opt out
 and get a more compact result, specify the CLI option ``-n8`` (``--no-pep8``)
-or set environment variable ``POSEUR_PEP8=0``.
+or set environment variable ``F2FORMAT_PEP8=0``.
 
 Runtime Options
 ---------------
 
 Specify the CLI option ``-q`` (``--quiet``) or set environment variable
-``POSEUR_QUIET=1`` to run in quiet mode.
+``F2FORMAT_QUIET=1`` to run in quiet mode.
 
 Specify the CLI option ``-C`` (``--concurrency``) or set environment variable
-``POSEUR_CONCURRENCY`` to specify the number of concurrent worker processes
+``F2FORMAT_CONCURRENCY`` to specify the number of concurrent worker processes
 for conversion.
 
 Use the ``--dry-run`` CLI option to list the files to be converted without
 actually performing conversion and archiving.
 
-By running ``poseur --help``, you can see the current values of all the options,
+By running ``f2format --help``, you can see the current values of all the options,
 based on their default values and your environment variables.
 
 API Usage
 ---------
 
-If you want to programmatically invoke ``poseur``, you may want to look at
-:doc:`api`. The :func:`poseur.convert` and :func:`poseur.poseur`
+If you want to programmatically invoke ``f2format``, you may want to look at
+:doc:`api`. The :func:`f2format.convert` and :func:`f2format.f2format`
 functions should be most commonly used.
 
 Disutils/Setuptools Integration
 -------------------------------
 
-``poseur`` can also be directly integrated within your ``setup.py`` script
+``f2format`` can also be directly integrated within your ``setup.py`` script
 to dynamically convert *assignment expressions* upon installation:
 
 .. code-block:: python
@@ -219,11 +219,11 @@ to dynamically convert *assignment expressions* upon installation:
            if version_info < (3, 8):
                try:
                    subprocess.check_call(  # nosec
-                       [sys.executable, '-m', 'poseur', '--no-archive', 'PACKAGENAME']
+                       [sys.executable, '-m', 'f2format', '--no-archive', 'PACKAGENAME']
                    )
                except subprocess.CalledProcessError as error:
                    print('Failed to perform assignment expression backport compiling.'
-                         'Please consider manually install `bpc-poseur` and try again.', file=sys.stderr)
+                         'Please consider manually install `bpc-f2format` and try again.', file=sys.stderr)
                    sys.exit(error.returncode)
            build_py.run(self)
 
@@ -231,14 +231,14 @@ to dynamically convert *assignment expressions* upon installation:
    setup(
        ...
        setup_requires=[
-           'bpc-poseur; python_version < "3.8"',
+           'bpc-f2format; python_version < "3.8"',
        ],
        cmdclass={
            'build_py': build,
        },
    )
 
-Or, as :pep:`518` proposed, you may simply add ``bpc-poseur`` to
+Or, as :pep:`518` proposed, you may simply add ``bpc-f2format`` to
 the ``requires`` list from the ``[build-system]`` section in the
 ``pyproject.toml`` file:
 
@@ -247,5 +247,5 @@ the ``requires`` list from the ``[build-system]`` section in the
 
    [built-system]
    # Minimum requirements for the build system to execute.
-   requires = ["setuptools", "wheel", "bpc-poseur"]  # PEP 508 specifications.
+   requires = ["setuptools", "wheel", "bpc-f2format"]  # PEP 508 specifications.
    ...
