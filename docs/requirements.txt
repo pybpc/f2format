@@ -29,4 +29,4 @@ sphinxcontrib-serializinghtml==1.1.4
 sphinx-autodoc-typehints==1.11.1
 
 # sphinxemoji
-sphinxemoji==0.1.7
+sphinxemoji==0.1.8
