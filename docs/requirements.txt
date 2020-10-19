@@ -26,7 +26,7 @@ sphinxcontrib-qthelp==1.0.3
 sphinxcontrib-serializinghtml==1.1.4
 
 # sphinx-autodoc-typehints
-sphinx-autodoc-typehints==1.11.0
+sphinx-autodoc-typehints==1.11.1
 
 # sphinxemoji
 sphinxemoji==0.1.7
