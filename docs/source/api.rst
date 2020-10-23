@@ -17,15 +17,6 @@ Public Interface
 
 .. autofunction:: f2format.main
 
-Exported Decorator
-------------------
-
-As you may wish to provide runtime positional-only parameter checks for
-your own code, ``f2format`` exposed the decorator function for developers
-to use by themselves.
-
-.. autofunction:: f2format.decorator
-
 Conversion Implementation
 -------------------------
 
@@ -34,6 +25,45 @@ part from *formatted string literals* and rewrite the original *f-string*
 using ``str.format`` syntax.
 
 For conversion algorithms and details, please refer to :doc:`algorithms`.
+
+Data Structures
+~~~~~~~~~~~~~~~
+
+During conversion, we utilised :class:`bpc_utils.Config` to store and deliver the
+configurations over the conversion :class:`~f2format.Context` instances, which should
+be as following:
+
+.. class:: Config
+
+   Configuration object shared over the conversion process of a single source file.
+
+   .. attribute:: indentation
+      :type: str
+
+      Indentation sequence.
+
+   .. attribute:: linesep
+      :type: Literal[\'\\n\', \'\\r\\n\', \'\\r\']
+
+      Line separator.
+
+   .. attribute:: pep8
+      :type: bool
+
+      :pep:`8` compliant conversion flag.
+
+   .. attribute:: filename
+      :type: Optional[str]
+
+      An optional source file name to provide a context in case of error.
+
+   .. attribute:: source_version
+      :type: Optional[str]
+
+      Parse the code as this Python version (uses the latest version by default).
+
+Conversion Contexts
+~~~~~~~~~~~~~~~~~~~
 
 .. autoclass:: f2format.Context
    :members:
@@ -46,6 +76,9 @@ For conversion algorithms and details, please refer to :doc:`algorithms`.
    :undoc-members:
    :private-members:
    :show-inheritance:
+
+Internal Auxiliaries
+--------------------
 
 Options & Defaults
 ~~~~~~~~~~~~~~~~~~

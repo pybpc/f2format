@@ -8,7 +8,6 @@ import re
 import sys
 import traceback
 
-import parso
 import tbtrim
 from bpc_utils import (BaseContext, BPCSyntaxError, Config, TaskLock, archive_files,
                        detect_encoding, detect_files, detect_indentation, detect_linesep,
