@@ -54,7 +54,7 @@ class TestF2format(unittest.TestCase):
 
             # run f2format
             with open(os.devnull, 'w') as devnull:
-                # XXX: not sure if these test cases should be fixed
+                # XXX: not sure if these test cases should
                 #with contextlib.redirect_stderr(devnull):
                 #    with self.assertRaises(SystemExit):
                 #        main_func(['-k', os.path.join(tempdir, 'archive'),
@@ -74,8 +74,9 @@ class TestF2format(unittest.TestCase):
                                    '%s.txt' % pathlib.Path(dst).stem)
                 with open(src, 'r') as file:
                     old = file.read()
-                new = subprocess.run([sys.executable, dst], stdout=subprocess.PIPE)
-                self.assertEqual(old, new.stdout.decode())
+                new = subprocess.Popen([sys.executable, dst], stdout=subprocess.PIPE)
+                new_stdout = new.communicate()[0]
+                self.assertEqual(old, new_stdout.decode())
 
     @unittest.skipIf(sys.version_info[:2] < (3, 6),
                      "not supported in this Python version")
@@ -95,9 +96,11 @@ class TestF2format(unittest.TestCase):
                             # run f2format
                             core_func(dst)
 
-                            old = subprocess.run([sys.executable, src], stdout=subprocess.PIPE)
-                            new = subprocess.run([sys.executable, dst], stdout=subprocess.PIPE)
-                            self.assertEqual(old.stdout.decode(), new.stdout.decode())
+                            old = subprocess.Popen([sys.executable, src], stdout=subprocess.PIPE)
+                            new = subprocess.Popen([sys.executable, dst], stdout=subprocess.PIPE)
+                            old_stdout = old.communicate()[0]
+                            new_stdout = new.communicate()[0]
+                            self.assertEqual(old_stdout.decode(), new_stdout.decode())
 
         os.environ['F2FORMAT_QUIET'] = '1'
         test_core_func_main()
