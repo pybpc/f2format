@@ -37,50 +37,81 @@ using ``str.format`` method. Besides **conversion** and **format specification**
 ``f2format`` also considered and resolved **string concatenation**. Also, it always
 tries to maintain the original layout of source code, and accuracy of syntax.
 
+This man page mainly introduces the CLI options of the ``f2format`` program.
+You can also checkout the online documentation at
+https://bpc-f2format.readthedocs.io/ for more details.
+
 OPTIONS
 =======
 
 positional arguments
 --------------------
 
-:SOURCE:              python source files and folders to be converted
+:SOURCE:                Python source files and directories to be converted
 
 optional arguments
 ------------------
 
--h, --help            show this help message and exit
--V, --version         show program's version number and exit
--q, --quiet           run in quiet mode
+-h, --help              show this help message and exit
+-V, --version           show program's version number and exit
+-q, --quiet             run in quiet mode
+
+-C *N*, --concurrency *N*
+                        the number of concurrent processes for conversion
+
+--dry-run               list the files to be converted without actually performing conversion and archiving
+
+-s *[FILE]*, --simple *[FILE]*
+                        this option tells the program to operate in "simple mode"; if a file name is provided, the program will convert
+                        the file but print conversion result to standard output instead of overwriting the file; if no file names are
+                        provided, read code for conversion from standard input and print conversion result to standard output; in
+                        "simple mode", no file names shall be provided via positional arguments
 
 archive options
 ---------------
 
-duplicate original files in case there's any issue
+backup original files in case there're any issues
 
--na, --no-archive     do not archive original files
+-na, --no-archive       do not archive original files
 
--p *PATH*, --archive-path *PATH*
-                      path to archive original files
+-k *PATH*, --archive-path *PATH*
+                        path to archive original files
+
+-r *ARCHIVE_FILE*, --recover *ARCHIVE_FILE*
+                        recover files from a given archive file
+
+-r2                     remove the archive file after recovery
+-r3                     remove the archive file after recovery, and remove the archive directory if it becomes empty
 
 convert options
 ---------------
 
-compatibility configuration for non-unicode files
+conversion configuration
 
--c *CODING*, --encoding *CODING*
-                      encoding to open source files
+-vs *VERSION*, --vf *VERSION*, --source-version *VERSION*, --from-version *VERSION*
+                        parse source code as this Python version
 
--v *VERSION*, --python *VERSION*
-                      convert against Python version
+-l *LINESEP*, --linesep *LINESEP*
+                        line separator (**LF**, **CRLF**, **CR**) to read source files
+
+-t *INDENT*, --indentation *INDENT*
+                        code indentation style, specify an integer for the number of spaces, or ``'t'``/``'tab'`` for tabs
+
+-n8, --no-pep8          do not make code insertion **PEP 8** compliant
 
 ENVIRONMENT
 ===========
 
 ``f2format`` currently supports three environment variables.
 
-:F2FORMAT_ENCODING:   encoding to open source files
-:F2FORMAT_VERSION:    convert against Python version
-:F2FORMAT_QUIET:      run in quiet mode
+:F2FORMAT_QUIET:          run in quiet mode
+:F2FORMAT_CONCURRENCY:    the number of concurrent processes for conversion
+:F2FORMAT_DO_ARCHIVE:     whether to perform archiving
+:F2FORMAT_ARCHIVE_PATH:   path to archive original files
+:F2FORMAT_SOURCE_VERSION: parse source code as this Python version
+:F2FORMAT_LINESEP:        line separator to read source files
+:F2FORMAT_INDENTATION:    code indentation style
+:F2FORMAT_PEP8:           whether to make code insertion **PEP 8** compliant
 
 SEE ALSO
 ========

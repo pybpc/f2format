@@ -29,13 +29,15 @@ setup(
     description='Back-port compiler for Python 3.6 f-string literals.',
     long_description=long_desc,
     long_description_content_type='text/markdown',
-    python_requires='>=3.3',
+    python_requires='>=3.4',
     # include_package_data=True,
     zip_safe=True,
     install_requires=[
-        'parso>=0.6.0',     # universal AST support
-        'tbtrim>=0.2.1',    # traceback trim support
-        'bpc-utils',        # utility library
+        'parso>=0.6.0',         # universal AST support
+        'tbtrim>=0.2.1',        # traceback trim support
+        'bpc-utils>=0.9.0',     # utility library
+        'typing;python_version<"3.5"',
+        'typing_extensions',
     ],
     py_modules=['f2format'],
     # packages=[

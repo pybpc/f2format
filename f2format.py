@@ -7,18 +7,35 @@ import pathlib
 import re
 import sys
 import traceback
+from typing import Generator, List, Optional, Union
 
+import parso.python.tree
+import parso.tree
 import tbtrim
 from bpc_utils import (BaseContext, BPCSyntaxError, Config, TaskLock, archive_files,
                        detect_encoding, detect_files, detect_indentation, detect_linesep,
                        first_non_none, get_parso_grammar_versions, map_tasks, parse_boolean_state,
                        parse_indentation, parse_linesep, parse_positive_integer, parso_parse,
                        recover_files)
+from bpc_utils.typing import Linesep
+from typing_extensions import ClassVar, Final, Literal, final
 
 __all__ = ['main', 'f2format', 'convert']  # pylint: disable=undefined-all-variable
 
 # version string
 __version__ = '0.8.6'
+
+###############################################################################
+# Typings
+
+
+class F2formatConfig(Config):
+    indentation = ''  # type: str
+    linesep = '\n'  # type: Literal[Linesep]
+    pep8 = True  # type: bool
+    filename = None  # Optional[str]
+    source_version = None  # Optional[str]
+
 
 ##############################################################################
 # Auxiliaries
@@ -50,7 +67,7 @@ _default_pep8 = True
 # option value precedence is: explicit value (CLI/API arguments) > environment variable > default value
 
 
-def _get_quiet_option(explicit=None):
+def _get_quiet_option(explicit: Optional[bool] = None) -> Optional[bool]:
     """Get the value for the ``quiet`` option.
 
     Args:
@@ -69,14 +86,14 @@ def _get_quiet_option(explicit=None):
     """
     # We need lazy evaluation, so first_non_none(a, b, c) does not work here
     # with PEP 505 we can simply write a ?? b ?? c
-    def _option_layers():
+    def _option_layers() -> Generator[Optional[bool], None, None]:
         yield explicit
         yield parse_boolean_state(os.getenv('F2FORMAT_QUIET'))
         yield _default_quiet
     return first_non_none(_option_layers())
 
 
-def _get_concurrency_option(explicit=None):
+def _get_concurrency_option(explicit: Optional[int] = None) -> Optional[int]:
     """Get the value for the ``concurrency`` option.
 
     Args:
@@ -97,7 +114,7 @@ def _get_concurrency_option(explicit=None):
     return parse_positive_integer(explicit or os.getenv('F2FORMAT_CONCURRENCY') or _default_concurrency)
 
 
-def _get_do_archive_option(explicit=None):
+def _get_do_archive_option(explicit: Optional[bool] = None) -> Optional[bool]:
     """Get the value for the ``do_archive`` option.
 
     Args:
@@ -114,14 +131,14 @@ def _get_do_archive_option(explicit=None):
         :data:`_default_do_archive`
 
     """
-    def _option_layers():
+    def _option_layers() -> Generator[Optional[bool], None, None]:
         yield explicit
         yield parse_boolean_state(os.getenv('F2FORMAT_DO_ARCHIVE'))
         yield _default_do_archive
     return first_non_none(_option_layers())
 
 
-def _get_archive_path_option(explicit=None):
+def _get_archive_path_option(explicit: Optional[str] = None) -> str:
     """Get the value for the ``archive_path`` option.
 
     Args:
@@ -141,7 +158,7 @@ def _get_archive_path_option(explicit=None):
     return explicit or os.getenv('F2FORMAT_ARCHIVE_PATH') or _default_archive_path
 
 
-def _get_source_version_option(explicit=None):
+def _get_source_version_option(explicit: Optional[str] = None) -> Optional[str]:
     """Get the value for the ``source_version`` option.
 
     Args:
@@ -161,7 +178,7 @@ def _get_source_version_option(explicit=None):
     return explicit or os.getenv('F2FORMAT_SOURCE_VERSION') or _default_source_version
 
 
-def _get_linesep_option(explicit=None):
+def _get_linesep_option(explicit: Optional[str] = None) -> Optional[Linesep]:
     r"""Get the value for the ``linesep`` option.
 
     Args:
@@ -182,7 +199,7 @@ def _get_linesep_option(explicit=None):
     return parse_linesep(explicit or os.getenv('F2FORMAT_LINESEP') or _default_linesep)
 
 
-def _get_indentation_option(explicit=None):
+def _get_indentation_option(explicit: Optional[Union[str, int]] = None) -> Optional[str]:
     """Get the value for the ``indentation`` option.
 
     Args:
@@ -203,7 +220,7 @@ def _get_indentation_option(explicit=None):
     return parse_indentation(explicit or os.getenv('F2FORMAT_INDENTATION') or _default_indentation)
 
 
-def _get_pep8_option(explicit=None):
+def _get_pep8_option(explicit: Optional[bool] = None) -> Optional[bool]:
     """Get the value for the ``pep8`` option.
 
     Args:
@@ -220,7 +237,7 @@ def _get_pep8_option(explicit=None):
         :data:`_default_pep8`
 
     """
-    def _option_layers():
+    def _option_layers() -> Generator[Optional[bool], None, None]:
         yield explicit
         yield parse_boolean_state(os.getenv('F2FORMAT_PEP8'))
         yield _default_pep8
@@ -234,7 +251,7 @@ def _get_pep8_option(explicit=None):
 ROOT = pathlib.Path(__file__).resolve().parent
 
 
-def predicate(filename):
+def predicate(filename: str) -> bool:
     return pathlib.Path(filename).parent == ROOT
 
 
@@ -273,7 +290,7 @@ class Context(BaseContext):
 
     """
 
-    def _process_strings(self, node):
+    def _process_strings(self, node: parso.python.tree.PythonNode) -> None:
         """Process concatenable strings (:token:`stringliteral`).
 
         Args:
@@ -291,10 +308,10 @@ class Context(BaseContext):
             return
 
         # initialise new context
-        ctx = StringContext(node, self.config, indent_level=self._indent_level, raw=False)
+        ctx = StringContext(node, self.config, indent_level=self._indent_level, raw=False)  # type: ignore[arg-type]
         self += ctx.string
 
-    def _process_fstring(self, node):
+    def _process_fstring(self, node: parso.python.tree.PythonNode) -> None:
         """Process formatted strings (:token:`f_string`).
 
         Args:
@@ -302,10 +319,10 @@ class Context(BaseContext):
 
         """
         # initialise new context
-        ctx = StringContext(node, self.config, indent_level=self._indent_level, raw=False)
+        ctx = StringContext(node, self.config, indent_level=self._indent_level, raw=False)  # type: ignore[arg-type]
         self += ctx.string
 
-    def _concat(self):
+    def _concat(self) -> None:
         """Concatenate final string.
 
         This method tries to concatenate final result based on the very location
@@ -316,8 +333,9 @@ class Context(BaseContext):
         # no-op
         self._buffer = self._prefix + self._suffix
 
+    @final
     @classmethod
-    def has_expr(cls, node):
+    def has_expr(cls, node: parso.tree.NodeOrLeaf) -> bool:
         """Check if node has formatted string literals.
 
         Args:
@@ -331,7 +349,7 @@ class Context(BaseContext):
             return True
 
         if hasattr(node, 'children'):
-            for child in node.children:
+            for child in node.children:  # type: ignore[attr-defined]
                 if cls.has_expr(child):
                     return True
         return False
@@ -339,8 +357,9 @@ class Context(BaseContext):
     # backward compatibility and auxiliary alias
     has_f2format = has_expr
 
+    @final
     @classmethod
-    def has_debug_fstring(cls, node):
+    def has_debug_fstring(cls, node: parso.tree.NodeOrLeaf) -> bool:
         """Check if node has *debug* formatted string literals.
 
         Args:
@@ -351,7 +370,7 @@ class Context(BaseContext):
 
         """
         if node.type == 'fstring_expr':
-            for expr in node.children:
+            for expr in node.children:  # type: ignore[attr-defined]
                 if expr.type == 'operator' and expr.value == '=':
                     next_sibling = expr.get_next_sibling()
                     if next_sibling.type == 'operator' and next_sibling.value == '}' \
@@ -360,7 +379,7 @@ class Context(BaseContext):
             return False
 
         if hasattr(node, 'children'):
-            for child in node.children:
+            for child in node.children:  # type: ignore[attr-defined]
                 if cls.has_debug_fstring(child):
                     return True
         return False
@@ -379,38 +398,37 @@ class StringContext(Context):
         has_fstring (bool): flag if contains actual formatted
             string literals (with expressions)
         indent_level (int): current indentation level
-        raw (Literal[False]): raw processing flag
-
-    Note:
-        * ``raw`` should always be :data:`False`.
+        raw (bool): raw processing flag
 
     """
     #: re.Pattern: Pattern matches the formatted string literal prefix (``f``).
-    fstring_start = re.compile(r'[fF]', flags=re.ASCII)
+    fstring_start = re.compile(r'[fF]', flags=re.ASCII)  # type: Final[ClassVar[re.Pattern]]
     #: re.Pattern: Pattern matches single brackets in the formatted string literal (``{}``).
-    fstring_bracket = re.compile(r'([{}])', flags=re.ASCII)
+    fstring_bracket = re.compile(r'([{}])', flags=re.ASCII)  # type: Final[ClassVar[re.Pattern]]
 
+    @final
     @property
-    def expr(self):
+    def expr(self) -> List[str]:
         """Expressions extracted from the formatted string literal.
 
         :rtype: List[str]
         """
         return self._expr
 
-    def __init__(self, node, config, *, has_fstring=None, indent_level=0, raw=False):
+    def __init__(self, node: parso.tree.NodeOrLeaf, config: F2formatConfig, *,
+                 has_fstring: Optional[bool] = None, indent_level: int = 0, raw: bool = False):
         if has_fstring is None:
             has_fstring = self.has_fstring(node)
 
         #: List[str]: Expressions extracted from the formatted string literal.
-        self._expr = list()
+        self._expr = []  # type: List[str]
         #: bool: Flag if contains actual formatted string literals (with expressions).
-        self._flag = has_fstring
+        self._flag = has_fstring  # type: bool
 
         # call super init
         super().__init__(node, config, indent_level=indent_level, raw=raw)
 
-    def _process_fstring(self, node):
+    def _process_fstring(self, node: parso.python.tree.PythonNode) -> None:
         """Process formatted strings (:token:`f_string`).
 
         Args:
@@ -418,12 +436,12 @@ class StringContext(Context):
 
         """
         # initialise new context
-        ctx = StringContext(node, self.config, has_fstring=self._flag,
+        ctx = StringContext(node, self.config, has_fstring=self._flag,  # type: ignore[arg-type]
                             indent_level=self._indent_level, raw=True)
         self += ctx.string
         self._expr.extend(ctx.expr)
 
-    def _process_string(self, node):
+    def _process_string(self, node: parso.python.tree.PythonNode) -> None:
         """Process string node (:token:`stringliteral`).
 
         Args:
@@ -436,21 +454,21 @@ class StringContext(Context):
 
         self += node.get_code()
 
-    def _process_fstring_start(self, node):
+    def _process_fstring_start(self, node: parso.python.tree.FStringStart) -> None:
         """Process formatted string literal starting node (:token:`stringprefix`).
 
         Args:
-            node (parso.python.tree.PythonNode): formatted literal starting node
+            node (parso.python.tree.FStringStart): formatted literal starting node
 
         """
         # <FStringStart: ...>
         self += self.fstring_start.sub('', node.get_code())
 
-    def _process_fstring_string(self, node):
+    def _process_fstring_string(self, node: parso.python.tree.FStringString) -> None:
         """Process formatted string literal string node (:token:`stringliteral`).
 
         Args:
-            node (parso.python.tree.PythonNode): formatted string literal string node
+            node (parso.python.tree.FStringString): formatted string literal string node
 
         """
         if self._flag:
@@ -459,7 +477,7 @@ class StringContext(Context):
 
         self += node.get_code().replace('{{', '{').replace('}}', '}')
 
-    def _process_fstring_expr(self, node):
+    def _process_fstring_expr(self, node: parso.python.tree.PythonNode) -> None:
         """Process formatted string literal expression node (:token:`f_expression`).
 
         Args:
@@ -490,13 +508,13 @@ class StringContext(Context):
             # embedded f-string
             elif child.type == 'fstring':
                 # initialise new context
-                ctx = StringContext(child, self.config, has_fstring=None,
+                ctx = StringContext(child, self.config, has_fstring=None,  # type: ignore[arg-type]
                                     indent_level=self._indent_level, raw=False)
                 expr_str += ctx.string
             # concatenable strings
             elif child.type == 'strings':
                 # initialise new context
-                ctx = StringContext(child, self.config, has_fstring=None,
+                ctx = StringContext(child, self.config, has_fstring=None,  # type: ignore[arg-type]
                                     indent_level=self._indent_level, raw=False)
                 expr_str += ctx.string
             # debug f-string / normal expression
@@ -504,7 +522,8 @@ class StringContext(Context):
                 next_sibling = child.get_next_sibling()
                 if (next_sibling.type == 'operator' and next_sibling.value == '}') \
                     or next_sibling.type in ['fstring_conversion', 'fstring_format_spec']:
-                    expr_tmp = expr_str + child.get_code() + self.extract_whitespaces(next_sibling.get_code())[0] + '{!r}'
+                    expr_tmp = expr_str + child.get_code() + \
+                        self.extract_whitespaces(next_sibling.get_code())[0] + '{!r}'
                     expr_str = '%r.format(%s)' % (expr_tmp, expr_str)
                 else:
                     expr_str += child.get_code()
@@ -520,7 +539,7 @@ class StringContext(Context):
         # <Operator: }>
         self += node.children[-1].get_code().lstrip()
 
-    def _concat(self):
+    def _concat(self) -> None:
         """Concatenate final string.
 
         This method tries to concatenate final result based on the very location
@@ -539,8 +558,9 @@ class StringContext(Context):
         # no-op
         self._buffer = self._prefix + self._suffix
 
+    @final
     @classmethod
-    def has_fstring(cls, node):
+    def has_fstring(cls, node: parso.tree.NodeOrLeaf) -> bool:
         """Check if node has actual formatted string literals.
 
         Args:
@@ -555,13 +575,19 @@ class StringContext(Context):
             return True
 
         if hasattr(node, 'children'):
-            for child in node.children:
+            for child in node.children:  # type: ignore[attr-defined]
                 if cls.has_fstring(child):
                     return True
         return False
 
 
-def convert(code, filename=None, *, source_version=None, linesep=None, indentation=None, pep8=None):
+###############################################################################
+# Public Interface
+
+
+def convert(code: Union[str, bytes], filename: Optional[str] = None, *,
+            source_version: Optional[str] = None, linesep: Optional[Linesep] = None,
+            indentation: Optional[Union[int, str]] = None, pep8: Optional[bool] = None) -> str:
     """Convert the given Python source code string.
 
     Args:
@@ -606,7 +632,9 @@ def convert(code, filename=None, *, source_version=None, linesep=None, indentati
     return result
 
 
-def f2format(filename, *, source_version=None, quiet=None, linesep=None, indentation=None, pep8=None, dry_run=False):
+def f2format(filename: str, *, source_version: Optional[str] = None, linesep: Optional[Linesep] = None,
+             indentation: Optional[Union[int, str]] = None, pep8: Optional[bool] = None,
+             quiet: Optional[bool] = None, dry_run: bool = False) -> None:
     """Convert the given Python source code file. The file will be overwritten.
 
     Args:
@@ -691,7 +719,7 @@ else:
 __f2format_pep8__ = 'will conform to PEP 8' if _get_pep8_option() else 'will not conform to PEP 8'
 
 
-def get_parser():
+def get_parser() -> argparse.ArgumentParser:
     """Generate CLI parser.
 
     Returns:
@@ -720,7 +748,7 @@ def get_parser():
                                               description="backup original files in case there're any issues")
     archive_group.add_argument('-na', '--no-archive', action='store_false', dest='do_archive', default=None,
                                help='do not archive original files (current: %s)' % __f2format_do_archive__)
-    archive_group.add_argument('-k', '--archive-path', action='store', default=__f2format_archive_path__, metavar='PATH',
+    archive_group.add_argument('-k', '--archive-path', action='store', default=__f2format_archive_path__, metavar='PATH',  # pylint: disable=line-too-long
                                help='path to archive original files (current: %(default)s)')
     archive_group.add_argument('-r', '--recover', action='store', dest='recover_file', metavar='ARCHIVE_FILE',
                                help='recover files from a given archive file')
@@ -747,17 +775,17 @@ def get_parser():
     return parser
 
 
-def do_f2format(filename, **kwargs):
+def do_f2format(filename: str, **kwargs: object) -> None:
     """Wrapper function to catch exceptions."""
     try:
-        f2format(filename, **kwargs)
+        f2format(filename, **kwargs)  # type: ignore[arg-type]
     except Exception:  # pylint: disable=broad-except
         with TaskLock():
             print('Failed to convert file: %r' % filename, file=sys.stderr)
             traceback.print_exc()
 
 
-def main(argv=None):
+def main(argv: Optional[List[str]] =None) -> int:
     """Entry point for f2format.
 
     Args:
@@ -796,7 +824,7 @@ def main(argv=None):
             with open(filename, 'rb') as file:
                 code = file.read()
         sys.stdout.write(convert(code, **options))  # print conversion result to stdout
-        return
+        return 0
 
     # get options
     quiet = _get_quiet_option(args.quiet)
@@ -816,7 +844,7 @@ def main(argv=None):
                 archive_dir = os.path.dirname(os.path.realpath(args.recover_file))
                 if not os.listdir(archive_dir):
                     os.rmdir(archive_dir)
-        return
+        return 0
 
     # fetch file list
     if not args.files:
@@ -828,7 +856,7 @@ def main(argv=None):
         if not args.quiet:
             # TODO: maybe use parser.error?
             print('Warning: no valid Python source files found in %r' % args.files, file=sys.stderr)
-        return
+        return 1
 
     # make archive
     if do_archive and not args.dry_run:
@@ -840,6 +868,8 @@ def main(argv=None):
         'dry_run': args.dry_run,
     })
     map_tasks(do_f2format, filelist, kwargs=options, processes=processes)
+
+    return 0
 
 
 if __name__ == '__main__':
