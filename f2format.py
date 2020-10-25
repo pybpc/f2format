@@ -498,7 +498,7 @@ class StringContext(Context):
             # format specification
             elif child.type == 'fstring_format_spec':
                 # initialise new context
-                ctx = StringContext(child, self.config, has_fstring=None,
+                ctx = StringContext(child, self.config, has_fstring=None,  # type: ignore[arg-type]
                                     indent_level=self._indent_level, raw=True)
                 self += ctx.string.strip()
                 spec_str += ''.join(ctx.expr)
