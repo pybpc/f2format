@@ -351,7 +351,7 @@ class Context(BaseContext):
 
         """
         if node.type == 'fstring_expr':
-            for expr in node:
+            for expr in node.children:
                 if expr.type == 'operator' and expr.value == '=':
                     next_sibling = expr.get_next_sibling()
                     if next_sibling.type == 'operator' and next_sibling.value == '}' \
@@ -504,7 +504,7 @@ class StringContext(Context):
                 next_sibling = child.get_next_sibling()
                 if (next_sibling.type == 'operator' and next_sibling.value == '}') \
                     or next_sibling.type in ['fstring_conversion', 'fstring_format_spec']:
-                    expr_tmp = expr_str + child.get_code() + self.extrace_whitespaces(next_sibling.get_code())[0] + '{}'
+                    expr_tmp = expr_str + child.get_code() + self.extract_whitespaces(next_sibling.get_code())[0] + '{!r}'
                     expr_str = '%r.format(%s)' % (expr_tmp, expr_str)
                 else:
                     expr_str += child.get_code()
