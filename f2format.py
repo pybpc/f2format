@@ -487,6 +487,10 @@ class StringContext(Context):
         # <Operator: {>
         self += node.children[0].get_code().rstrip()
 
+        flag_dbg = False  # is debug f-string?
+        conv_str = None  # f-stringconversion
+        conv_var = '__f2format_%s' % self._uuid_gen.gen()
+
         expr_str = ''
         spec_str = ''
 
@@ -494,7 +498,8 @@ class StringContext(Context):
         for child in node.children[1:-1]:
             # conversion
             if child.type == 'fstring_conversion':
-                self += child.get_code().strip()
+                conv_str = child.get_code().strip()
+                self += conv_str
             # format specification
             elif child.type == 'fstring_format_spec':
                 # initialise new context
@@ -521,10 +526,19 @@ class StringContext(Context):
             elif child.type == 'operator' and child.value == '=':
                 next_sibling = child.get_next_sibling()
                 if (next_sibling.type == 'operator' and next_sibling.value == '}') \
-                    or next_sibling.type in ['fstring_conversion', 'fstring_format_spec']:
+                        or next_sibling.type in ['fstring_conversion', 'fstring_format_spec']:
+                    flag_dbg = True
                     expr_tmp = expr_str + child.get_code() + \
-                        self.extract_whitespaces(next_sibling.get_code())[0] + '{!r}'
+                        self.extract_whitespaces(next_sibling.get_code())[0] + \
+                        '{{%({conv_var})s}}'.format(conv_var=conv_var)
                     expr_str = '%r.format(%s)' % (expr_tmp, expr_str)
+                else:
+                    expr_str += child.get_code()
+            # empty format specification
+            elif child.type == 'operator' and child.value == ':':
+                next_sibling = child.get_next_sibling()
+                if (next_sibling.type == 'operator' and next_sibling.value == '}'):
+                    self += child.get_code()
                 else:
                     expr_str += child.get_code()
             # normal expression
@@ -532,6 +546,8 @@ class StringContext(Context):
                 expr_str += child.get_code()
 
         if expr_str:
+            if flag_dbg:
+                expr_str = expr_str % {conv_var: conv_str or '!r'}
             self._expr.append(expr_str)
         if spec_str:
             self._expr.append(spec_str)
