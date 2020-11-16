@@ -23,7 +23,7 @@ from typing_extensions import ClassVar, Final, Literal, final
 __all__ = ['main', 'f2format', 'convert']  # pylint: disable=undefined-all-variable
 
 # version string
-__version__ = '0.8.6'
+__version__ = '0.8.7rc1'
 
 ###############################################################################
 # Typings
@@ -530,7 +530,7 @@ class StringContext(Context):
                     flag_dbg = True
                     expr_tmp = expr_str + child.get_code() + \
                         self.extract_whitespaces(next_sibling.get_code())[0] + \
-                        '{{%({conv_var})s}}'.format(conv_var=conv_var)
+                        '{%%(%(conv_var)s)s}' % dict(conv_var=conv_var)
                     expr_str = '%r.format(%s)' % (expr_tmp, expr_str)
                 else:
                     expr_str += child.get_code()

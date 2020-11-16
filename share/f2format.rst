@@ -6,7 +6,7 @@ f2format
 back-port compiler for Python 3.6 f-string literals
 ---------------------------------------------------
 
-:Version: v0.8.6
+:Version: v0.8.7rc1
 :Date: December 11, 2019
 :Manual section: 1
 :Author:
