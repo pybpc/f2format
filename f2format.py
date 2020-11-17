@@ -488,7 +488,7 @@ class StringContext(Context):
         self += node.children[0].get_code().rstrip()
 
         flag_dbg = False  # is debug f-string?
-        conv_str = None  # f-stringconversion
+        conv_str = ''  # f-stringconversion
         conv_var = '__f2format_%s' % self._uuid_gen.gen()
 
         expr_str = ''
@@ -498,15 +498,27 @@ class StringContext(Context):
         for child in node.children[1:-1]:
             # conversion
             if child.type == 'fstring_conversion':
-                conv_str = child.get_code().strip()
-                self += conv_str
+                conv_str += child.get_code().strip()
+                if not flag_dbg:
+                    self += conv_str
             # format specification
             elif child.type == 'fstring_format_spec':
                 # initialise new context
                 ctx = StringContext(child, self.config, has_fstring=None,  # type: ignore[arg-type]
                                     indent_level=self._indent_level, raw=True)
-                self += ctx.string.strip()
+                conv_str += ctx.string.strip()
+                if not flag_dbg:
+                    self += conv_str
                 spec_str += ''.join(ctx.expr)
+            # empty format specification
+            elif child.type == 'operator' and child.value == ':':
+                next_sibling = child.get_next_sibling()
+                if (next_sibling.type == 'operator' and next_sibling.value == '}'):
+                    conv_str += child.get_code()
+                    if not flag_dbg:
+                        self += conv_str
+                else:
+                    expr_str += child.get_code()
             # implicit tuple
             elif child.type == 'testlist':
                 expr_str += '(%s)' % child.get_code().strip()
@@ -525,20 +537,21 @@ class StringContext(Context):
             # debug f-string / normal expression
             elif child.type == 'operator' and child.value == '=':
                 next_sibling = child.get_next_sibling()
-                if (next_sibling.type == 'operator' and next_sibling.value == '}') \
-                        or next_sibling.type in ['fstring_conversion', 'fstring_format_spec']:
+
+                if (next_sibling.type == 'operator' and next_sibling.value == '}'):
                     flag_dbg = True
+                elif next_sibling.type in ['fstring_conversion', 'fstring_format_spec']:
+                    flag_dbg = True
+                elif next_sibling.type == 'operator' and next_sibling.value == ':':
+                    next_next_sibling = next_sibling.get_next_sibling()
+                    if next_next_sibling.type == 'operator' and next_next_sibling.value == '}':
+                        flag_dbg = True
+
+                if flag_dbg:
                     expr_tmp = expr_str + child.get_code() + \
                         self.extract_whitespaces(next_sibling.get_code())[0] + \
                         '{%%(%(conv_var)s)s}' % dict(conv_var=conv_var)
                     expr_str = '%r.format(%s)' % (expr_tmp, expr_str)
-                else:
-                    expr_str += child.get_code()
-            # empty format specification
-            elif child.type == 'operator' and child.value == ':':
-                next_sibling = child.get_next_sibling()
-                if (next_sibling.type == 'operator' and next_sibling.value == '}'):
-                    self += child.get_code()
                 else:
                     expr_str += child.get_code()
             # normal expression
