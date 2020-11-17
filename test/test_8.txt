@@ -1,0 +1,23 @@
+1
+escape{brackets}
+'u'
+v
+'w'
+xi
+y         2
+3'\u4f60\u597d'4
+5z         6
+666,777=(666, 777)
+"c"+"d" = 'cd'
+"e"='e'
+"f"=f
+'g'+'u'='gu'
+"h"=hl
+"i"=i         o
+7chr(20013) + chr(25991) = '\u4e2d\u6587'8
+{9"k"=k         10}
+prefix\n
+he   middle6==7=False
+suffix
+hello None world
+[88]

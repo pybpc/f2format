@@ -33,7 +33,7 @@ Also, it always tries to maintain the original layout of source code, and accura
 
 ## Installation
 
-> Note that `f2format` only supports Python versions __since 3.3__ 🐍
+> Note that `f2format` only supports Python versions __since 3.4__ 🐍
 
 &emsp; For macOS users, `f2format` is now available through [Homebrew](https://brew.sh):
 

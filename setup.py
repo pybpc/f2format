@@ -35,7 +35,7 @@ setup(
     install_requires=[
         'parso>=0.6.0',         # universal AST support
         'tbtrim>=0.2.1',        # traceback trim support
-        'bpc-utils>=0.9.0',     # utility library
+        'bpc-utils>=0.9.1',     # utility library
         'typing;python_version<"3.5"',
         'typing_extensions',
     ],
@@ -63,7 +63,6 @@ setup(
         'Natural Language :: English',
         'Operating System :: OS Independent',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 3.3',
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',

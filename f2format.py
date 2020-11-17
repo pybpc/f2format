@@ -84,7 +84,7 @@ def _get_quiet_option(explicit: Optional[bool] = None) -> Optional[bool]:
         :data:`_default_quiet`
 
     """
-    # We need lazy evaluation, so first_non_none(a, b, c) does not work here
+    # We need short circuit evaluation, so first_non_none(a, b, c) does not work here
     # with PEP 505 we can simply write a ?? b ?? c
     def _option_layers() -> Generator[Optional[bool], None, None]:
         yield explicit
