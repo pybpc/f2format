@@ -1,5 +1,8 @@
 1
 escape{brackets}
+start{}end
+new start{}new end
+more start{1}more end
 'u'
 v
 'w'
@@ -19,5 +22,11 @@ y         2
 prefix\n
 he   middle6==7=False
 suffix
+1
+<generator object <genexpr> at
+<generator object <genexpr> at
+[1]
 hello None world
-[88]
+yet None another
+None
+[88, '99', 'end']
