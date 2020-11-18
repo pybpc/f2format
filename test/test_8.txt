@@ -1,8 +1,9 @@
 1
 escape{brackets}
-start{}end
+start{x:y}end
 new start{}new end
 more start{1}more end
+and more start{2: 3}and more end
 'u'
 v
 'w'
