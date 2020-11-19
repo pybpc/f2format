@@ -498,25 +498,31 @@ class StringContext(Context):
         for child in node.children[1:-1]:
             # conversion
             if child.type == 'fstring_conversion':
-                conv_str += child.get_code().strip()
-                if not flag_dbg:
-                    self += conv_str
+                temp = child.get_code().strip()
+                if flag_dbg:
+                    conv_str += temp
+                else:
+                    self += temp
             # format specification
             elif child.type == 'fstring_format_spec':
                 # initialise new context
                 ctx = StringContext(child, self.config, has_fstring=None,  # type: ignore[arg-type]
                                     indent_level=self._indent_level, raw=True)
-                conv_str += ctx.string.strip()
-                if not flag_dbg:
-                    self += conv_str
+                temp = ctx.string.strip()
+                if flag_dbg:
+                    conv_str += temp
+                else:
+                    self += temp
                 spec_str += ''.join(ctx.expr)
             # empty format specification
             elif child.type == 'operator' and child.value == ':':
                 next_sibling = child.get_next_sibling()
                 if (next_sibling.type == 'operator' and next_sibling.value == '}'):
-                    conv_str += child.get_code()
-                    if not flag_dbg:
-                        self += conv_str
+                    temp = child.get_code()
+                    if flag_dbg:
+                        conv_str += temp
+                    else:
+                        self += child.get_code()
                 else:
                     expr_str += child.get_code()
             # implicit tuple
