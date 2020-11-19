@@ -140,8 +140,8 @@ class TestF2format(unittest.TestCase):
             tmp_file = os.path.join(tempdir, 'temp.py')
             with open(tmp_file, 'w') as file:
                 print('b = 1', file=file)
-                print("print(f'a {b = :>2} c')")
-                print("print(f'a {b = !r:>2} c'")
+                print("print(f'a {b = :>2} c')", file=file)
+                print("print(f'a {b = !r:>2} c')", file=file)
             old = subprocess.check_output([sys.executable, tmp_file], encoding='utf-8')
 
             # convert Python 3.8 debug f-string
