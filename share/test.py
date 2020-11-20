@@ -52,6 +52,8 @@ class TestF2format(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tempdir:
             for src in src_files:
                 name = os.path.split(src)[1]
+                if name == 'test_driver.py':
+                    continue
                 # skip unparenthesized test on Python < 3.6 due to parso requirement
                 if name == 'unparenthesized.py' and sys.version_info < (3, 6):
                     continue
@@ -97,6 +99,8 @@ class TestF2format(unittest.TestCase):
                     with tempfile.TemporaryDirectory() as tempdir:
                         for src in src_files:
                             name = os.path.split(src)[1]
+                            if name == 'test_driver.py':
+                                continue
                             # skip unparenthesized test on Python < 3.6 due to parso requirement
                             if name == 'unparenthesized.py' and sys.version_info < (3, 6):
                                 continue
