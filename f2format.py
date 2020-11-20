@@ -525,8 +525,10 @@ class StringContext(Context):
                         self += child.get_code()
                 else:
                     expr_str += child.get_code()
-            # implicit tuple
-            elif child.type == 'testlist':
+            # structures which need a pair of parentheses when converted to str.format() calls:
+            # implicit tuple, generator expression and yield expression
+            elif child.type in {'testlist', 'testlist_comp', 'yield_expr'} \
+                    or child.type == 'keyword' and child.value == 'yield':
                 expr_str += '(%s)' % child.get_code().strip()
             # embedded f-string
             elif child.type == 'fstring':
