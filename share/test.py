@@ -87,7 +87,7 @@ class TestF2format(unittest.TestCase):
                 new_stdout = new.communicate()[0]
                 self.assertEqual(old, new_stdout.decode())
 
-    @unittest.skipIf(sys.version_info[:2] < (3, 6),
+    @unittest.skipIf(sys.version_info[:2] < (3, 8),
                      "not supported in this Python version")
     def test_core_func(self):
         def test_core_func_main():
@@ -100,9 +100,6 @@ class TestF2format(unittest.TestCase):
                         for src in src_files:
                             name = os.path.split(src)[1]
                             if name == 'test_driver.py':
-                                continue
-                            # skip unparenthesized test on Python < 3.6 due to parso requirement
-                            if name == 'unparenthesized.py' and sys.version_info < (3, 6):
                                 continue
                             dst = os.path.join(tempdir, name)
                             shutil.copy(src, dst)
