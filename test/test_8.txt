@@ -24,8 +24,9 @@ prefix\n
 he   middle6==7=False
 suffix
 1
-<generator object <genexpr> at
-<generator object <genexpr> at
+<generator object
+<generator object
+<generator object
 [1]
 hello None world
 yet None another

@@ -1,5 +1,8 @@
 # pyup: ignore file
-parso>=0.6.0
+# parso>=0.6.0
+# temporarily use this Git version of parso for CI
+git+git://github.com/davidhalter/parso@b08b61b#egg=parso; python_version >= "3.6"
+parso>=0.6.0; python_version < "3.6"
 tbtrim>=0.2.1
 bpc-utils
 -e .

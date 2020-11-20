@@ -27,8 +27,9 @@ suffix''')
 # TODO: more complicated nested replacement field
 
 print(f"{1if'yes'else'no'}")
-print(f'{x for x in [1]}'[:30])
-print(f'{(x for x in [1])}'[:30])
+print(f'{x for x in [1]}'[:17])
+print(f'{x for x in [1]} {x for x in [1]}'[:17])
+print(f'{(x for x in [1])}'[:17])
 print(f'{[x for x in [1]]}')
 
 
