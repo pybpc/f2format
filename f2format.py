@@ -487,7 +487,9 @@ class StringContext(Context):
         # <Operator: {>
         self += node.children[0].get_code().rstrip()
 
+        flag_imp = False  # implicit tuple, generator expression and/or yield expression
         flag_dbg = False  # is debug f-string?
+
         conv_str = ''  # f-stringconversion
         conv_var = '__f2format_%s' % self._uuid_gen.gen()
 
@@ -525,11 +527,6 @@ class StringContext(Context):
                         self += child.get_code()
                 else:
                     expr_str += child.get_code()
-            # structures which need a pair of parentheses when converted to str.format() calls:
-            # implicit tuple, generator expression and yield expression
-            elif child.type in {'testlist', 'testlist_comp', 'yield_expr'} \
-                    or child.type == 'keyword' and child.value == 'yield':
-                expr_str += '(%s)' % child.get_code().strip()
             # embedded f-string
             elif child.type == 'fstring':
                 # initialise new context
@@ -559,16 +556,25 @@ class StringContext(Context):
                     expr_tmp = expr_str + child.get_code() + \
                         self.extract_whitespaces(next_sibling.get_code())[0] + \
                         '{%%(%(conv_var)s)s}' % dict(conv_var=conv_var)
+                    if flag_imp:
+                        expr_str = '(%s)' % expr_str
                     expr_str = '%r.format(%s)' % (expr_tmp, expr_str)
                 else:
                     expr_str += child.get_code()
             # normal expression
             else:
+                # structures which need a pair of parentheses when converted to str.format() calls:
+                # implicit tuple, generator expression and yield expression
+                if child.type in {'testlist', 'testlist_comp', 'yield_expr'} \
+                        or child.type == 'keyword' and child.value == 'yield':
+                    flag_imp = True
                 expr_str += child.get_code()
 
         if expr_str:
             if flag_dbg:
                 expr_str = expr_str % {conv_var: conv_str or '!r'}
+            if flag_imp:
+                expr_str = '(%s)' % expr_str
             self._expr.append(expr_str)
         if spec_str:
             self._expr.append(spec_str)
