@@ -22,6 +22,11 @@ FLAG = True
 for file in sorted(filter(ispy, os.listdir('.'))):
     if file == os.path.split(__file__)[1]:
         continue
+
+    # skip unparenthesized test on Python < 3.6 due to parso requirement
+    if file == 'unparenthesized.py' and sys.version_info < (3, 6):
+        continue
+
     subprocess.run([sys.executable, '-m', 'f2format', file])  # nosec: B603; pylint: disable=subprocess-run-check
 
     stem, ext = os.path.splitext(file)

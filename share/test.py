@@ -46,18 +46,21 @@ class TestF2format(unittest.TestCase):
 
     def test_main_func(self):
         src_files = glob.glob(os.path.join(os.path.dirname(__file__),
-                                           '..', 'test', 'test_?.py'))
+                                           '..', 'test', '*.py'))
         dst_files = list()
 
         with tempfile.TemporaryDirectory() as tempdir:
             for src in src_files:
                 name = os.path.split(src)[1]
+                # skip unparenthesized test on Python < 3.6 due to parso requirement
+                if name == 'unparenthesized.py' and sys.version_info < (3, 6):
+                    continue
                 dst = os.path.join(tempdir, name)
                 shutil.copy(src, dst)
                 dst_files.append(dst)
 
             # run f2format
-            with open(os.devnull, 'w') as devnull:
+            with open(os.devnull, 'w', encoding='utf-8') as devnull:
                 # XXX: not sure if these test cases should
                 #with contextlib.redirect_stderr(devnull):
                 #    with self.assertRaises(SystemExit):
@@ -76,7 +79,7 @@ class TestF2format(unittest.TestCase):
             for dst in dst_files:
                 src = os.path.join(os.path.dirname(__file__), '..', 'test',
                                    '%s.txt' % pathlib.Path(dst).stem)
-                with open(src, 'r') as file:
+                with open(src, 'r', encoding='utf-8') as file:
                     old = file.read()
                 new = subprocess.Popen([sys.executable, dst], stdout=subprocess.PIPE)
                 new_stdout = new.communicate()[0]
@@ -87,13 +90,16 @@ class TestF2format(unittest.TestCase):
     def test_core_func(self):
         def test_core_func_main():
             src_files = glob.glob(os.path.join(os.path.dirname(__file__),
-                                               '..', 'test', 'test_?.py'))
+                                               '..', 'test', '*.py'))
 
-            with open(os.devnull, 'w') as devnull:
+            with open(os.devnull, 'w', encoding='utf-8') as devnull:
                 with contextlib.redirect_stdout(devnull):
                     with tempfile.TemporaryDirectory() as tempdir:
                         for src in src_files:
                             name = os.path.split(src)[1]
+                            # skip unparenthesized test on Python < 3.6 due to parso requirement
+                            if name == 'unparenthesized.py' and sys.version_info < (3, 6):
+                                continue
                             dst = os.path.join(tempdir, name)
                             shutil.copy(src, dst)
 
@@ -138,7 +144,7 @@ class TestF2format(unittest.TestCase):
 
         with tempfile.TemporaryDirectory() as tempdir:
             tmp_file = os.path.join(tempdir, 'temp.py')
-            with open(tmp_file, 'w') as file:
+            with open(tmp_file, 'w', encoding='utf-8') as file:
                 print('b = 1', file=file)
                 print("print(f'a {b = :>2} c')", file=file)
                 print("print(f'a {b = !r:>2} c')", file=file)

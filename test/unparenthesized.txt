@@ -1,0 +1,11 @@
+1
+<generator object
+<generator object
+x for x in [1]=<generator object
+hello None world
+yet None another
+yield 'end' = None
+None
+[88, '99', 'end']
+(1, 2)
+*(3, 4),*(5, 6)=(3, 4, 5, 6)

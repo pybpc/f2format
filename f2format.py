@@ -898,7 +898,7 @@ def main(argv: Optional[List[str]] =None) -> int:
     if not filelist:
         if not args.quiet:
             # TODO: maybe use parser.error?
-            print('Warning: no valid Python source files found in %r' % args.files, file=sys.stderr)
+            print('Warning: no valid Python source files found in %r' % (args.files,), file=sys.stderr)
         return 1
 
     # make archive
