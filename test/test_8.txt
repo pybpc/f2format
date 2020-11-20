@@ -28,7 +28,9 @@ suffix
 <generator object
 <generator object
 [1]
+x for x in [1]=<generator object
 hello None world
 yet None another
+yield 'end' = None
 None
 [88, '99', 'end']

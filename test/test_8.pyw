@@ -31,11 +31,12 @@ print(f'{x for x in [1]}'[:17])
 print(f'{x for x in [1]} {x for x in [1]}'[:17])
 print(f'{(x for x in [1])}'[:17])
 print(f'{[x for x in [1]]}')
+print(f'{x for x in [1]=}'[:32])
 
 
 def foo(x=0):
     if x == 0:
-        yield 'end'
+        print(f"{yield 'end' = }")
         return
     print(f'hello {yield 88} world')
     print(f'yet {(yield "99")} another')
