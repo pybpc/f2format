@@ -24,6 +24,11 @@ you to always write *formatted string literals* in Python 3.8 flavour then compi
 Installation
 ------------
 
+.. warning::
+
+   ``f2format`` is currently under reconstruction. It is highly recommended to directly install
+   from the git repo or the pre-release distributions.
+
 .. note::
 
    ``f2format`` only supports Python versions **since 3.4** |:snake:|
