@@ -15,7 +15,7 @@ with open(os.path.join(ROOT, 'README.md'), encoding='utf-8') as file:
     long_desc = file.read()
 
 # version string
-__version__ = '0.8.7rc1'
+__version__ = '0.8.7rc2'
 
 # set-up script for pip distribution
 setup(
@@ -35,7 +35,7 @@ setup(
     install_requires=[
         'parso>=0.6.0',         # universal AST support
         'tbtrim>=0.2.1',        # traceback trim support
-        'bpc-utils>=0.9.1',     # utility library
+        'bpc-utils~=0.9.1',     # utility library
         'typing;python_version<"3.5"',
         'typing_extensions',
     ],
