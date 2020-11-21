@@ -6,12 +6,12 @@
 ``f2format`` - Backport Compiler for Formatted String Literals
 ==============================================================
 
-   Write *formatted string literals* in Python 3.8 flavour, and let ``f2format`` worry about back-port issues |:beer:|
+   Write *formatted string literals* in Python 3.6 flavour, and let ``f2format`` worry about back-port issues |:beer:|
 
 Since :pep:`498`, Python introduced *formatted string literals* syntax in version **3.6**. For those who wish to use
 *formatted string literals* in their code, ``f2format`` provides an intelligent, yet imperfect, solution of a
 **backport compiler** by replacing *formatted string literals* syntax with old-fashioned syntax, which guarantees
-you to always write *formatted string literals* in Python 3.8 flavour then compile for compatibility later.
+you to always write *formatted string literals* in Python 3.6 flavour then compile for compatibility later.
 
 .. toctree::
    :maxdepth: 3
