@@ -24,7 +24,7 @@ setup(
     author='Jarry Shaw',
     author_email='jarryshaw@icloud.com',
     url='https://github.com/pybpc/f2format',
-    license='Apache Software License',
+    license='MIT License',
     keywords='fstring format conversion',
     description='Back-port compiler for Python 3.6 f-string literals.',
     long_description=long_desc,
@@ -59,7 +59,7 @@ setup(
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers',
-        'License :: OSI Approved :: Apache Software License',
+        'License :: OSI Approved :: MIT License',
         'Natural Language :: English',
         'Operating System :: OS Independent',
         'Programming Language :: Python',
