@@ -794,9 +794,9 @@ def get_parser() -> argparse.ArgumentParser:
                                help='path to archive original files (current: %(default)s)')
     archive_group.add_argument('-r', '--recover', action='store', dest='recover_file', metavar='ARCHIVE_FILE',
                                help='recover files from a given archive file')
-    archive_group.add_argument('-r2', action='store_true', help='remove the archive file after recovery')
-    archive_group.add_argument('-r3', action='store_true', help='remove the archive file after recovery, '
-                                                                'and remove the archive directory if it becomes empty')
+    # archive_group.add_argument('-r2', action='store_true', help='remove the archive file after recovery')
+    # archive_group.add_argument('-r3', action='store_true', help='remove the archive file after recovery, '
+    #                                                             'and remove the archive directory if it becomes empty')
 
     convert_group = parser.add_argument_group(title='convert options', description='conversion configuration')
     convert_group.add_argument('-vs', '-vf', '--source-version', '--from-version', action='store', metavar='VERSION',
@@ -880,12 +880,12 @@ def main(argv: Optional[List[str]] =None) -> int:
         if not args.quiet:
             print('Recovered files from archive: %r' % args.recover_file, file=sys.stderr)
         # TODO: maybe implement deletion in bpc-utils?
-        if args.r2 or args.r3:
-            os.remove(args.recover_file)
-            if args.r3:
-                archive_dir = os.path.dirname(os.path.realpath(args.recover_file))
-                if not os.listdir(archive_dir):
-                    os.rmdir(archive_dir)
+        # if args.r2 or args.r3:
+        #     os.remove(args.recover_file)
+        #     if args.r3:
+        #         archive_dir = os.path.dirname(os.path.realpath(args.recover_file))
+        #         if not os.listdir(archive_dir):
+        #             os.rmdir(archive_dir)
         return 0
 
     # fetch file list
