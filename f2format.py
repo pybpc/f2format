@@ -491,7 +491,7 @@ class StringContext(Context):
         flag_dbg = False  # is debug f-string?
 
         conv_str = ''  # f-stringconversion
-        conv_var = '__f2format_%s' % self._uuid_gen.gen()
+        conv_var = '## f2format: %s ##' % self._uuid_gen.gen()
 
         expr_str = ''
         spec_str = ''
@@ -554,8 +554,7 @@ class StringContext(Context):
 
                 if flag_dbg:
                     expr_tmp = expr_str + child.get_code() + \
-                        self.extract_whitespaces(next_sibling.get_code())[0] + \
-                        '{%%(%(conv_var)s)s}' % dict(conv_var=conv_var)
+                        self.extract_whitespaces(next_sibling.get_code())[0] + '{%s}' % conv_var
                     if flag_imp:
                         expr_str = '(%s)' % expr_str
                     expr_str = '%r.format(%s)' % (expr_tmp, expr_str)
@@ -572,7 +571,7 @@ class StringContext(Context):
 
         if expr_str:
             if flag_dbg:
-                expr_str = expr_str % {conv_var: conv_str or '!r'}
+                expr_str = expr_str.replace(conv_var, conv_str or '!r')
             if flag_imp:
                 expr_str = '(%s)' % expr_str
             self._expr.append(expr_str)
