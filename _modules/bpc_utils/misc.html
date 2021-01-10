@@ -33,42 +33,40 @@
   <h1>Source code for bpc_utils.misc</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;Miscellaneous utilities.&quot;&quot;&quot;</span>
 
+<span class="kn">import</span> <span class="nn">collections.abc</span>
 <span class="kn">import</span> <span class="nn">io</span>
 <span class="kn">import</span> <span class="nn">keyword</span>
 <span class="kn">import</span> <span class="nn">platform</span>
+<span class="kn">import</span> <span class="nn">types</span>
 <span class="kn">import</span> <span class="nn">uuid</span>
 
-<span class="kn">from</span> <span class="nn">.typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">MutableMapping</span><span class="p">,</span> <span class="n">overload</span>
-
-<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">types</span> <span class="kn">import</span> <span class="n">TracebackType</span>  <span class="c1"># isort: split</span>
-    <span class="kn">from</span> <span class="nn">.typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Iterator</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Set</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">.typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Iterator</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Set</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">overload</span>
 
 <span class="c1"># backport contextlib.nullcontext for Python &lt; 3.7</span>
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">contextlib</span> <span class="kn">import</span> <span class="n">nullcontext</span>  <span class="c1"># pylint: disable=unused-import  # novermin</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
     <span class="k">class</span> <span class="nc">nullcontext</span><span class="p">:</span>  <span class="c1"># type: ignore[no-redef]</span>
-        <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">enter_result</span><span class="p">:</span> <span class="s1">&#39;T&#39;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># type: ignore[assignment]</span>
+        <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">enter_result</span><span class="p">:</span> <span class="n">T</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># type: ignore[assignment]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">enter_result</span> <span class="o">=</span> <span class="n">enter_result</span>  <span class="c1"># type: T</span>
 
-        <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;T&#39;</span><span class="p">:</span>
+        <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">enter_result</span>
 
-        <span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">:</span> <span class="s1">&#39;Optional[Type[BaseException]]&#39;</span><span class="p">,</span> <span class="n">exc_value</span><span class="p">:</span> <span class="s1">&#39;Optional[BaseException]&#39;</span><span class="p">,</span>
-                     <span class="n">traceback</span><span class="p">:</span> <span class="s1">&#39;Optional[TracebackType]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="ne">BaseException</span><span class="p">]],</span> <span class="n">exc_value</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="ne">BaseException</span><span class="p">],</span>
+                     <span class="n">traceback</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">types</span><span class="o">.</span><span class="n">TracebackType</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">pass</span>
 
 <span class="n">is_windows</span> <span class="o">=</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;Windows&#39;</span>
 
 
 <span class="nd">@overload</span>
-<span class="k">def</span> <span class="nf">first_truthy</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="s1">&#39;T&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Optional[T]&#39;</span><span class="p">:</span>
+<span class="k">def</span> <span class="nf">first_truthy</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">T</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">T</span><span class="p">]:</span>
     <span class="o">...</span>  <span class="c1"># pragma: no cover</span>
 
 
 <span class="nd">@overload</span>
-<span class="k">def</span> <span class="nf">first_truthy</span><span class="p">(</span><span class="n">args</span><span class="p">:</span> <span class="s1">&#39;Iterable[T]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Optional[T]&#39;</span><span class="p">:</span>  <span class="c1"># noqa: F811</span>
+<span class="k">def</span> <span class="nf">first_truthy</span><span class="p">(</span><span class="n">args</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">T</span><span class="p">]:</span>  <span class="c1"># noqa: F811</span>
     <span class="o">...</span>  <span class="c1"># pragma: no cover</span>
 
 
@@ -96,12 +94,12 @@
 
 
 <span class="nd">@overload</span>
-<span class="k">def</span> <span class="nf">first_non_none</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="s1">&#39;T&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Optional[T]&#39;</span><span class="p">:</span>
+<span class="k">def</span> <span class="nf">first_non_none</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">T</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">T</span><span class="p">]:</span>
     <span class="o">...</span>  <span class="c1"># pragma: no cover</span>
 
 
 <span class="nd">@overload</span>
-<span class="k">def</span> <span class="nf">first_non_none</span><span class="p">(</span><span class="n">args</span><span class="p">:</span> <span class="s1">&#39;Iterable[T]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Optional[T]&#39;</span><span class="p">:</span>  <span class="c1"># noqa: F811</span>
+<span class="k">def</span> <span class="nf">first_non_none</span><span class="p">(</span><span class="n">args</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">T</span><span class="p">]:</span>  <span class="c1"># noqa: F811</span>
     <span class="o">...</span>  <span class="c1"># pragma: no cover</span>
 
 
@@ -169,7 +167,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">:</span> <span class="s1">&#39;Union[str, TextIO]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">TextIO</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Initialize context.</span>
 
 <span class="sd">        Args:</span>
@@ -178,7 +176,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">obj</span> <span class="o">=</span> <span class="n">obj</span>
 
-    <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;TextIO&#39;</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TextIO</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Enter context.</span>
 
 <span class="sd">        * If :attr:`self.obj &lt;MakeTextIO.obj&gt;` is :obj:`str`, a</span>
@@ -205,8 +203,8 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">obj</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">obj</span>
 
-    <span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">:</span> <span class="s1">&#39;Optional[Type[BaseException]]&#39;</span><span class="p">,</span> <span class="n">exc_value</span><span class="p">:</span> <span class="s1">&#39;Optional[BaseException]&#39;</span><span class="p">,</span>
-                 <span class="n">traceback</span><span class="p">:</span> <span class="s1">&#39;Optional[TracebackType]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="ne">BaseException</span><span class="p">]],</span> <span class="n">exc_value</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="ne">BaseException</span><span class="p">],</span>
+                 <span class="n">traceback</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">types</span><span class="o">.</span><span class="n">TracebackType</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Exit context.</span>
 
 <span class="sd">        * If :attr:`self.obj &lt;MakeTextIO.obj&gt;` is :obj:`str`, the</span>
@@ -222,7 +220,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">obj</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pos</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="Config"><a class="viewcode-back" href="../../api.html#f2format.Config">[docs]</a><span class="k">class</span> <span class="nc">Config</span><span class="p">(</span><span class="n">MutableMapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">object</span><span class="p">]):</span>
+<div class="viewcode-block" id="Config"><a class="viewcode-back" href="../../api.html#f2format.Config">[docs]</a><span class="k">class</span> <span class="nc">Config</span><span class="p">(</span><span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">MutableMapping</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Configuration namespace.</span>
 
 <span class="sd">    This class is inspired from :class:`argparse.Namespace` for storing</span>
@@ -237,7 +235,7 @@
     <span class="k">def</span> <span class="fm">__contains__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span>
 
-    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Iterator[str]&#39;</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
         <span class="k">return</span> <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
