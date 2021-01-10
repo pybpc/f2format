@@ -12,7 +12,7 @@ jobs:
       - name: Install and Build 🔧 # This example project is built using npm and outputs the result to the 'build' folder. Replace with the commands required to build your project, or remove this step entirely if your site is pre-built.
         run: |
           brew install pipenv python@3.8
-          pipenv run pip install --dev --python $(brew --prefix python@3.8)/bin/python3.8
+          pipenv install --dev --python $(brew --prefix python@3.8)/bin/python3.8
           pipenv run pip install -U pip setuptools wheel
           pipenv run pip install -r docs/requirements.txt
           pipenv run pip install .
