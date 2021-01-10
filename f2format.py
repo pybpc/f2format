@@ -300,7 +300,7 @@ class Context(BaseContext):
         cases, as described in the `documentation`_. Such concatenable strings
         may contain formatted string literals (:term:`f-string`) within its scope.
 
-        _documentation: https://docs.python.org/3/reference/lexical_analysis.html#string-literal-concatenation
+        .. _documentation: https://docs.python.org/3/reference/lexical_analysis.html#string-literal-concatenation
 
         """
         if not self.has_expr(node):

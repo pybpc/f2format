@@ -83,7 +83,7 @@ Internal Auxiliaries
 Options & Defaults
 ~~~~~~~~~~~~~~~~~~
 
-.. autodata:: f2format.f2format_SOURCE_VERSIONS
+.. autodata:: f2format.F2FORMAT_SOURCE_VERSIONS
 
 Below are option getter utility functions. Option value precedence is::
 
