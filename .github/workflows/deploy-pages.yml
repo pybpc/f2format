@@ -21,6 +21,9 @@ jobs:
           pipenv run pip install .
           pipenv run make -C docs html
 
+          # disable Jekyll
+          touch docs/build/html/.nojekyll
+
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@3.7.1
         with:
