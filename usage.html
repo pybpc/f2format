@@ -1,0 +1,336 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Usage &#8212; f2format 0.8.7rc1 documentation</title>
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Algorithms" href="algorithms.html" />
+    <link rel="prev" title="f2format - Backport Compiler for Formatted String Literals" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="usage">
+<h1>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="specifying-files-and-directories-to-convert">
+<h2>Specifying Files And Directories To Convert<a class="headerlink" href="#specifying-files-and-directories-to-convert" title="Permalink to this headline">¶</a></h2>
+<p>To convert a single file:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> cat myscript.py
+<span class="go">print(hello := &#39;world&#39;)</span>
+<span class="gp">$</span> f2format myscript.py
+<span class="go">Now converting: &#39;/path/to/project/myscript.py&#39;</span>
+<span class="gp">$</span> cat myscript.py  <span class="c1"># file overwritten with conversion result</span>
+<span class="go">if False:</span>
+<span class="go">    hello = NotImplemented</span>
+
+
+<span class="go">def __f2format_wrapper_hello_5adbf5ee911449cba75e35b9ef97ea80(expr):</span>
+<span class="go">    &quot;&quot;&quot;Wrapper function for assignment expression.&quot;&quot;&quot;</span>
+<span class="go">    global hello</span>
+<span class="go">    hello = expr</span>
+<span class="go">    return hello</span>
+
+
+<span class="go">print(__f2format_wrapper_hello_5adbf5ee911449cba75e35b9ef97ea80(&#39;world&#39;))</span>
+</pre></div>
+</div>
+<p>To convert the whole project at the current working directory (overwrites all
+Python source files inside):</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> f2format .
+</pre></div>
+</div>
+<p>Multiple files and directories may be supplied at the same time:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> f2format script_without_py_extension /path/to/another/project
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>When converting a directory, <code class="docutils literal notranslate"><span class="pre">f2format</span></code> will recursively find all the
+Python source files in the directory (and its subdirectories, if any).
+Whether a file is a Python source file is determined by its file extension
+(<code class="docutils literal notranslate"><span class="pre">.py</span></code> or <code class="docutils literal notranslate"><span class="pre">.pyw</span></code>). If you want to convert a file without a Python
+extension, you will need to explicitly specify it in the argument list.</p>
+</div>
+<p>If you prefer a side-effect free behavior (do not overwrite files), you can
+use the <strong>simple mode</strong>.</p>
+<p>Simple mode with no arguments (read from stdin, write to stdout):</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> <span class="nb">printf</span> <span class="s1">&#39;print(hello := &quot;world&quot;)\n&#39;</span> <span class="p">|</span> python3 f2format.py -s
+<span class="go">if False:</span>
+<span class="go">    hello = NotImplemented</span>
+
+
+<span class="go">def __f2format_wrapper_hello_fbf3a9dabd2b40348815e3f2b22a1683(expr):</span>
+<span class="go">    &quot;&quot;&quot;Wrapper function for assignment expression.&quot;&quot;&quot;</span>
+<span class="go">    global hello</span>
+<span class="go">    hello = expr</span>
+<span class="go">    return hello</span>
+
+<span class="go">print(__f2format_wrapper_hello_fbf3a9dabd2b40348815e3f2b22a1683(&quot;world&quot;))</span>
+</pre></div>
+</div>
+<p>Simple mode with a file name argument (read from file, write to stdout):</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> cat myscript.py
+<span class="go">print(hello := &#39;world&#39;)</span>
+<span class="gp">$</span> f2format -s myscript.py
+<span class="go">if False:</span>
+<span class="go">    hello = NotImplemented</span>
+
+
+<span class="go">def __f2format_wrapper_hello_d1e6c2a11a76400aa9745bd90b3fb52a(expr):</span>
+<span class="go">    &quot;&quot;&quot;Wrapper function for assignment expression.&quot;&quot;&quot;</span>
+<span class="go">    global hello</span>
+<span class="go">    hello = expr</span>
+<span class="go">    return hello</span>
+
+<span class="go">print(__f2format_wrapper_hello_d1e6c2a11a76400aa9745bd90b3fb52a(&#39;world&#39;))</span>
+<span class="gp">$</span> cat myscript.py
+<span class="go">print(hello := &#39;world&#39;)</span>
+</pre></div>
+</div>
+<p>In simple mode, no file names shall be provided via positional arguments.</p>
+</div>
+<div class="section" id="archiving-and-recovering-files">
+<h2>Archiving And Recovering Files<a class="headerlink" href="#archiving-and-recovering-files" title="Permalink to this headline">¶</a></h2>
+<p>If you are not using the simple mode, <code class="docutils literal notranslate"><span class="pre">f2format</span></code> overwrites Python source
+files, which could potentially cause data loss. Therefore, a built-in archiving
+functionality is enabled by default. The original copies of the Python source
+files to be converted will be packed into an archive file and placed under the
+<code class="docutils literal notranslate"><span class="pre">archive</span></code> subdirectory of the current working directory.</p>
+<p>To opt out of archiving, use the CLI option <code class="docutils literal notranslate"><span class="pre">-na</span></code> (<code class="docutils literal notranslate"><span class="pre">--no-archive</span></code>), or set
+environment variable <code class="docutils literal notranslate"><span class="pre">F2FORMAT_DO_ARCHIVE=0</span></code>.</p>
+<p>To use an alternative name for the archive directory (other than <code class="docutils literal notranslate"><span class="pre">archive</span></code>),
+use the CLI option <code class="docutils literal notranslate"><span class="pre">-k</span></code> (<code class="docutils literal notranslate"><span class="pre">--archive-path</span></code>), or set the environment
+variable <code class="docutils literal notranslate"><span class="pre">F2FORMAT_ARCHIVE_PATH</span></code>.</p>
+<p>To recover files from an archive file, use the CLI option <code class="docutils literal notranslate"><span class="pre">-r</span></code>
+(<code class="docutils literal notranslate"><span class="pre">--recover</span></code>):</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> f2format -r archive/archive-20200814222751-f3a514d40d69c6d5.tar.gz
+<span class="go">Recovered files from archive: &#39;archive/archive-20200814222751-f3a514d40d69c6d5.tar.gz&#39;</span>
+<span class="gp">$</span> ls archive/
+<span class="go">archive-20200814222751-f3a514d40d69c6d5.tar.gz</span>
+</pre></div>
+</div>
+<p>By default, the archive file is still retained after recovering from it. If you
+would like it to be removed after recovery, specify the CLI option <code class="docutils literal notranslate"><span class="pre">-r2</span></code>:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> f2format -r archive/archive-20200814222751-f3a514d40d69c6d5.tar.gz -r2
+<span class="go">Recovered files from archive: &#39;archive/archive-20200814222751-f3a514d40d69c6d5.tar.gz&#39;</span>
+<span class="gp">$</span> ls archive/
+</pre></div>
+</div>
+<p>If you also want to remove the archive directory if it becomes empty, specify
+the CLI option <code class="docutils literal notranslate"><span class="pre">-r3</span></code>:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> f2format -r archive/archive-20200814222751-f3a514d40d69c6d5.tar.gz -r3
+<span class="go">Recovered files from archive: &#39;archive/archive-20200814222751-f3a514d40d69c6d5.tar.gz&#39;</span>
+<span class="gp">$</span> ls archive/
+<span class="go">ls: cannot access &#39;archive/&#39;: No such file or directory</span>
+</pre></div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>To improve stability of file recovery, the archive file records the original
+absolute paths of the Python source files. Thus, file recovery is only
+guaranteed to work correctly on <strong>the same machine</strong> where the archive file
+was created. Never perform the recovery operation on an arbitrary untrusted
+archive file. Doing so may allow attackers to overwrite any files in the
+system.</p>
+</div>
+</div>
+<div class="section" id="conversion-options">
+<h2>Conversion Options<a class="headerlink" href="#conversion-options" title="Permalink to this headline">¶</a></h2>
+<p>By default, <code class="docutils literal notranslate"><span class="pre">f2format</span></code> automatically detects file line endings and use the
+same line ending for code insertion. If you want to manually specify the line
+ending to be used, use the CLI option <code class="docutils literal notranslate"><span class="pre">-l</span></code> (<code class="docutils literal notranslate"><span class="pre">--linesep</span></code>) or the
+<code class="docutils literal notranslate"><span class="pre">F2FORMAT_LINESEP</span></code> environment variable.</p>
+<p>By default, <code class="docutils literal notranslate"><span class="pre">f2format</span></code> automatically detects file indentations and use the
+same indentation for code insertion. If you want to manually specify the
+indentation to be used, use the CLI option <code class="docutils literal notranslate"><span class="pre">-t</span></code> (<code class="docutils literal notranslate"><span class="pre">--indentation</span></code>) or the
+<code class="docutils literal notranslate"><span class="pre">F2FORMAT_INDENTATION</span></code> environment variable.</p>
+<p>By default, <code class="docutils literal notranslate"><span class="pre">f2format</span></code> parse Python source files as the latest version.
+If you want to manually specify a version for parsing, use the CLI option
+<code class="docutils literal notranslate"><span class="pre">-vs</span></code> (<code class="docutils literal notranslate"><span class="pre">-vf</span></code>, <code class="docutils literal notranslate"><span class="pre">--source-version</span></code>, <code class="docutils literal notranslate"><span class="pre">--from-version</span></code>) or the
+<code class="docutils literal notranslate"><span class="pre">F2FORMAT_SOURCE_VERSION</span></code> environment variable.</p>
+<p>By default, code insertion of <code class="docutils literal notranslate"><span class="pre">f2format</span></code> conforms to <span class="target" id="index-0"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0008"><strong>PEP 8</strong></a>. To opt out
+and get a more compact result, specify the CLI option <code class="docutils literal notranslate"><span class="pre">-n8</span></code> (<code class="docutils literal notranslate"><span class="pre">--no-pep8</span></code>)
+or set environment variable <code class="docutils literal notranslate"><span class="pre">F2FORMAT_PEP8=0</span></code>.</p>
+</div>
+<div class="section" id="runtime-options">
+<h2>Runtime Options<a class="headerlink" href="#runtime-options" title="Permalink to this headline">¶</a></h2>
+<p>Specify the CLI option <code class="docutils literal notranslate"><span class="pre">-q</span></code> (<code class="docutils literal notranslate"><span class="pre">--quiet</span></code>) or set environment variable
+<code class="docutils literal notranslate"><span class="pre">F2FORMAT_QUIET=1</span></code> to run in quiet mode.</p>
+<p>Specify the CLI option <code class="docutils literal notranslate"><span class="pre">-C</span></code> (<code class="docutils literal notranslate"><span class="pre">--concurrency</span></code>) or set environment variable
+<code class="docutils literal notranslate"><span class="pre">F2FORMAT_CONCURRENCY</span></code> to specify the number of concurrent worker processes
+for conversion.</p>
+<p>Use the <code class="docutils literal notranslate"><span class="pre">--dry-run</span></code> CLI option to list the files to be converted without
+actually performing conversion and archiving.</p>
+<p>By running <code class="docutils literal notranslate"><span class="pre">f2format</span> <span class="pre">--help</span></code>, you can see the current values of all the options,
+based on their default values and your environment variables.</p>
+</div>
+<div class="section" id="api-usage">
+<h2>API Usage<a class="headerlink" href="#api-usage" title="Permalink to this headline">¶</a></h2>
+<p>If you want to programmatically invoke <code class="docutils literal notranslate"><span class="pre">f2format</span></code>, you may want to look at
+<a class="reference internal" href="api.html"><span class="doc">API Reference</span></a>. The <a class="reference internal" href="api.html#f2format.convert" title="f2format.convert"><code class="xref py py-func docutils literal notranslate"><span class="pre">f2format.convert()</span></code></a> and <a class="reference internal" href="api.html#f2format.f2format" title="f2format.f2format"><code class="xref py py-func docutils literal notranslate"><span class="pre">f2format.f2format()</span></code></a>
+functions should be most commonly used.</p>
+</div>
+<div class="section" id="disutils-setuptools-integration">
+<h2>Disutils/Setuptools Integration<a class="headerlink" href="#disutils-setuptools-integration" title="Permalink to this headline">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">f2format</span></code> can also be directly integrated within your <code class="docutils literal notranslate"><span class="pre">setup.py</span></code> script
+to dynamically convert <em>assignment expressions</em> upon installation:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">subprocess</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">setuptools</span> <span class="kn">import</span> <span class="n">setup</span>
+    <span class="kn">from</span> <span class="nn">setuptools.command.build_py</span> <span class="kn">import</span> <span class="n">build_py</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">distutils.core</span> <span class="kn">import</span> <span class="n">setup</span>
+    <span class="kn">from</span> <span class="nn">distutils.command.build_py</span> <span class="kn">import</span> <span class="n">build_py</span>
+
+<span class="n">version_info</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span>
+
+
+<span class="k">class</span> <span class="nc">build</span><span class="p">(</span><span class="n">build_py</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Add on-build backport code conversion.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">version_info</span> <span class="o">&lt;</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">8</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">subprocess</span><span class="o">.</span><span class="n">check_call</span><span class="p">(</span>  <span class="c1"># nosec</span>
+<span class="hll">                    <span class="p">[</span><span class="n">sys</span><span class="o">.</span><span class="n">executable</span><span class="p">,</span> <span class="s1">&#39;-m&#39;</span><span class="p">,</span> <span class="s1">&#39;f2format&#39;</span><span class="p">,</span> <span class="s1">&#39;--no-archive&#39;</span><span class="p">,</span> <span class="s1">&#39;PACKAGENAME&#39;</span><span class="p">]</span>
+</span>                <span class="p">)</span>
+            <span class="k">except</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">CalledProcessError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Failed to perform assignment expression backport compiling.&#39;</span>
+                      <span class="s1">&#39;Please consider manually install `bpc-f2format` and try again.&#39;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>
+                <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="n">error</span><span class="o">.</span><span class="n">returncode</span><span class="p">)</span>
+        <span class="n">build_py</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+
+<span class="n">setup</span><span class="p">(</span>
+    <span class="o">...</span>
+    <span class="n">setup_requires</span><span class="o">=</span><span class="p">[</span>
+<span class="hll">        <span class="s1">&#39;bpc-f2format; python_version &lt; &quot;3.8&quot;&#39;</span><span class="p">,</span>
+</span>    <span class="p">],</span>
+    <span class="n">cmdclass</span><span class="o">=</span><span class="p">{</span>
+<span class="hll">        <span class="s1">&#39;build_py&#39;</span><span class="p">:</span> <span class="n">build</span><span class="p">,</span>
+</span>    <span class="p">},</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>Or, as <span class="target" id="index-1"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0518"><strong>PEP 518</strong></a> proposed, you may simply add <code class="docutils literal notranslate"><span class="pre">bpc-f2format</span></code> to
+the <code class="docutils literal notranslate"><span class="pre">requires</span></code> list from the <code class="docutils literal notranslate"><span class="pre">[build-system]</span></code> section in the
+<code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code> file:</p>
+<div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="k">[built-system]</span>
+<span class="c1"># Minimum requirements for the build system to execute.</span>
+<span class="hll"><span class="n">requires</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;setuptools&quot;</span><span class="p">,</span> <span class="s">&quot;wheel&quot;</span><span class="p">,</span> <span class="s">&quot;bpc-f2format&quot;</span><span class="p">]</span>  <span class="c1"># PEP 508 specifications.</span>
+</span><span class="p">...</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">f2format</a></h1>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=pybpc&repo=f2format&type=watch&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Usage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#specifying-files-and-directories-to-convert">Specifying Files And Directories To Convert</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#archiving-and-recovering-files">Archiving And Recovering Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#conversion-options">Conversion Options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#runtime-options">Runtime Options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#api-usage">API Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#disutils-setuptools-integration">Disutils/Setuptools Integration</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="algorithms.html">Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API Reference</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="index.html" title="previous chapter"><code class="docutils literal notranslate"><span class="pre">f2format</span></code> - Backport Compiler for Formatted String Literals</a></li>
+      <li>Next: <a href="algorithms.html" title="next chapter">Algorithms</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Python Backport Compiler Project.
+      
+      |
+      <a href="_sources/usage.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+    <a href="https://github.com/pybpc/f2format" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

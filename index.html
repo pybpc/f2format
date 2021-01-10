@@ -1,0 +1,203 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>f2format - Backport Compiler for Formatted String Literals &#8212; f2format 0.8.7rc1 documentation</title>
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Usage" href="usage.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="f2format-backport-compiler-for-formatted-string-literals">
+<h1><code class="docutils literal notranslate"><span class="pre">f2format</span></code> - Backport Compiler for Formatted String Literals<a class="headerlink" href="#f2format-backport-compiler-for-formatted-string-literals" title="Permalink to this headline">¶</a></h1>
+<blockquote>
+<div><p>Write <em>formatted string literals</em> in Python 3.6 flavour, and let <code class="docutils literal notranslate"><span class="pre">f2format</span></code> worry about back-port issues 🍺</p>
+</div></blockquote>
+<p>Since <span class="target" id="index-0"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0498"><strong>PEP 498</strong></a>, Python introduced <em>formatted string literals</em> syntax in version <strong>3.6</strong>. For those who wish to use
+<em>formatted string literals</em> in their code, <code class="docutils literal notranslate"><span class="pre">f2format</span></code> provides an intelligent, yet imperfect, solution of a
+<strong>backport compiler</strong> by replacing <em>formatted string literals</em> syntax with old-fashioned syntax, which guarantees
+you to always write <em>formatted string literals</em> in Python 3.6 flavour then compile for compatibility later.</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="usage.html#specifying-files-and-directories-to-convert">Specifying Files And Directories To Convert</a></li>
+<li class="toctree-l2"><a class="reference internal" href="usage.html#archiving-and-recovering-files">Archiving And Recovering Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="usage.html#conversion-options">Conversion Options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="usage.html#runtime-options">Runtime Options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="usage.html#api-usage">API Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="usage.html#disutils-setuptools-integration">Disutils/Setuptools Integration</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="algorithms.html">Algorithms</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="algorithms.html#basic-concepts">Basic Concepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="algorithms.html#concatenable-strings">Concatenable Strings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="algorithms.html#debug-f-strings">Debug F-Strings</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api.html#public-interface">Public Interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#conversion-implementation">Conversion Implementation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api.html#data-structures">Data Structures</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api.html#conversion-contexts">Conversion Contexts</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#internal-auxiliaries">Internal Auxiliaries</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api.html#options-defaults">Options &amp; Defaults</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api.html#cli-utilities">CLI Utilities</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p><code class="docutils literal notranslate"><span class="pre">f2format</span></code> is currently under reconstruction. It is highly recommended to directly install
+from the git repo or the pre-release distributions.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><code class="docutils literal notranslate"><span class="pre">f2format</span></code> only supports Python versions <strong>since 3.4</strong> 🐍</p>
+</div>
+<p>For macOS users, <code class="docutils literal notranslate"><span class="pre">f2format</span></code> is available through <a class="reference external" href="https://brew.sh">Homebrew</a>:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>brew tap jarryshaw/tap
+brew install f2format
+<span class="c1"># or simply, a one-liner</span>
+brew install jarryshaw/tap/f2format
+</pre></div>
+</div>
+<p>You can also install from <a class="reference external" href="https://pypi.org/project/python-f2format">PyPI</a> for any OS:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>pip install bpc-f2format
+</pre></div>
+</div>
+<p>Or install the latest version from the <a class="reference external" href="https://github.com/pybpc/f2format">Git repository</a>:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/pybpc/f2format.git
+<span class="nb">cd</span> f2format
+pip install -e .
+<span class="c1"># and to update at any time</span>
+git pull
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Installation from <a class="reference external" href="https://brew.sh">Homebrew</a> will also automatically install the man page and
+<a class="reference external" href="https://github.com/pybpc/f2format/blob/master/share/f2format.bash-completion">Bash Completion</a> script for you. If you are installing from <a class="reference external" href="https://pypi.org/project/python-f2format">PyPI</a> or
+the <a class="reference external" href="https://github.com/pybpc/f2format">Git repository</a>, you can install the completion script manually.</p>
+</div>
+</div>
+<div class="section" id="usage">
+<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
+<p>See <a class="reference internal" href="usage.html"><span class="doc">Usage</span></a>.</p>
+</div>
+</div>
+<div class="section" id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+</ul>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="#">f2format</a></h1>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=pybpc&repo=f2format&type=watch&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="algorithms.html">Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API Reference</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="#">Documentation overview</a><ul>
+      <li>Next: <a href="usage.html" title="next chapter">Usage</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Python Backport Compiler Project.
+      
+      |
+      <a href="_sources/index.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+    <a href="https://github.com/pybpc/f2format" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

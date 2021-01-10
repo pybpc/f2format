@@ -1,0 +1,348 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>bpc_utils.misc &#8212; f2format 0.8.7rc1 documentation</title>
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for bpc_utils.misc</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Miscellaneous utilities.&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">io</span>
+<span class="kn">import</span> <span class="nn">keyword</span>
+<span class="kn">import</span> <span class="nn">platform</span>
+<span class="kn">import</span> <span class="nn">uuid</span>
+
+<span class="kn">from</span> <span class="nn">.typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">MutableMapping</span><span class="p">,</span> <span class="n">overload</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">types</span> <span class="kn">import</span> <span class="n">TracebackType</span>  <span class="c1"># isort: split</span>
+    <span class="kn">from</span> <span class="nn">.typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Iterator</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Set</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">Union</span>
+
+<span class="c1"># backport contextlib.nullcontext for Python &lt; 3.7</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">contextlib</span> <span class="kn">import</span> <span class="n">nullcontext</span>  <span class="c1"># pylint: disable=unused-import  # novermin</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+    <span class="k">class</span> <span class="nc">nullcontext</span><span class="p">:</span>  <span class="c1"># type: ignore[no-redef]</span>
+        <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">enter_result</span><span class="p">:</span> <span class="s1">&#39;T&#39;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># type: ignore[assignment]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">enter_result</span> <span class="o">=</span> <span class="n">enter_result</span>  <span class="c1"># type: T</span>
+
+        <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;T&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">enter_result</span>
+
+        <span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">:</span> <span class="s1">&#39;Optional[Type[BaseException]]&#39;</span><span class="p">,</span> <span class="n">exc_value</span><span class="p">:</span> <span class="s1">&#39;Optional[BaseException]&#39;</span><span class="p">,</span>
+                     <span class="n">traceback</span><span class="p">:</span> <span class="s1">&#39;Optional[TracebackType]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+<span class="n">is_windows</span> <span class="o">=</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;Windows&#39;</span>
+
+
+<span class="nd">@overload</span>
+<span class="k">def</span> <span class="nf">first_truthy</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="s1">&#39;T&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Optional[T]&#39;</span><span class="p">:</span>
+    <span class="o">...</span>  <span class="c1"># pragma: no cover</span>
+
+
+<span class="nd">@overload</span>
+<span class="k">def</span> <span class="nf">first_truthy</span><span class="p">(</span><span class="n">args</span><span class="p">:</span> <span class="s1">&#39;Iterable[T]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Optional[T]&#39;</span><span class="p">:</span>  <span class="c1"># noqa: F811</span>
+    <span class="o">...</span>  <span class="c1"># pragma: no cover</span>
+
+
+<span class="k">def</span> <span class="nf">first_truthy</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>  <span class="c1"># type: ignore[no-untyped-def]  # noqa: F811</span>
+    <span class="sd">&quot;&quot;&quot;Return the first *truthy* value from a list of values.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        *args: variable length argument list</span>
+
+<span class="sd">            * If one positional argument is provided, it should be an iterable of the values.</span>
+<span class="sd">            * If two or more positional arguments are provided, then the value list is the positional argument list.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        the first *truthy* value, if no *truthy* values found or sequence is empty, return :data:`None`</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        TypeError: if no arguments provided</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">args</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;no arguments provided&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">return</span> <span class="nb">next</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="nb">bool</span><span class="p">,</span> <span class="n">args</span><span class="p">),</span> <span class="kc">None</span><span class="p">)</span>  <span class="c1"># pylint: disable=filter-builtin-not-iterating</span>
+
+
+<span class="nd">@overload</span>
+<span class="k">def</span> <span class="nf">first_non_none</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="s1">&#39;T&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Optional[T]&#39;</span><span class="p">:</span>
+    <span class="o">...</span>  <span class="c1"># pragma: no cover</span>
+
+
+<span class="nd">@overload</span>
+<span class="k">def</span> <span class="nf">first_non_none</span><span class="p">(</span><span class="n">args</span><span class="p">:</span> <span class="s1">&#39;Iterable[T]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Optional[T]&#39;</span><span class="p">:</span>  <span class="c1"># noqa: F811</span>
+    <span class="o">...</span>  <span class="c1"># pragma: no cover</span>
+
+
+<span class="k">def</span> <span class="nf">first_non_none</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>  <span class="c1"># type: ignore[no-untyped-def]  # noqa: F811</span>
+    <span class="sd">&quot;&quot;&quot;Return the first non-:data:`None` value from a list of values.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        *args: variable length argument list</span>
+
+<span class="sd">            * If one positional argument is provided, it should be an iterable of the values.</span>
+<span class="sd">            * If two or more positional arguments are provided, then the value list is the positional argument list.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        the first non-:data:`None` value, if all values are :data:`None` or sequence is empty, return :data:`None`</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        TypeError: if no arguments provided</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">args</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;no arguments provided&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">return</span> <span class="nb">next</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="n">args</span><span class="p">),</span> <span class="kc">None</span><span class="p">)</span>  <span class="c1"># pylint: disable=filter-builtin-not-iterating</span>
+
+
+<span class="k">class</span> <span class="nc">UUID4Generator</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;UUID 4 generator wrapper to prevent UUID collisions.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dash</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Constructor of UUID 4 generator wrapper.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            dash: whether the generated UUID string has dashes or not</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">used_uuids</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>  <span class="c1"># type: Set[str]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dash</span> <span class="o">=</span> <span class="n">dash</span>
+
+    <span class="k">def</span> <span class="nf">gen</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Generate a new UUID 4 string that is guaranteed not to collide with used UUIDs.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            a new UUID 4 string</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">new_uuid</span> <span class="o">=</span> <span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">()</span>
+            <span class="n">nuid</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">new_uuid</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dash</span> <span class="k">else</span> <span class="n">new_uuid</span><span class="o">.</span><span class="n">hex</span>
+            <span class="k">if</span> <span class="n">nuid</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">used_uuids</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+                <span class="k">break</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">used_uuids</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">nuid</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">nuid</span>
+
+
+<span class="k">class</span> <span class="nc">MakeTextIO</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Context wrapper class to handle :obj:`str` and *file* objects together.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        obj (Union[str, TextIO]): the object to manage in the context</span>
+<span class="sd">        sio (Optional[StringIO]): the I/O object to manage in the context</span>
+<span class="sd">            only if :attr:`self.obj &lt;MakeTextIO.obj&gt;` is :obj:`str`</span>
+<span class="sd">        pos (Optional[int]): the original offset of :attr:`self.obj &lt;MakeTextIO.obj&gt;`,</span>
+<span class="sd">            only if :attr:`self.obj &lt;MakeTextIO.obj&gt;` is a seekable *file* object</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">:</span> <span class="s1">&#39;Union[str, TextIO]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Initialize context.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            obj: the object to manage in the context</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">obj</span> <span class="o">=</span> <span class="n">obj</span>
+
+    <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;TextIO&#39;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Enter context.</span>
+
+<span class="sd">        * If :attr:`self.obj &lt;MakeTextIO.obj&gt;` is :obj:`str`, a</span>
+<span class="sd">          :class:`~io.StringIO` will be created and returned.</span>
+
+<span class="sd">        * If :attr:`self.obj &lt;MakeTextIO.obj&gt;` is a seekable *file* object,</span>
+<span class="sd">          it will be seeked to the beginning and returned.</span>
+
+<span class="sd">        * If :attr:`self.obj &lt;MakeTextIO.obj&gt;` is an unseekable *file* object,</span>
+<span class="sd">          it will be returned directly.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">obj</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="c1">#: StringIO: the I/O object to manage in the context</span>
+            <span class="c1">#: only if :attr:`self.obj &lt;MakeTextIO.obj&gt;` is :obj:`str`</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sio</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">StringIO</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">obj</span><span class="p">,</span> <span class="n">newline</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>  <span class="c1"># turn off newline translation  # pylint: disable=W0201</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sio</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">obj</span><span class="o">.</span><span class="n">seekable</span><span class="p">():</span>
+            <span class="c1">#: int: the original offset of :attr:`self.obj &lt;MakeTextIO.obj&gt;`,</span>
+            <span class="c1">#: only if :attr:`self.obj &lt;MakeTextIO.obj&gt;` is a seekable</span>
+            <span class="c1">#: :class:`TextIO &lt;io.TextIOWrapper&gt;`</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">obj</span><span class="o">.</span><span class="n">tell</span><span class="p">()</span>  <span class="c1"># pylint: disable=W0201</span>
+            <span class="c1">#: Union[str, TextIO]: the object to manage in the context</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">obj</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">obj</span>
+
+    <span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">:</span> <span class="s1">&#39;Optional[Type[BaseException]]&#39;</span><span class="p">,</span> <span class="n">exc_value</span><span class="p">:</span> <span class="s1">&#39;Optional[BaseException]&#39;</span><span class="p">,</span>
+                 <span class="n">traceback</span><span class="p">:</span> <span class="s1">&#39;Optional[TracebackType]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Exit context.</span>
+
+<span class="sd">        * If :attr:`self.obj &lt;MakeTextIO.obj&gt;` is :obj:`str`, the</span>
+<span class="sd">          :class:`~io.StringIO` (:attr:`self.sio &lt;MakeTextIO.sio&gt;`) will be closed.</span>
+
+<span class="sd">        * If :attr:`self.obj &lt;MakeTextIO.obj&gt;` is a seekable *file* object,</span>
+<span class="sd">          its stream position (:attr:`self.pos &lt;MakeTextIO.pos&gt;`) will be recovered.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">obj</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sio</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">obj</span><span class="o">.</span><span class="n">seekable</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">obj</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pos</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="Config"><a class="viewcode-back" href="../../api.html#f2format.Config">[docs]</a><span class="k">class</span> <span class="nc">Config</span><span class="p">(</span><span class="n">MutableMapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">object</span><span class="p">]):</span>
+    <span class="sd">&quot;&quot;&quot;Configuration namespace.</span>
+
+<span class="sd">    This class is inspired from :class:`argparse.Namespace` for storing</span>
+<span class="sd">    internal attributes and/or configuration variables.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__contains__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span>
+
+    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Iterator[str]&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">object</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="fm">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="k">def</span> <span class="fm">__delitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">Config</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="vm">__dict__</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="n">type_name</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span>
+        <span class="n">arg_strings</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># type: List[str]</span>
+        <span class="n">star_args</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># type: Dict[str, object]</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+            <span class="k">if</span> <span class="n">name</span><span class="o">.</span><span class="n">isidentifier</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">keyword</span><span class="o">.</span><span class="n">iskeyword</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="ow">and</span> <span class="n">name</span> <span class="o">!=</span> <span class="s1">&#39;__debug__&#39;</span><span class="p">:</span>
+                <span class="n">arg_strings</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">=</span><span class="si">%r</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>  <span class="c1"># wrap invalid names into a dict to make __repr__ round-trip</span>
+                <span class="n">star_args</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="k">if</span> <span class="n">star_args</span><span class="p">:</span>
+            <span class="n">arg_strings</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;**</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="nb">repr</span><span class="p">(</span><span class="n">star_args</span><span class="p">))</span>
+        <span class="k">return</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">(</span><span class="si">%s</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">type_name</span><span class="p">,</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">arg_strings</span><span class="p">))</span></div>
+
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;first_truthy&#39;</span><span class="p">,</span> <span class="s1">&#39;first_non_none&#39;</span><span class="p">,</span> <span class="s1">&#39;UUID4Generator&#39;</span><span class="p">,</span> <span class="s1">&#39;Config&#39;</span><span class="p">]</span>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">f2format</a></h1>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=pybpc&repo=f2format&type=watch&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../algorithms.html">Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">API Reference</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Python Backport Compiler Project.
+      
+    </div>
+
+    
+    <a href="https://github.com/pybpc/f2format" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

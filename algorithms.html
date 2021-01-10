@@ -1,0 +1,196 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Algorithms &#8212; f2format 0.8.7rc1 documentation</title>
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="API Reference" href="api.html" />
+    <link rel="prev" title="Usage" href="usage.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="algorithms">
+<h1>Algorithms<a class="headerlink" href="#algorithms" title="Permalink to this headline">¶</a></h1>
+<p>As discussed in <span class="target" id="index-0"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0498"><strong>PEP 498</strong></a>, <em>formatted string literals</em> (<em>f-string</em>) is a way to
+interpolate evaluated expression values into regular string literals, using the syntax
+<code class="docutils literal notranslate"><span class="pre">f</span> <span class="pre">'</span> <span class="pre">&lt;text&gt;</span> <span class="pre">{</span> <span class="pre">&lt;expression&gt;</span> <span class="pre">&lt;optional</span> <span class="pre">!s,</span> <span class="pre">!r,</span> <span class="pre">or</span> <span class="pre">!a&gt;</span> <span class="pre">&lt;optional</span> <span class="pre">:</span> <span class="pre">format</span> <span class="pre">specifier&gt;</span> <span class="pre">}</span> <span class="pre">&lt;text&gt;</span> <span class="pre">...</span> <span class="pre">'</span></code>.
+It is roughly equivalent to first evaluate the value of <code class="docutils literal notranslate"><span class="pre">expression</span></code> then
+interpolate its value into the string literal with provided format specifiers and
+convension.</p>
+<div class="section" id="basic-concepts">
+<h2>Basic Concepts<a class="headerlink" href="#basic-concepts" title="Permalink to this headline">¶</a></h2>
+<p>To convert, <code class="docutils literal notranslate"><span class="pre">f2format</span></code> will first extract all <em>expressions</em> from the <em>f-strings</em>,
+then rewrite the literal with a <code class="docutils literal notranslate"><span class="pre">str.format</span></code> function using anonymous positional
+expression sequence from the extracted expressions.</p>
+<p>For example, with the samples from <span class="target" id="index-1"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0498"><strong>PEP 498</strong></a>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sa">f</span><span class="s1">&#39;abc</span><span class="si">{</span><span class="n">expr1</span><span class="si">:</span><span class="s1">spec1</span><span class="si">}{</span><span class="n">expr2</span><span class="si">!r:</span><span class="s1">spec2</span><span class="si">}</span><span class="s1">def</span><span class="si">{</span><span class="n">expr3</span><span class="si">}</span><span class="s1">ghi&#39;</span>
+</pre></div>
+</div>
+<p>it should be converted to</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;abc{:spec1}{:spec2}def</span><span class="si">{}</span><span class="s1">ghi&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">expr1</span><span class="p">,</span> <span class="n">expr2</span><span class="p">,</span> <span class="n">expr3</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="concatenable-strings">
+<h2>Concatenable Strings<a class="headerlink" href="#concatenable-strings" title="Permalink to this headline">¶</a></h2>
+<p>As mentioned in the <a class="reference external" href="https://docs.python.org/3/reference/lexical_analysis.html#string-literal-concatenation">Python documentation</a>,
+multiple adjacent string or bytes literals (delimited by whitespace), possibly
+using different quoting conventions, are allowed, and their meaning is the same as
+their concatenation.</p>
+<p>In cases where a <em>f-string</em> can be found in such sequence of concatenable strings,
+directly converting the <em>f-string</em> to <code class="docutils literal notranslate"><span class="pre">str.format</span></code> syntax may cause the concatenation
+to be broken. Therefore, <code class="docutils literal notranslate"><span class="pre">f2format</span></code> will rather insert the converted <code class="docutils literal notranslate"><span class="pre">.format</span></code> call
+at the end of the string sequence.</p>
+<p>For example, a sequence of concatenable strings may be as follows:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="s1">&#39;/usr/local/opt/python/bin/python3.7 -c &quot;&#39;</span>
+ <span class="s1">&#39;import re, sys</span><span class="se">\n</span><span class="s1">&#39;</span>
+ <span class="s1">&#39;for line in sys.stdin:</span><span class="se">\n</span><span class="s1">&#39;</span>
+ <span class="s2">&quot;    data = line.rstrip().replace(&#39;^D</span><span class="se">\x08\x08</span><span class="s2">&#39;, &#39;&#39;)</span><span class="se">\n</span><span class="s2">&quot;</span>
+ <span class="s2">&quot;    temp = re.sub(r&#39;</span><span class="se">\x1b\\</span><span class="s2">[[0-9][0-9;]*m&#39;, r&#39;&#39;, data, flags=re.IGNORECASE)</span><span class="se">\n</span><span class="s2">&quot;</span>
+ <span class="sa">f</span><span class="s2">&quot;    text = temp.replace(&#39;Password:&#39;, &#39;Password:</span><span class="se">\\</span><span class="s2">r</span><span class="se">\\</span><span class="s2">n&#39;)</span><span class="si">{</span><span class="n">_replace</span><span class="p">(</span><span class="n">password</span><span class="p">)</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+ <span class="s1">&#39;    if text:</span><span class="se">\n</span><span class="s1">&#39;</span>
+ <span class="s2">&quot;        print(text, end=&#39;</span><span class="se">\\</span><span class="s2">r</span><span class="se">\\</span><span class="s2">n&#39;)</span><span class="se">\n</span><span class="s2">&quot;</span>
+ <span class="s1">&#39;&quot;&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>then <code class="docutils literal notranslate"><span class="pre">f2format</span></code> will convert the code above as</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="s1">&#39;/usr/local/opt/python/bin/python3.7 -c &quot;&#39;</span>
+ <span class="s1">&#39;import re, sys</span><span class="se">\n</span><span class="s1">&#39;</span>
+ <span class="s1">&#39;for line in sys.stdin:</span><span class="se">\n</span><span class="s1">&#39;</span>
+ <span class="s2">&quot;    data = line.rstrip().replace(&#39;^D</span><span class="se">\x08\x08</span><span class="s2">&#39;, &#39;&#39;)</span><span class="se">\n</span><span class="s2">&quot;</span>
+ <span class="s2">&quot;    temp = re.sub(r&#39;</span><span class="se">\x1b\\</span><span class="s2">[[0-9][0-9;]*m&#39;, r&#39;&#39;, data, flags=re.IGNORECASE)</span><span class="se">\n</span><span class="s2">&quot;</span>
+ <span class="s2">&quot;    text = temp.replace(&#39;Password:&#39;, &#39;Password:</span><span class="se">\\</span><span class="s2">r</span><span class="se">\\</span><span class="s2">n&#39;)</span><span class="si">{}</span><span class="se">\n</span><span class="s2">&quot;</span>
+ <span class="s1">&#39;    if text:</span><span class="se">\n</span><span class="s1">&#39;</span>
+ <span class="s2">&quot;        print(text, end=&#39;</span><span class="se">\\</span><span class="s2">r</span><span class="se">\\</span><span class="s2">n&#39;)</span><span class="se">\n</span><span class="s2">&quot;</span>
+ <span class="s1">&#39;&quot;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">_replace</span><span class="p">(</span><span class="n">password</span><span class="p">)))</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="debug-f-strings">
+<h2>Debug F-Strings<a class="headerlink" href="#debug-f-strings" title="Permalink to this headline">¶</a></h2>
+<p>Since Python 3.8, <code class="docutils literal notranslate"><span class="pre">=</span></code> was introduced to <em>f-strings</em> in addition to the acceptance
+of <a class="reference external" href="https://bugs.python.org/issue36817">bpo-36817</a>. As discussed in the
+<a class="reference external" href="https://docs.python.org/3/reference/lexical_analysis.html#formatted-string-literals">Python documentation</a>,
+when the equal sign <code class="docutils literal notranslate"><span class="pre">'='</span></code> is provided, the output will have the expression text,
+the <code class="docutils literal notranslate"><span class="pre">'='</span></code> and the evaluated value, therefore <code class="docutils literal notranslate"><span class="pre">f2format</span></code> tend to keep an original
+copy of the expressions in the converted strings then append <code class="docutils literal notranslate"><span class="pre">str.format</span></code> with
+corresponding expressions.</p>
+<p>For a <em>f-string</em> as below:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">foo</span> <span class="o">=</span> <span class="s2">&quot;bar&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span> <span class="n">foo</span> <span class="si">= }</span><span class="s2">&quot;</span> <span class="c1"># preserves whitespace</span>
+<span class="go">&quot; foo = &#39;bar&#39;&quot;</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">f2format</span></code> will convert it as</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot; foo = </span><span class="si">{!r}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">foo</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">f2format</a></h1>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=pybpc&repo=f2format&type=watch&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Algorithms</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#basic-concepts">Basic Concepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#concatenable-strings">Concatenable Strings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#debug-f-strings">Debug F-Strings</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API Reference</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="usage.html" title="previous chapter">Usage</a></li>
+      <li>Next: <a href="api.html" title="next chapter">API Reference</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Python Backport Compiler Project.
+      
+      |
+      <a href="_sources/algorithms.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+    <a href="https://github.com/pybpc/f2format" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

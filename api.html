@@ -1,0 +1,1125 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>API Reference &#8212; f2format 0.8.7rc1 documentation</title>
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Algorithms" href="algorithms.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="module-f2format">
+<span id="api-reference"></span><h1>API Reference<a class="headerlink" href="#module-f2format" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="public-interface">
+<h2>Public Interface<a class="headerlink" href="#public-interface" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="f2format.convert">
+<code class="sig-prename descclassname">f2format.</code><code class="sig-name descname">convert</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">code</span></em>, <em class="sig-param"><span class="n">filename</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">source_version</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">linesep</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">indentation</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">pep8</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/f2format.html#convert"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#f2format.convert" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert the given Python source code string.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>code</strong> (<em>Union</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.9)"><em>bytes</em></a><em>]</em>) – the source code to be converted</p></li>
+<li><p><strong>filename</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em>]</em>) – an optional source file name to provide a context in case of error</p></li>
+<li><p><strong>source_version</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em>]</em>) – </p></li>
+<li><p><strong>linesep</strong> (<em>Optional</em><em>[</em><em>Literal</em><em>[
+</em><em>, 
+</em><em>, </em><em>]</em><em>]</em>) – </p></li>
+<li><p><strong>indentation</strong> (<em>Optional</em><em>[</em><em>Union</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>]</em><em>]</em>) – </p></li>
+<li><p><strong>pep8</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>]</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Keyword Arguments</dt>
+<dd class="field-even"><p><strong>source_version</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em>]</em>) – parse the code as this Python version (uses the latest version by default)</p>
+</dd>
+<dt class="field-odd">Environment Variables</dt>
+<dd class="field-odd"><ul class="simple">
+<li><dl class="simple">
+<dt><span class="target" id="index-0"></span><code class="xref std std-envvar docutils literal notranslate"><span class="pre">F2FORMAT_SOURCE_VERSION</span></code> – same as the <code class="docutils literal notranslate"><span class="pre">source_version</span></code> argument and the <code class="docutils literal notranslate"><span class="pre">--source-version</span></code> option</dt><dd><p>in CLI</p>
+</dd>
+</dl>
+</li>
+<li><p><span class="target" id="index-1"></span><code class="xref std std-envvar docutils literal notranslate"><span class="pre">F2FORMAT_LINESEP</span></code> – same as the <code class="docutils literal notranslate"><span class="pre">linesep</span></code> argument and the <code class="docutils literal notranslate"><span class="pre">--linesep</span></code> option in CLI</p></li>
+<li><p><span class="target" id="index-2"></span><code class="xref std std-envvar docutils literal notranslate"><span class="pre">F2FORMAT_INDENTATION</span></code> – same as the <code class="docutils literal notranslate"><span class="pre">indentation</span></code> argument and the <code class="docutils literal notranslate"><span class="pre">--indentation</span></code> option in CLI</p></li>
+<li><p><span class="target" id="index-3"></span><code class="xref std std-envvar docutils literal notranslate"><span class="pre">F2FORMAT_PEP8</span></code> – same as the <code class="docutils literal notranslate"><span class="pre">pep8</span></code> argument and the <code class="docutils literal notranslate"><span class="pre">--no-pep8</span></code> option in CLI (logical negation)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>converted source code</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="f2format.f2format">
+<code class="sig-prename descclassname">f2format.</code><code class="sig-name descname">f2format</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filename</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">source_version</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">linesep</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">indentation</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">pep8</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">quiet</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">dry_run</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/f2format.html#f2format"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#f2format.f2format" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert the given Python source code file. The file will be overwritten.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – the file to convert</p></li>
+<li><p><strong>source_version</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em>]</em>) – </p></li>
+<li><p><strong>linesep</strong> (<em>Optional</em><em>[</em><em>Literal</em><em>[
+</em><em>, 
+</em><em>, </em><em>]</em><em>]</em>) – </p></li>
+<li><p><strong>indentation</strong> (<em>Optional</em><em>[</em><em>Union</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>]</em><em>]</em>) – </p></li>
+<li><p><strong>pep8</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>]</em>) – </p></li>
+<li><p><strong>quiet</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>]</em>) – </p></li>
+<li><p><strong>dry_run</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Keyword Arguments</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>source_version</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em>]</em>) – parse the code as this Python version (uses the latest version by default)</p></li>
+<li><p><strong>linesep</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em>]</em>) – line separator of code (<code class="docutils literal notranslate"><span class="pre">LF</span></code>, <code class="docutils literal notranslate"><span class="pre">CRLF</span></code>, <code class="docutils literal notranslate"><span class="pre">CR</span></code>) (auto detect by default)</p></li>
+<li><p><strong>indentation</strong> (<em>Optional</em><em>[</em><em>Union</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em>]</em><em>]</em>) – code indentation style, specify an integer for the number of spaces,
+or <code class="docutils literal notranslate"><span class="pre">'t'</span></code>/<code class="docutils literal notranslate"><span class="pre">'tab'</span></code> for tabs (auto detect by default)</p></li>
+<li><p><strong>pep8</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>]</em>) – whether to make code insertion <span class="target" id="index-4"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0008"><strong>PEP 8</strong></a> compliant</p></li>
+<li><p><strong>quiet</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>]</em>) – whether to run in quiet mode</p></li>
+<li><p><strong>dry_run</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a>) – if <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">True</span></code></a>, only print the name of the file to convert but do not perform any conversion</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Environment Variables</dt>
+<dd class="field-odd"><ul class="simple">
+<li><dl class="simple">
+<dt><span class="target" id="index-5"></span><code class="xref std std-envvar docutils literal notranslate"><span class="pre">F2FORMAT_SOURCE_VERSION</span></code> – same as the <code class="docutils literal notranslate"><span class="pre">source-version</span></code> argument and the <code class="docutils literal notranslate"><span class="pre">--source-version</span></code> option</dt><dd><p>in CLI</p>
+</dd>
+</dl>
+</li>
+<li><p><span class="target" id="index-6"></span><code class="xref std std-envvar docutils literal notranslate"><span class="pre">F2FORMAT_LINESEP</span></code> – same as the <code class="docutils literal notranslate"><span class="pre">linesep</span></code> argument and the <code class="docutils literal notranslate"><span class="pre">--linesep</span></code> option in CLI</p></li>
+<li><p><span class="target" id="index-7"></span><code class="xref std std-envvar docutils literal notranslate"><span class="pre">F2FORMAT_INDENTATION</span></code> – same as the <code class="docutils literal notranslate"><span class="pre">indentation</span></code> argument and the <code class="docutils literal notranslate"><span class="pre">--indentation</span></code> option in CLI</p></li>
+<li><p><span class="target" id="index-8"></span><code class="xref std std-envvar docutils literal notranslate"><span class="pre">F2FORMAT_PEP8</span></code> – same as the <code class="docutils literal notranslate"><span class="pre">pep8</span></code> argument and the <code class="docutils literal notranslate"><span class="pre">--no-pep8</span></code> option in CLI (logical negation)</p></li>
+<li><p><span class="target" id="index-9"></span><code class="xref std std-envvar docutils literal notranslate"><span class="pre">F2FORMAT_QUIET</span></code> – same as the <code class="docutils literal notranslate"><span class="pre">quiet</span></code> argument and the <code class="docutils literal notranslate"><span class="pre">--quiet</span></code> option in CLI</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="f2format.main">
+<code class="sig-prename descclassname">f2format.</code><code class="sig-name descname">main</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">argv</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/f2format.html#main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#f2format.main" title="Permalink to this definition">¶</a></dt>
+<dd><p>Entry point for f2format.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>argv</strong> (<em>Optional</em><em>[</em><em>List</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em>]</em><em>]</em>) – CLI arguments</p>
+</dd>
+<dt class="field-even">Environment Variables</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><span class="target" id="index-10"></span><code class="xref std std-envvar docutils literal notranslate"><span class="pre">F2FORMAT_QUIET</span></code> – same as the <code class="docutils literal notranslate"><span class="pre">--quiet</span></code> option in CLI</p></li>
+<li><p><span class="target" id="index-11"></span><code class="xref std std-envvar docutils literal notranslate"><span class="pre">F2FORMAT_CONCURRENCY</span></code> – same as the <code class="docutils literal notranslate"><span class="pre">--concurrency</span></code> option in CLI</p></li>
+<li><p><span class="target" id="index-12"></span><code class="xref std std-envvar docutils literal notranslate"><span class="pre">F2FORMAT_DO_ARCHIVE</span></code> – same as the <code class="docutils literal notranslate"><span class="pre">--no-archive</span></code> option in CLI (logical negation)</p></li>
+<li><p><span class="target" id="index-13"></span><code class="xref std std-envvar docutils literal notranslate"><span class="pre">F2FORMAT_ARCHIVE_PATH</span></code> – same as the <code class="docutils literal notranslate"><span class="pre">--archive-path</span></code> option in CLI</p></li>
+<li><p><span class="target" id="index-14"></span><code class="xref std std-envvar docutils literal notranslate"><span class="pre">F2FORMAT_SOURCE_VERSION</span></code> – same as the <code class="docutils literal notranslate"><span class="pre">--source-version</span></code> option in CLI</p></li>
+<li><p><span class="target" id="index-15"></span><code class="xref std std-envvar docutils literal notranslate"><span class="pre">F2FORMAT_LINESEP</span></code> – same as the <code class="docutils literal notranslate"><span class="pre">--linesep</span></code> option in CLI</p></li>
+<li><p><span class="target" id="index-16"></span><code class="xref std std-envvar docutils literal notranslate"><span class="pre">F2FORMAT_INDENTATION</span></code> – same as the <code class="docutils literal notranslate"><span class="pre">--indentation</span></code> option in CLI</p></li>
+<li><p><span class="target" id="index-17"></span><code class="xref std std-envvar docutils literal notranslate"><span class="pre">F2FORMAT_PEP8</span></code> – same as the <code class="docutils literal notranslate"><span class="pre">--no-pep8</span></code> option in CLI (logical negation)</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="conversion-implementation">
+<h2>Conversion Implementation<a class="headerlink" href="#conversion-implementation" title="Permalink to this headline">¶</a></h2>
+<p>The main logic of the <code class="docutils literal notranslate"><span class="pre">f2format</span></code> conversion is to extract the expressions
+part from <em>formatted string literals</em> and rewrite the original <em>f-string</em>
+using <code class="docutils literal notranslate"><span class="pre">str.format</span></code> syntax.</p>
+<p>For conversion algorithms and details, please refer to <a class="reference internal" href="algorithms.html"><span class="doc">Algorithms</span></a>.</p>
+<div class="section" id="data-structures">
+<h3>Data Structures<a class="headerlink" href="#data-structures" title="Permalink to this headline">¶</a></h3>
+<p>During conversion, we utilised <a class="reference external" href="https://bpc-utils.readthedocs.io/en/latest/index.html#bpc_utils.Config" title="(in bpc-utils)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bpc_utils.Config</span></code></a> to store and deliver the
+configurations over the conversion <a class="reference internal" href="#f2format.Context" title="f2format.Context"><code class="xref py py-class docutils literal notranslate"><span class="pre">Context</span></code></a> instances, which should
+be as following:</p>
+<dl class="py class">
+<dt id="f2format.Config">
+<em class="property">class </em><code class="sig-prename descclassname">f2format.</code><code class="sig-name descname">Config</code><a class="reference internal" href="_modules/bpc_utils/misc.html#Config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#f2format.Config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Configuration object shared over the conversion process of a single source file.</p>
+<dl class="py attribute">
+<dt id="f2format.Config.indentation">
+<code class="sig-name descname">indentation</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></em><a class="headerlink" href="#f2format.Config.indentation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Indentation sequence.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="f2format.Config.linesep">
+<code class="sig-name descname">linesep</code><em class="property">: Literal['\n', '\r\n', '\r']</em><a class="headerlink" href="#f2format.Config.linesep" title="Permalink to this definition">¶</a></dt>
+<dd><p>Line separator.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="f2format.Config.pep8">
+<code class="sig-name descname">pep8</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></em><a class="headerlink" href="#f2format.Config.pep8" title="Permalink to this definition">¶</a></dt>
+<dd><p><span class="target" id="index-18"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0008"><strong>PEP 8</strong></a> compliant conversion flag.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="f2format.Config.filename">
+<code class="sig-name descname">filename</code><em class="property">: Optional<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a><span class="p">]</span></em><a class="headerlink" href="#f2format.Config.filename" title="Permalink to this definition">¶</a></dt>
+<dd><p>An optional source file name to provide a context in case of error.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="f2format.Config.source_version">
+<code class="sig-name descname">source_version</code><em class="property">: Optional<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a><span class="p">]</span></em><a class="headerlink" href="#f2format.Config.source_version" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse the code as this Python version (uses the latest version by default).</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="conversion-contexts">
+<h3>Conversion Contexts<a class="headerlink" href="#conversion-contexts" title="Permalink to this headline">¶</a></h3>
+<dl class="py class">
+<dt id="f2format.Context">
+<em class="property">class </em><code class="sig-prename descclassname">f2format.</code><code class="sig-name descname">Context</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">node</span></em>, <em class="sig-param"><span class="n">config</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">indent_level</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">raw</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/f2format.html#Context"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#f2format.Context" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">bpc_utils.context.BaseContext</span></code></p>
+<p>General conversion context.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>node</strong> (<a class="reference external" href="https://parso.readthedocs.io/en/latest/docs/parser-tree.html#parso.tree.NodeOrLeaf" title="(in parso v0.7)"><em>parso.tree.NodeOrLeaf</em></a>) – parso AST</p></li>
+<li><p><strong>config</strong> (<a class="reference internal" href="#f2format.Config" title="f2format.Config"><em>Config</em></a>) – conversion configurations</p></li>
+<li><p><strong>indent_level</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – </p></li>
+<li><p><strong>raw</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Keyword Arguments</dt>
+<dd class="field-even"><p><strong>raw</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a>) – raw processing flag</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)">None</a></p>
+</dd>
+</dl>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p><code class="docutils literal notranslate"><span class="pre">raw</span></code> should be <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">True</span></code></a> only if the <code class="docutils literal notranslate"><span class="pre">node</span></code> is in the clause of another <em>context</em>,
+where the converted wrapper functions should be inserted.</p>
+</div>
+<p>For the <a class="reference internal" href="#f2format.Context" title="f2format.Context"><code class="xref py py-class docutils literal notranslate"><span class="pre">Context</span></code></a> class of <a class="reference internal" href="#module-f2format" title="f2format"><code class="xref py py-mod docutils literal notranslate"><span class="pre">f2format</span></code></a> module,
+it will process nodes with following methods:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/reference/lexical_analysis.html#grammar-token-stringliteral" title="(in Python v3.9)"><code class="xref std std-token docutils literal notranslate"><span class="pre">stringliteral</span></code></a></p>
+<ul>
+<li><p><a class="reference internal" href="#f2format.Context._process_strings" title="f2format.Context._process_strings"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Context._process_strings()</span></code></a></p></li>
+<li><p><code class="xref py py-meth docutils literal notranslate"><span class="pre">Context._process_string_context()</span></code></p></li>
+</ul>
+</li>
+<li><p><a class="reference external" href="https://docs.python.org/3/reference/lexical_analysis.html#grammar-token-f-string" title="(in Python v3.9)"><code class="xref std std-token docutils literal notranslate"><span class="pre">f_string</span></code></a></p>
+<ul>
+<li><p><a class="reference internal" href="#f2format.Context._process_fstring" title="f2format.Context._process_fstring"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Context._process_fstring()</span></code></a></p></li>
+</ul>
+</li>
+</ul>
+<p>Initialize BaseContext.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>node</strong> (<a class="reference external" href="https://parso.readthedocs.io/en/latest/docs/parser-tree.html#parso.tree.NodeOrLeaf" title="(in parso v0.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">NodeOrLeaf</span></code></a>) – parso AST</p></li>
+<li><p><strong>config</strong> (<a class="reference external" href="https://bpc-utils.readthedocs.io/en/latest/index.html#bpc_utils.Config" title="(in bpc-utils)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Config</span></code></a>) – conversion configurations</p></li>
+<li><p><strong>indent_level</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – current indentation level</p></li>
+<li><p><strong>raw</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – raw processing flag</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)">None</a></p>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="f2format.Context._concat">
+<code class="sig-name descname">_concat</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/f2format.html#Context._concat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#f2format.Context._concat" title="Permalink to this definition">¶</a></dt>
+<dd><p>Concatenate final string.</p>
+<p>This method tries to concatenate final result based on the very location
+where starts to contain formatted string literals, i.e. between the converted
+code as <code class="xref py py-attr docutils literal notranslate"><span class="pre">self._prefix</span></code> and <code class="xref py py-attr docutils literal notranslate"><span class="pre">self._suffix</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="f2format.Context._process_fstring">
+<code class="sig-name descname">_process_fstring</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">node</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/f2format.html#Context._process_fstring"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#f2format.Context._process_fstring" title="Permalink to this definition">¶</a></dt>
+<dd><p>Process formatted strings (<a class="reference external" href="https://docs.python.org/3/reference/lexical_analysis.html#grammar-token-f-string" title="(in Python v3.9)"><code class="xref std std-token docutils literal notranslate"><span class="pre">f_string</span></code></a>).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>node</strong> (<a class="reference external" href="https://parso.readthedocs.io/en/latest/docs/parser-tree.html#parso.python.tree.PythonNode" title="(in parso v0.7)"><em>parso.python.tree.PythonNode</em></a>) – formatted strings node</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="f2format.Context._process_strings">
+<code class="sig-name descname">_process_strings</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">node</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/f2format.html#Context._process_strings"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#f2format.Context._process_strings" title="Permalink to this definition">¶</a></dt>
+<dd><p>Process concatenable strings (<a class="reference external" href="https://docs.python.org/3/reference/lexical_analysis.html#grammar-token-stringliteral" title="(in Python v3.9)"><code class="xref std std-token docutils literal notranslate"><span class="pre">stringliteral</span></code></a>).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>node</strong> (<a class="reference external" href="https://parso.readthedocs.io/en/latest/docs/parser-tree.html#parso.python.tree.PythonNode" title="(in parso v0.7)"><em>parso.python.tree.PythonNode</em></a>) – concatentable strings node</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)">None</a></p>
+</dd>
+</dl>
+<p>As in Python, adjacent string literals can be concatenated in certain
+cases, as described in the <a class="reference external" href="https://docs.python.org/3/reference/lexical_analysis.html#string-literal-concatenation">documentation</a>. Such concatenable strings
+may contain formatted string literals (<a class="reference external" href="https://docs.python.org/3/glossary.html#term-f-string" title="(in Python v3.9)"><span class="xref std std-term">f-string</span></a>) within its scope.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></p>
+</dd>
+<dt class="field-even">Parameters</dt>
+<dd class="field-even"><p><strong>node</strong> (<a class="reference external" href="https://parso.readthedocs.io/en/latest/docs/parser-tree.html#parso.python.tree.PythonNode" title="(in parso v0.7)"><em>parso.python.tree.PythonNode</em></a>) – </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="f2format.Context.has_debug_fstring">
+<em class="property">classmethod </em><code class="sig-name descname">has_debug_fstring</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">node</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/f2format.html#Context.has_debug_fstring"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#f2format.Context.has_debug_fstring" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if node has <em>debug</em> formatted string literals.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>node</strong> (<a class="reference external" href="https://parso.readthedocs.io/en/latest/docs/parser-tree.html#parso.tree.NodeOrLeaf" title="(in parso v0.7)"><em>parso.tree.NodeOrLeaf</em></a>) – parso AST</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>if <code class="docutils literal notranslate"><span class="pre">node</span></code> has debug formatted string literals</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="f2format.Context.has_expr">
+<em class="property">classmethod </em><code class="sig-name descname">has_expr</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">node</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/f2format.html#Context.has_expr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#f2format.Context.has_expr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if node has formatted string literals.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>node</strong> (<a class="reference external" href="https://parso.readthedocs.io/en/latest/docs/parser-tree.html#parso.tree.NodeOrLeaf" title="(in parso v0.7)"><em>parso.tree.NodeOrLeaf</em></a>) – parso AST</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>if <code class="docutils literal notranslate"><span class="pre">node</span></code> has formatted string literals</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="f2format.Context.has_f2format">
+<em class="property">classmethod </em><code class="sig-name descname">has_f2format</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">node</span></em><span class="sig-paren">)</span><a class="headerlink" href="#f2format.Context.has_f2format" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if node has formatted string literals.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>node</strong> (<a class="reference external" href="https://parso.readthedocs.io/en/latest/docs/parser-tree.html#parso.tree.NodeOrLeaf" title="(in parso v0.7)"><em>parso.tree.NodeOrLeaf</em></a>) – parso AST</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>if <code class="docutils literal notranslate"><span class="pre">node</span></code> has formatted string literals</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="f2format.Context._abc_impl">
+<code class="sig-name descname">_abc_impl</code><em class="property"> = &lt;_abc_data object&gt;</em><a class="headerlink" href="#f2format.Context._abc_impl" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="f2format.StringContext">
+<em class="property">class </em><code class="sig-prename descclassname">f2format.</code><code class="sig-name descname">StringContext</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">node</span></em>, <em class="sig-param"><span class="n">config</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">has_fstring</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">indent_level</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">raw</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/f2format.html#StringContext"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#f2format.StringContext" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#f2format.Context" title="f2format.Context"><code class="xref py py-class docutils literal notranslate"><span class="pre">f2format.Context</span></code></a></p>
+<p>String (f-string) conversion context.</p>
+<p>This class is mainly used for converting <strong>formatted string literals</strong>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>node</strong> (<a class="reference external" href="https://parso.readthedocs.io/en/latest/docs/parser-tree.html#parso.python.tree.PythonNode" title="(in parso v0.7)"><em>parso.python.tree.PythonNode</em></a>) – parso AST</p></li>
+<li><p><strong>config</strong> (<a class="reference internal" href="#f2format.Config" title="f2format.Config"><em>Config</em></a>) – conversion configurations</p></li>
+<li><p><strong>has_fstring</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>]</em>) – </p></li>
+<li><p><strong>indent_level</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – </p></li>
+<li><p><strong>raw</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Keyword Arguments</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>has_fstring</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a>) – flag if contains actual formatted
+string literals (with expressions)</p></li>
+<li><p><strong>indent_level</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – current indentation level</p></li>
+<li><p><strong>raw</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a>) – raw processing flag</p></li>
+</ul>
+</dd>
+</dl>
+<p>Initialize BaseContext.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>node</strong> (<a class="reference external" href="https://parso.readthedocs.io/en/latest/docs/parser-tree.html#parso.tree.NodeOrLeaf" title="(in parso v0.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">NodeOrLeaf</span></code></a>) – parso AST</p></li>
+<li><p><strong>config</strong> (<a class="reference external" href="https://bpc-utils.readthedocs.io/en/latest/index.html#bpc_utils.Config" title="(in bpc-utils)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Config</span></code></a>) – conversion configurations</p></li>
+<li><p><strong>indent_level</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – current indentation level</p></li>
+<li><p><strong>raw</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – raw processing flag</p></li>
+<li><p><strong>has_fstring</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>]</em>) – </p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="f2format.StringContext._concat">
+<code class="sig-name descname">_concat</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/f2format.html#StringContext._concat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#f2format.StringContext._concat" title="Permalink to this definition">¶</a></dt>
+<dd><p>Concatenate final string.</p>
+<p>This method tries to concatenate final result based on the very location
+where starts to contain formatted string literals, i.e. between the converted
+code as <code class="xref py py-attr docutils literal notranslate"><span class="pre">self._prefix</span></code> and <code class="xref py py-attr docutils literal notranslate"><span class="pre">self._suffix</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="f2format.StringContext._process_fstring">
+<code class="sig-name descname">_process_fstring</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">node</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/f2format.html#StringContext._process_fstring"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#f2format.StringContext._process_fstring" title="Permalink to this definition">¶</a></dt>
+<dd><p>Process formatted strings (<a class="reference external" href="https://docs.python.org/3/reference/lexical_analysis.html#grammar-token-f-string" title="(in Python v3.9)"><code class="xref std std-token docutils literal notranslate"><span class="pre">f_string</span></code></a>).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>node</strong> (<a class="reference external" href="https://parso.readthedocs.io/en/latest/docs/parser-tree.html#parso.python.tree.PythonNode" title="(in parso v0.7)"><em>parso.python.tree.PythonNode</em></a>) – formatted strings node</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="f2format.StringContext._process_fstring_expr">
+<code class="sig-name descname">_process_fstring_expr</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">node</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/f2format.html#StringContext._process_fstring_expr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#f2format.StringContext._process_fstring_expr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Process formatted string literal expression node (<a class="reference external" href="https://docs.python.org/3/reference/lexical_analysis.html#grammar-token-f-expression" title="(in Python v3.9)"><code class="xref std std-token docutils literal notranslate"><span class="pre">f_expression</span></code></a>).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>node</strong> (<a class="reference external" href="https://parso.readthedocs.io/en/latest/docs/parser-tree.html#parso.python.tree.PythonNode" title="(in parso v0.7)"><em>parso.python.tree.PythonNode</em></a>) – formatted literal expression node</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="f2format.StringContext._process_fstring_start">
+<code class="sig-name descname">_process_fstring_start</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">node</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/f2format.html#StringContext._process_fstring_start"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#f2format.StringContext._process_fstring_start" title="Permalink to this definition">¶</a></dt>
+<dd><p>Process formatted string literal starting node (<a class="reference external" href="https://docs.python.org/3/reference/lexical_analysis.html#grammar-token-stringprefix" title="(in Python v3.9)"><code class="xref std std-token docutils literal notranslate"><span class="pre">stringprefix</span></code></a>).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>node</strong> (<a class="reference external" href="https://parso.readthedocs.io/en/latest/docs/parser-tree.html#parso.python.tree.FStringStart" title="(in parso v0.7)"><em>parso.python.tree.FStringStart</em></a>) – formatted literal starting node</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="f2format.StringContext._process_fstring_string">
+<code class="sig-name descname">_process_fstring_string</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">node</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/f2format.html#StringContext._process_fstring_string"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#f2format.StringContext._process_fstring_string" title="Permalink to this definition">¶</a></dt>
+<dd><p>Process formatted string literal string node (<a class="reference external" href="https://docs.python.org/3/reference/lexical_analysis.html#grammar-token-stringliteral" title="(in Python v3.9)"><code class="xref std std-token docutils literal notranslate"><span class="pre">stringliteral</span></code></a>).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>node</strong> (<a class="reference external" href="https://parso.readthedocs.io/en/latest/docs/parser-tree.html#parso.python.tree.FStringString" title="(in parso v0.7)"><em>parso.python.tree.FStringString</em></a>) – formatted string literal string node</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="f2format.StringContext._process_string">
+<code class="sig-name descname">_process_string</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">node</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/f2format.html#StringContext._process_string"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#f2format.StringContext._process_string" title="Permalink to this definition">¶</a></dt>
+<dd><p>Process string node (<a class="reference external" href="https://docs.python.org/3/reference/lexical_analysis.html#grammar-token-stringliteral" title="(in Python v3.9)"><code class="xref std std-token docutils literal notranslate"><span class="pre">stringliteral</span></code></a>).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>node</strong> (<a class="reference external" href="https://parso.readthedocs.io/en/latest/docs/parser-tree.html#parso.python.tree.PythonNode" title="(in parso v0.7)"><em>parso.python.tree.PythonNode</em></a>) – string node</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="f2format.StringContext.has_fstring">
+<em class="property">classmethod </em><code class="sig-name descname">has_fstring</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">node</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/f2format.html#StringContext.has_fstring"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#f2format.StringContext.has_fstring" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if node has actual formatted string literals.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>node</strong> (<a class="reference external" href="https://parso.readthedocs.io/en/latest/docs/parser-tree.html#parso.tree.NodeOrLeaf" title="(in parso v0.7)"><em>parso.tree.NodeOrLeaf</em></a>) – parso AST</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>if <code class="docutils literal notranslate"><span class="pre">node</span></code> has actual formatted string literals</dt><dd><p>(with expressions in the literals)</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="f2format.StringContext._abc_impl">
+<code class="sig-name descname">_abc_impl</code><em class="property"> = &lt;_abc_data object&gt;</em><a class="headerlink" href="#f2format.StringContext._abc_impl" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="f2format.StringContext._buffer">
+<code class="sig-name descname">_buffer</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></em><a class="headerlink" href="#f2format.StringContext._buffer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Final converted result.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="f2format.StringContext._expr">
+<code class="sig-name descname">_expr</code><em class="property">: List<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a><span class="p">]</span></em><a class="headerlink" href="#f2format.StringContext._expr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Expressions extracted from the formatted string literal.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>List[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="f2format.StringContext._flag">
+<code class="sig-name descname">_flag</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></em><a class="headerlink" href="#f2format.StringContext._flag" title="Permalink to this definition">¶</a></dt>
+<dd><p>Flag if contains actual formatted string literals (with expressions).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="f2format.StringContext._indent_level">
+<code class="sig-name descname">_indent_level</code><em class="property">: Final<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a><span class="p">]</span></em><a class="headerlink" href="#f2format.StringContext._indent_level" title="Permalink to this definition">¶</a></dt>
+<dd><p>Current indentation level.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="f2format.StringContext._indentation">
+<code class="sig-name descname">_indentation</code><em class="property">: Final<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a><span class="p">]</span></em><a class="headerlink" href="#f2format.StringContext._indentation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Indentation sequence.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="f2format.StringContext._linesep">
+<code class="sig-name descname">_linesep</code><em class="property">: Final<span class="p">[</span>Linesep<span class="p">]</span></em><a class="headerlink" href="#f2format.StringContext._linesep" title="Permalink to this definition">¶</a></dt>
+<dd><p>Line seperator.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>Final[<code class="xref py py-data docutils literal notranslate"><span class="pre">Linesep</span></code>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="f2format.StringContext._node_before_expr">
+<code class="sig-name descname">_node_before_expr</code><em class="property">: Optional<span class="p">[</span><a class="reference external" href="https://parso.readthedocs.io/en/latest/docs/parser-tree.html#parso.tree.NodeOrLeaf" title="(in parso v0.7)">parso.tree.NodeOrLeaf</a><span class="p">]</span></em><a class="headerlink" href="#f2format.StringContext._node_before_expr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Preceding node with the target expression, i.e. the <em>insertion point</em>.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="f2format.StringContext._pep8">
+<code class="sig-name descname">_pep8</code><em class="property">: Final<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a><span class="p">]</span></em><a class="headerlink" href="#f2format.StringContext._pep8" title="Permalink to this definition">¶</a></dt>
+<dd><p><span class="target" id="index-19"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0008"><strong>PEP 8</strong></a> compliant conversion flag.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="f2format.StringContext._prefix">
+<code class="sig-name descname">_prefix</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></em><a class="headerlink" href="#f2format.StringContext._prefix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Code before insertion point.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="f2format.StringContext._prefix_or_suffix">
+<code class="sig-name descname">_prefix_or_suffix</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></em><a class="headerlink" href="#f2format.StringContext._prefix_or_suffix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Flag to indicate whether buffer is now <a class="reference external" href="https://bpc-utils.readthedocs.io/en/latest/index.html#bpc_utils.BaseContext._prefix" title="(in bpc-utils)"><code class="xref py py-attr docutils literal notranslate"><span class="pre">self._prefix</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="f2format.StringContext._root">
+<code class="sig-name descname">_root</code><em class="property">: Final<span class="p">[</span><a class="reference external" href="https://parso.readthedocs.io/en/latest/docs/parser-tree.html#parso.tree.NodeOrLeaf" title="(in parso v0.7)">parso.tree.NodeOrLeaf</a><span class="p">]</span></em><a class="headerlink" href="#f2format.StringContext._root" title="Permalink to this definition">¶</a></dt>
+<dd><p>Root node given by the <code class="docutils literal notranslate"><span class="pre">node</span></code> parameter.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="f2format.StringContext._suffix">
+<code class="sig-name descname">_suffix</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></em><a class="headerlink" href="#f2format.StringContext._suffix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Code after insertion point.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="f2format.StringContext._uuid_gen">
+<code class="sig-name descname">_uuid_gen</code><em class="property">: Final<span class="p">[</span>UUID4Generator<span class="p">]</span></em><a class="headerlink" href="#f2format.StringContext._uuid_gen" title="Permalink to this definition">¶</a></dt>
+<dd><p>UUID generator.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="f2format.StringContext.config">
+<code class="sig-name descname">config</code><em class="property">: Final<span class="p">[</span><a class="reference internal" href="#f2format.Config" title="f2format.Config">Config</a><span class="p">]</span></em><a class="headerlink" href="#f2format.StringContext.config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Internal configurations.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="f2format.StringContext.expr">
+<em class="property">property </em><code class="sig-name descname">expr</code><a class="headerlink" href="#f2format.StringContext.expr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Expressions extracted from the formatted string literal.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>List[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="f2format.StringContext.fstring_bracket">
+<code class="sig-name descname">fstring_bracket</code><em class="property">: Final<span class="p">[</span>ClassVar<span class="p">[</span>re.Pattern<span class="p">]</span><span class="p">]</span></em><em class="property"> = re.compile('([{}])', re.ASCII)</em><a class="headerlink" href="#f2format.StringContext.fstring_bracket" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pattern matches single brackets in the formatted string literal (<code class="docutils literal notranslate"><span class="pre">{}</span></code>).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>re.Pattern</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="f2format.StringContext.fstring_start">
+<code class="sig-name descname">fstring_start</code><em class="property">: Final<span class="p">[</span>ClassVar<span class="p">[</span>re.Pattern<span class="p">]</span><span class="p">]</span></em><em class="property"> = re.compile('[fF]', re.ASCII)</em><a class="headerlink" href="#f2format.StringContext.fstring_start" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pattern matches the formatted string literal prefix (<code class="docutils literal notranslate"><span class="pre">f</span></code>).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>re.Pattern</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="internal-auxiliaries">
+<h2>Internal Auxiliaries<a class="headerlink" href="#internal-auxiliaries" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="options-defaults">
+<h3>Options &amp; Defaults<a class="headerlink" href="#options-defaults" title="Permalink to this headline">¶</a></h3>
+<dl class="py data">
+<dt id="f2format.F2FORMAT_SOURCE_VERSIONS">
+<code class="sig-prename descclassname">f2format.</code><code class="sig-name descname">F2FORMAT_SOURCE_VERSIONS</code><em class="property"> = ['3.6', '3.7', '3.8', '3.9', '3.10']</em><a class="headerlink" href="#f2format.F2FORMAT_SOURCE_VERSIONS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get supported source versions.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference external" href="https://bpc-utils.readthedocs.io/en/latest/index.html#bpc_utils.get_parso_grammar_versions" title="(in bpc-utils)"><code class="xref py py-func docutils literal notranslate"><span class="pre">bpc_utils.get_parso_grammar_versions()</span></code></a></p>
+</div>
+</dd></dl>
+
+<p>Below are option getter utility functions. Option value precedence is:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">explicit</span> <span class="n">value</span> <span class="p">(</span><span class="n">CLI</span><span class="o">/</span><span class="n">API</span> <span class="n">arguments</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">environment</span> <span class="n">variable</span> <span class="o">&gt;</span> <span class="n">default</span> <span class="n">value</span>
+</pre></div>
+</div>
+<dl class="py function">
+<dt id="f2format._get_quiet_option">
+<code class="sig-prename descclassname">f2format.</code><code class="sig-name descname">_get_quiet_option</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">explicit</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/f2format.html#_get_quiet_option"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#f2format._get_quiet_option" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the value for the <code class="docutils literal notranslate"><span class="pre">quiet</span></code> option.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>explicit</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>]</em>) – the value explicitly specified by user,
+<a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a> if not specified</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the value for the <code class="docutils literal notranslate"><span class="pre">quiet</span></code> option</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></p>
+</dd>
+<dt class="field-even">Environment Variables</dt>
+<dd class="field-even"><p><span class="target" id="index-20"></span><code class="xref std std-envvar docutils literal notranslate"><span class="pre">F2FORMAT_QUIET</span></code> – the value in environment variable</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#f2format._default_quiet" title="f2format._default_quiet"><code class="xref py py-data docutils literal notranslate"><span class="pre">_default_quiet</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="f2format._get_concurrency_option">
+<code class="sig-prename descclassname">f2format.</code><code class="sig-name descname">_get_concurrency_option</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">explicit</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/f2format.html#_get_concurrency_option"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#f2format._get_concurrency_option" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the value for the <code class="docutils literal notranslate"><span class="pre">concurrency</span></code> option.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>explicit</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>]</em>) – the value explicitly specified by user,
+<a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a> if not specified</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the value for the <code class="docutils literal notranslate"><span class="pre">concurrency</span></code> option;
+<a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a> means <em>auto detection</em> at runtime</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Optional[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a>]</p>
+</dd>
+<dt class="field-even">Environment Variables</dt>
+<dd class="field-even"><p><span class="target" id="index-21"></span><code class="xref std std-envvar docutils literal notranslate"><span class="pre">F2FORMAT_CONCURRENCY</span></code> – the value in environment variable</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#f2format._default_concurrency" title="f2format._default_concurrency"><code class="xref py py-data docutils literal notranslate"><span class="pre">_default_concurrency</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="f2format._get_do_archive_option">
+<code class="sig-prename descclassname">f2format.</code><code class="sig-name descname">_get_do_archive_option</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">explicit</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/f2format.html#_get_do_archive_option"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#f2format._get_do_archive_option" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the value for the <code class="docutils literal notranslate"><span class="pre">do_archive</span></code> option.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>explicit</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>]</em>) – the value explicitly specified by user,
+<a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a> if not specified</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the value for the <code class="docutils literal notranslate"><span class="pre">do_archive</span></code> option</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></p>
+</dd>
+<dt class="field-even">Environment Variables</dt>
+<dd class="field-even"><p><span class="target" id="index-22"></span><code class="xref std std-envvar docutils literal notranslate"><span class="pre">F2FORMAT_DO_ARCHIVE</span></code> – the value in environment variable</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#f2format._default_do_archive" title="f2format._default_do_archive"><code class="xref py py-data docutils literal notranslate"><span class="pre">_default_do_archive</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="f2format._get_archive_path_option">
+<code class="sig-prename descclassname">f2format.</code><code class="sig-name descname">_get_archive_path_option</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">explicit</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/f2format.html#_get_archive_path_option"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#f2format._get_archive_path_option" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the value for the <code class="docutils literal notranslate"><span class="pre">archive_path</span></code> option.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>explicit</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em>]</em>) – the value explicitly specified by user,
+<a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a> if not specified</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the value for the <code class="docutils literal notranslate"><span class="pre">archive_path</span></code> option</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></p>
+</dd>
+<dt class="field-even">Environment Variables</dt>
+<dd class="field-even"><p><span class="target" id="index-23"></span><code class="xref std std-envvar docutils literal notranslate"><span class="pre">F2FORMAT_ARCHIVE_PATH</span></code> – the value in environment variable</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#f2format._default_archive_path" title="f2format._default_archive_path"><code class="xref py py-data docutils literal notranslate"><span class="pre">_default_archive_path</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="f2format._get_source_version_option">
+<code class="sig-prename descclassname">f2format.</code><code class="sig-name descname">_get_source_version_option</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">explicit</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/f2format.html#_get_source_version_option"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#f2format._get_source_version_option" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the value for the <code class="docutils literal notranslate"><span class="pre">source_version</span></code> option.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>explicit</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em>]</em>) – the value explicitly specified by user,
+<a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a> if not specified</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the value for the <code class="docutils literal notranslate"><span class="pre">source_version</span></code> option</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></p>
+</dd>
+<dt class="field-even">Environment Variables</dt>
+<dd class="field-even"><p><span class="target" id="index-24"></span><code class="xref std std-envvar docutils literal notranslate"><span class="pre">F2FORMAT_SOURCE_VERSION</span></code> – the value in environment variable</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#f2format._default_source_version" title="f2format._default_source_version"><code class="xref py py-data docutils literal notranslate"><span class="pre">_default_source_version</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="f2format._get_linesep_option">
+<code class="sig-prename descclassname">f2format.</code><code class="sig-name descname">_get_linesep_option</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">explicit</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/f2format.html#_get_linesep_option"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#f2format._get_linesep_option" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the value for the <code class="docutils literal notranslate"><span class="pre">linesep</span></code> option.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>explicit</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em>]</em>) – the value explicitly specified by user,
+<a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a> if not specified</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the value for the <code class="docutils literal notranslate"><span class="pre">linesep</span></code> option;
+<a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a> means <em>auto detection</em> at runtime</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Optional[Literal[‘\n’, ‘\r\n’, ‘\r’]]</p>
+</dd>
+<dt class="field-even">Environment Variables</dt>
+<dd class="field-even"><p><span class="target" id="index-25"></span><code class="xref std std-envvar docutils literal notranslate"><span class="pre">F2FORMAT_LINESEP</span></code> – the value in environment variable</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#f2format._default_linesep" title="f2format._default_linesep"><code class="xref py py-data docutils literal notranslate"><span class="pre">_default_linesep</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="f2format._get_indentation_option">
+<code class="sig-prename descclassname">f2format.</code><code class="sig-name descname">_get_indentation_option</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">explicit</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/f2format.html#_get_indentation_option"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#f2format._get_indentation_option" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the value for the <code class="docutils literal notranslate"><span class="pre">indentation</span></code> option.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>explicit</strong> (<em>Optional</em><em>[</em><em>Union</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>]</em><em>]</em>) – the value explicitly specified by user,
+<a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a> if not specified</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the value for the <code class="docutils literal notranslate"><span class="pre">indentation</span></code> option;
+<a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a> means <em>auto detection</em> at runtime</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Optional[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a>]</p>
+</dd>
+<dt class="field-even">Environment Variables</dt>
+<dd class="field-even"><p><span class="target" id="index-26"></span><code class="xref std std-envvar docutils literal notranslate"><span class="pre">F2FORMAT_INDENTATION</span></code> – the value in environment variable</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#f2format._default_indentation" title="f2format._default_indentation"><code class="xref py py-data docutils literal notranslate"><span class="pre">_default_indentation</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="f2format._get_pep8_option">
+<code class="sig-prename descclassname">f2format.</code><code class="sig-name descname">_get_pep8_option</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">explicit</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/f2format.html#_get_pep8_option"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#f2format._get_pep8_option" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the value for the <code class="docutils literal notranslate"><span class="pre">pep8</span></code> option.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>explicit</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>]</em>) – the value explicitly specified by user,
+<a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a> if not specified</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the value for the <code class="docutils literal notranslate"><span class="pre">pep8</span></code> option</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></p>
+</dd>
+<dt class="field-even">Environment Variables</dt>
+<dd class="field-even"><p><span class="target" id="index-27"></span><code class="xref std std-envvar docutils literal notranslate"><span class="pre">F2FORMAT_PEP8</span></code> – the value in environment variable</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#f2format._default_pep8" title="f2format._default_pep8"><code class="xref py py-data docutils literal notranslate"><span class="pre">_default_pep8</span></code></a></p>
+</div>
+</dd></dl>
+
+<p>The following variables are used for fallback default values of options.</p>
+<dl class="py data">
+<dt id="f2format._default_quiet">
+<code class="sig-prename descclassname">f2format.</code><code class="sig-name descname">_default_quiet</code><em class="property"> = False</em><a class="headerlink" href="#f2format._default_quiet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default value for the <code class="docutils literal notranslate"><span class="pre">quiet</span></code> option.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt id="f2format._default_concurrency">
+<code class="sig-prename descclassname">f2format.</code><code class="sig-name descname">_default_concurrency</code><em class="property"> = None</em><a class="headerlink" href="#f2format._default_concurrency" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default value for the <code class="docutils literal notranslate"><span class="pre">concurrency</span></code> option.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt id="f2format._default_do_archive">
+<code class="sig-prename descclassname">f2format.</code><code class="sig-name descname">_default_do_archive</code><em class="property"> = True</em><a class="headerlink" href="#f2format._default_do_archive" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default value for the <code class="docutils literal notranslate"><span class="pre">do_archive</span></code> option.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt id="f2format._default_archive_path">
+<code class="sig-prename descclassname">f2format.</code><code class="sig-name descname">_default_archive_path</code><em class="property"> = 'archive'</em><a class="headerlink" href="#f2format._default_archive_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default value for the <code class="docutils literal notranslate"><span class="pre">archive_path</span></code> option.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt id="f2format._default_source_version">
+<code class="sig-prename descclassname">f2format.</code><code class="sig-name descname">_default_source_version</code><em class="property"> = '3.10'</em><a class="headerlink" href="#f2format._default_source_version" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default value for the <code class="docutils literal notranslate"><span class="pre">source_version</span></code> option.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt id="f2format._default_linesep">
+<code class="sig-prename descclassname">f2format.</code><code class="sig-name descname">_default_linesep</code><em class="property"> = None</em><a class="headerlink" href="#f2format._default_linesep" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default value for the <code class="docutils literal notranslate"><span class="pre">linesep</span></code> option.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt id="f2format._default_indentation">
+<code class="sig-prename descclassname">f2format.</code><code class="sig-name descname">_default_indentation</code><em class="property"> = None</em><a class="headerlink" href="#f2format._default_indentation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default value for the <code class="docutils literal notranslate"><span class="pre">indentation</span></code> option.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt id="f2format._default_pep8">
+<code class="sig-prename descclassname">f2format.</code><code class="sig-name descname">_default_pep8</code><em class="property"> = True</em><a class="headerlink" href="#f2format._default_pep8" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default value for the <code class="docutils literal notranslate"><span class="pre">pep8</span></code> option.</p>
+</dd></dl>
+
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>For <a class="reference internal" href="#f2format._default_concurrency" title="f2format._default_concurrency"><code class="xref py py-data docutils literal notranslate"><span class="pre">_default_concurrency</span></code></a>, <a class="reference internal" href="#f2format._default_linesep" title="f2format._default_linesep"><code class="xref py py-data docutils literal notranslate"><span class="pre">_default_linesep</span></code></a> and <a class="reference internal" href="#f2format._default_indentation" title="f2format._default_indentation"><code class="xref py py-data docutils literal notranslate"><span class="pre">_default_indentation</span></code></a>,
+<a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a> means <em>auto detection</em> during runtime.</p>
+</div>
+</div>
+<div class="section" id="cli-utilities">
+<h3>CLI Utilities<a class="headerlink" href="#cli-utilities" title="Permalink to this headline">¶</a></h3>
+<dl class="py function">
+<dt id="f2format.get_parser">
+<code class="sig-prename descclassname">f2format.</code><code class="sig-name descname">get_parser</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/f2format.html#get_parser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#f2format.get_parser" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate CLI parser.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>CLI parser for f2format</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/argparse.html#argparse.ArgumentParser" title="(in Python v3.9)">argparse.ArgumentParser</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<p>The following variables are used for help messages in the argument parser.</p>
+<dl class="py data">
+<dt id="f2format.f2format.__cwd__">
+<code class="sig-prename descclassname">f2format.</code><code class="sig-name descname">__cwd__</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></em><a class="headerlink" href="#f2format.f2format.__cwd__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Current working directory returned by <a class="reference external" href="https://docs.python.org/3/library/os.html#os.getcwd" title="(in Python v3.9)"><code class="xref py py-func docutils literal notranslate"><span class="pre">os.getcwd()</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt id="f2format.f2format.__f2format_quiet__">
+<code class="sig-prename descclassname">f2format.</code><code class="sig-name descname">__f2format_quiet__</code><em class="property">: Literal['quiet mode', 'non-quiet mode']</em><a class="headerlink" href="#f2format.f2format.__f2format_quiet__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default value for the <code class="docutils literal notranslate"><span class="pre">--quiet</span></code> option.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#f2format._get_quiet_option" title="f2format._get_quiet_option"><code class="xref py py-func docutils literal notranslate"><span class="pre">f2format._get_quiet_option()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py data">
+<dt id="f2format.f2format.__f2format_concurrency__">
+<code class="sig-prename descclassname">f2format.</code><code class="sig-name descname">__f2format_concurrency__</code><em class="property">: Union[int, Literal['auto detect']]</em><a class="headerlink" href="#f2format.f2format.__f2format_concurrency__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default value for the <code class="docutils literal notranslate"><span class="pre">--concurrency</span></code> option.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#f2format._get_concurrency_option" title="f2format._get_concurrency_option"><code class="xref py py-func docutils literal notranslate"><span class="pre">f2format._get_concurrency_option()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py data">
+<dt id="f2format.f2format.__f2format_do_archive__">
+<code class="sig-prename descclassname">f2format.</code><code class="sig-name descname">__f2format_do_archive__</code><em class="property">: Literal['will do archive', 'will not do archive']</em><a class="headerlink" href="#f2format.f2format.__f2format_do_archive__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default value for the <code class="docutils literal notranslate"><span class="pre">--no-archive</span></code> option.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#f2format._get_do_archive_option" title="f2format._get_do_archive_option"><code class="xref py py-func docutils literal notranslate"><span class="pre">f2format._get_do_archive_option()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py data">
+<dt id="f2format.f2format.__f2format_archive_path__">
+<code class="sig-prename descclassname">f2format.</code><code class="sig-name descname">__f2format_archive_path__</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></em><a class="headerlink" href="#f2format.f2format.__f2format_archive_path__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default value for the <code class="docutils literal notranslate"><span class="pre">--archive-path</span></code> option.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#f2format._get_archive_path_option" title="f2format._get_archive_path_option"><code class="xref py py-func docutils literal notranslate"><span class="pre">f2format._get_archive_path_option()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py data">
+<dt id="f2format.f2format.__f2format_source_version__">
+<code class="sig-prename descclassname">f2format.</code><code class="sig-name descname">__f2format_source_version__</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></em><a class="headerlink" href="#f2format.f2format.__f2format_source_version__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default value for the <code class="docutils literal notranslate"><span class="pre">--source-version</span></code> option.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#f2format._get_source_version_option" title="f2format._get_source_version_option"><code class="xref py py-func docutils literal notranslate"><span class="pre">f2format._get_source_version_option()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py data">
+<dt id="f2format.f2format.__f2format_linesep__">
+<code class="sig-prename descclassname">f2format.</code><code class="sig-name descname">__f2format_linesep__</code><em class="property">: Literal['LF', 'CRLF', 'CR', 'auto detect']</em><a class="headerlink" href="#f2format.f2format.__f2format_linesep__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default value for the <code class="docutils literal notranslate"><span class="pre">--linesep</span></code> option.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#f2format._get_linesep_option" title="f2format._get_linesep_option"><code class="xref py py-func docutils literal notranslate"><span class="pre">f2format._get_linesep_option()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py data">
+<dt id="f2format.f2format.__f2format_indentation__">
+<code class="sig-prename descclassname">f2format.</code><code class="sig-name descname">__f2format_indentation__</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></em><a class="headerlink" href="#f2format.f2format.__f2format_indentation__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default value for the <code class="docutils literal notranslate"><span class="pre">--indentation</span></code> option.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#f2format._get_indentation_option" title="f2format._get_indentation_option"><code class="xref py py-func docutils literal notranslate"><span class="pre">f2format._get_indentation_option()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py data">
+<dt id="f2format.f2format.__f2format_pep8__">
+<code class="sig-prename descclassname">f2format.</code><code class="sig-name descname">__f2format_pep8__</code><em class="property">: Literal['will conform to PEP 8', 'will not conform to PEP 8']</em><a class="headerlink" href="#f2format.f2format.__f2format_pep8__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default value for the <code class="docutils literal notranslate"><span class="pre">--no-pep8</span></code> option.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#f2format._get_pep8_option" title="f2format._get_pep8_option"><code class="xref py py-func docutils literal notranslate"><span class="pre">f2format._get_pep8_option()</span></code></a></p>
+</div>
+</dd></dl>
+
+</div>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">f2format</a></h1>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=pybpc&repo=f2format&type=watch&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="algorithms.html">Algorithms</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#public-interface">Public Interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#conversion-implementation">Conversion Implementation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#data-structures">Data Structures</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#conversion-contexts">Conversion Contexts</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#internal-auxiliaries">Internal Auxiliaries</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#options-defaults">Options &amp; Defaults</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#cli-utilities">CLI Utilities</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="algorithms.html" title="previous chapter">Algorithms</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Python Backport Compiler Project.
+      
+      |
+      <a href="_sources/api.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+    <a href="https://github.com/pybpc/f2format" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>
