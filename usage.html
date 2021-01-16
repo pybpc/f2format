@@ -37,11 +37,11 @@
 <div class="section" id="specifying-files-and-directories-to-convert">
 <h2>Specifying Files And Directories To Convert<a class="headerlink" href="#specifying-files-and-directories-to-convert" title="Permalink to this headline">¶</a></h2>
 <p>To convert a single file:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> cat myscript.py
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>cat myscript.py
 <span class="go">print(hello := &#39;world&#39;)</span>
-<span class="gp">$</span> f2format myscript.py
+<span class="gp">$ </span>f2format myscript.py
 <span class="go">Now converting: &#39;/path/to/project/myscript.py&#39;</span>
-<span class="gp">$</span> cat myscript.py  <span class="c1"># file overwritten with conversion result</span>
+<span class="gp">$ </span>cat myscript.py  <span class="c1"># file overwritten with conversion result</span>
 <span class="go">if False:</span>
 <span class="go">    hello = NotImplemented</span>
 
@@ -58,11 +58,11 @@
 </div>
 <p>To convert the whole project at the current working directory (overwrites all
 Python source files inside):</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> f2format .
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>f2format .
 </pre></div>
 </div>
 <p>Multiple files and directories may be supplied at the same time:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> f2format script_without_py_extension /path/to/another/project
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>f2format script_without_py_extension /path/to/another/project
 </pre></div>
 </div>
 <div class="admonition note">
@@ -76,7 +76,7 @@ extension, you will need to explicitly specify it in the argument list.</p>
 <p>If you prefer a side-effect free behavior (do not overwrite files), you can
 use the <strong>simple mode</strong>.</p>
 <p>Simple mode with no arguments (read from stdin, write to stdout):</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> <span class="nb">printf</span> <span class="s1">&#39;print(hello := &quot;world&quot;)\n&#39;</span> <span class="p">|</span> python3 f2format.py -s
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nb">printf</span> <span class="s1">&#39;print(hello := &quot;world&quot;)\n&#39;</span> <span class="p">|</span> python3 f2format.py -s
 <span class="go">if False:</span>
 <span class="go">    hello = NotImplemented</span>
 
@@ -91,9 +91,9 @@ use the <strong>simple mode</strong>.</p>
 </pre></div>
 </div>
 <p>Simple mode with a file name argument (read from file, write to stdout):</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> cat myscript.py
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>cat myscript.py
 <span class="go">print(hello := &#39;world&#39;)</span>
-<span class="gp">$</span> f2format -s myscript.py
+<span class="gp">$ </span>f2format -s myscript.py
 <span class="go">if False:</span>
 <span class="go">    hello = NotImplemented</span>
 
@@ -105,7 +105,7 @@ use the <strong>simple mode</strong>.</p>
 <span class="go">    return hello</span>
 
 <span class="go">print(__f2format_wrapper_hello_d1e6c2a11a76400aa9745bd90b3fb52a(&#39;world&#39;))</span>
-<span class="gp">$</span> cat myscript.py
+<span class="gp">$ </span>cat myscript.py
 <span class="go">print(hello := &#39;world&#39;)</span>
 </pre></div>
 </div>
@@ -125,24 +125,24 @@ use the CLI option <code class="docutils literal notranslate"><span class="pre">
 variable <code class="docutils literal notranslate"><span class="pre">F2FORMAT_ARCHIVE_PATH</span></code>.</p>
 <p>To recover files from an archive file, use the CLI option <code class="docutils literal notranslate"><span class="pre">-r</span></code>
 (<code class="docutils literal notranslate"><span class="pre">--recover</span></code>):</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> f2format -r archive/archive-20200814222751-f3a514d40d69c6d5.tar.gz
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>f2format -r archive/archive-20200814222751-f3a514d40d69c6d5.tar.gz
 <span class="go">Recovered files from archive: &#39;archive/archive-20200814222751-f3a514d40d69c6d5.tar.gz&#39;</span>
-<span class="gp">$</span> ls archive/
+<span class="gp">$ </span>ls archive/
 <span class="go">archive-20200814222751-f3a514d40d69c6d5.tar.gz</span>
 </pre></div>
 </div>
 <p>By default, the archive file is still retained after recovering from it. If you
 would like it to be removed after recovery, specify the CLI option <code class="docutils literal notranslate"><span class="pre">-r2</span></code>:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> f2format -r archive/archive-20200814222751-f3a514d40d69c6d5.tar.gz -r2
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>f2format -r archive/archive-20200814222751-f3a514d40d69c6d5.tar.gz -r2
 <span class="go">Recovered files from archive: &#39;archive/archive-20200814222751-f3a514d40d69c6d5.tar.gz&#39;</span>
-<span class="gp">$</span> ls archive/
+<span class="gp">$ </span>ls archive/
 </pre></div>
 </div>
 <p>If you also want to remove the archive directory if it becomes empty, specify
 the CLI option <code class="docutils literal notranslate"><span class="pre">-r3</span></code>:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> f2format -r archive/archive-20200814222751-f3a514d40d69c6d5.tar.gz -r3
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>f2format -r archive/archive-20200814222751-f3a514d40d69c6d5.tar.gz -r3
 <span class="go">Recovered files from archive: &#39;archive/archive-20200814222751-f3a514d40d69c6d5.tar.gz&#39;</span>
-<span class="gp">$</span> ls archive/
+<span class="gp">$ </span>ls archive/
 <span class="go">ls: cannot access &#39;archive/&#39;: No such file or directory</span>
 </pre></div>
 </div>
