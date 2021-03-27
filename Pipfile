@@ -19,11 +19,9 @@ autopep8 = "*"
 bandit = "*"
 codecov = "*"
 coverage = "*"
-homebrew-pypi-poet = "*"
 ipython = "*"
 mypy = "*"
 pylint = "*"
-requests = "*"
 rstcheck = "*"
 sphinx = "*"
 sphinxemoji = "*"
@@ -31,8 +29,8 @@ sphinx-autodoc-typehints = "*"
 
 [packages]
 tbtrim = "*"
-parso = ">=0.6.0"
+parso = "*"
 bpc-utils = {git = "https://github.com/pybpc/bpc-utils.git"}
 
 [requires]
-python_version = "3.8"
+python_version = "3.9"

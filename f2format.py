@@ -490,7 +490,7 @@ class StringContext(Context):
         flag_imp = False  # implicit tuple, generator expression and/or yield expression
         flag_dbg = False  # is debug f-string?
 
-        conv_str = ''  # f-stringconversion
+        conv_str = ''  # f-string conversion
         conv_var = '## f2format: %s ##' % self._uuid_gen.gen()
 
         expr_str = ''
