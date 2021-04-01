@@ -509,6 +509,23 @@ code as <code class="xref py py-attr docutils literal notranslate"><span class="
 </dl>
 </dd></dl>
 
+<dl class="py method">
+<dt id="f2format.StringContext.is_debug_fstring">
+<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">is_debug_fstring</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/f2format.html#StringContext.is_debug_fstring"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#f2format.StringContext.is_debug_fstring" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if node <strong>is</strong> <em>debug</em> formatted string literals.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>node</strong> (<a class="reference external" href="https://parso.readthedocs.io/en/latest/docs/parser-tree.html#parso.python.tree.PythonNode" title="(in parso v0.7)"><em>parso.python.tree.PythonNode</em></a>) – formatted literal expression node</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>if <code class="docutils literal notranslate"><span class="pre">node</span></code> <strong>is</strong> debug formatted string literals</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py attribute">
 <dt id="f2format.StringContext._abc_impl">
 <code class="sig-name descname"><span class="pre">_abc_impl</span></code><em class="property"> <span class="pre">=</span> <span class="pre">&lt;_abc_data</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#f2format.StringContext._abc_impl" title="Permalink to this definition">¶</a></dt>
@@ -587,6 +604,17 @@ code as <code class="xref py py-attr docutils literal notranslate"><span class="
 <dt id="f2format.StringContext._prefix_or_suffix">
 <code class="sig-name descname"><span class="pre">_prefix_or_suffix</span></code><em class="property"><span class="pre">:</span> <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a></em><a class="headerlink" href="#f2format.StringContext._prefix_or_suffix" title="Permalink to this definition">¶</a></dt>
 <dd><p>Flag to indicate whether buffer is now <a class="reference external" href="https://bpc-utils.readthedocs.io/en/latest/index.html#bpc_utils.BaseContext._prefix" title="(in bpc-utils)"><code class="xref py py-attr docutils literal notranslate"><span class="pre">self._prefix</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="f2format.StringContext._raw">
+<code class="sig-name descname"><span class="pre">_raw</span></code><a class="headerlink" href="#f2format.StringContext._raw" title="Permalink to this definition">¶</a></dt>
+<dd><p>Raw processing flag.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py attribute">

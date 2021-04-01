@@ -33,40 +33,57 @@
   <h1>Source code for bpc_utils.misc</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;Miscellaneous utilities.&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">collections.abc</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">import</span> <span class="nn">functools</span>
 <span class="kn">import</span> <span class="nn">io</span>
 <span class="kn">import</span> <span class="nn">keyword</span>
+<span class="kn">import</span> <span class="nn">operator</span>
 <span class="kn">import</span> <span class="nn">platform</span>
-<span class="kn">import</span> <span class="nn">types</span>
+<span class="kn">import</span> <span class="nn">textwrap</span>
 <span class="kn">import</span> <span class="nn">uuid</span>
 
-<span class="kn">from</span> <span class="nn">.typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Iterator</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Set</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">overload</span>
+<span class="kn">from</span> <span class="nn">.typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">MutableMapping</span><span class="p">,</span> <span class="n">overload</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">types</span> <span class="kn">import</span> <span class="n">TracebackType</span>  <span class="c1"># isort: split</span>
+    <span class="kn">from</span> <span class="nn">.typing</span> <span class="kn">import</span> <span class="p">(</span><span class="n">Dict</span><span class="p">,</span> <span class="n">Generator</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Iterator</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">,</span> <span class="n">NoReturn</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span>
+                         <span class="n">Set</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">Union</span><span class="p">)</span>
 
 <span class="c1"># backport contextlib.nullcontext for Python &lt; 3.7</span>
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">contextlib</span> <span class="kn">import</span> <span class="n">nullcontext</span>  <span class="c1"># pylint: disable=unused-import  # novermin</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
     <span class="k">class</span> <span class="nc">nullcontext</span><span class="p">:</span>  <span class="c1"># type: ignore[no-redef]</span>
-        <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">enter_result</span><span class="p">:</span> <span class="n">T</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># type: ignore[assignment]</span>
+        <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">enter_result</span><span class="p">:</span> <span class="s1">&#39;T&#39;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># type: ignore[assignment]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">enter_result</span> <span class="o">=</span> <span class="n">enter_result</span>  <span class="c1"># type: T</span>
 
-        <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T</span><span class="p">:</span>
+        <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;T&#39;</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">enter_result</span>
 
-        <span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="ne">BaseException</span><span class="p">]],</span> <span class="n">exc_value</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="ne">BaseException</span><span class="p">],</span>
-                     <span class="n">traceback</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">types</span><span class="o">.</span><span class="n">TracebackType</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">:</span> <span class="s1">&#39;Optional[Type[BaseException]]&#39;</span><span class="p">,</span> <span class="n">exc_value</span><span class="p">:</span> <span class="s1">&#39;Optional[BaseException]&#39;</span><span class="p">,</span>
+                     <span class="n">traceback</span><span class="p">:</span> <span class="s1">&#39;Optional[TracebackType]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">pass</span>
 
 <span class="n">is_windows</span> <span class="o">=</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;Windows&#39;</span>
 
 
+<span class="k">def</span> <span class="nf">current_time_with_tzinfo</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="s1">&#39;datetime.datetime&#39;</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Get the current time with local time zone information.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        datetime object representing current time with local time zone information</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span><span class="o">.</span><span class="n">astimezone</span><span class="p">()</span>
+
+
 <span class="nd">@overload</span>
-<span class="k">def</span> <span class="nf">first_truthy</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">T</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">T</span><span class="p">]:</span>
+<span class="k">def</span> <span class="nf">first_truthy</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="s1">&#39;T&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Optional[T]&#39;</span><span class="p">:</span>
     <span class="o">...</span>  <span class="c1"># pragma: no cover</span>
 
 
 <span class="nd">@overload</span>
-<span class="k">def</span> <span class="nf">first_truthy</span><span class="p">(</span><span class="n">args</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">T</span><span class="p">]:</span>  <span class="c1"># noqa: F811</span>
+<span class="k">def</span> <span class="nf">first_truthy</span><span class="p">(</span><span class="n">args</span><span class="p">:</span> <span class="s1">&#39;Iterable[T]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Optional[T]&#39;</span><span class="p">:</span>  <span class="c1"># noqa: F811</span>
     <span class="o">...</span>  <span class="c1"># pragma: no cover</span>
 
 
@@ -94,12 +111,12 @@
 
 
 <span class="nd">@overload</span>
-<span class="k">def</span> <span class="nf">first_non_none</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">T</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">T</span><span class="p">]:</span>
+<span class="k">def</span> <span class="nf">first_non_none</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="s1">&#39;T&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Optional[T]&#39;</span><span class="p">:</span>
     <span class="o">...</span>  <span class="c1"># pragma: no cover</span>
 
 
 <span class="nd">@overload</span>
-<span class="k">def</span> <span class="nf">first_non_none</span><span class="p">(</span><span class="n">args</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">T</span><span class="p">]:</span>  <span class="c1"># noqa: F811</span>
+<span class="k">def</span> <span class="nf">first_non_none</span><span class="p">(</span><span class="n">args</span><span class="p">:</span> <span class="s1">&#39;Iterable[T]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Optional[T]&#39;</span><span class="p">:</span>  <span class="c1"># noqa: F811</span>
     <span class="o">...</span>  <span class="c1"># pragma: no cover</span>
 
 
@@ -167,7 +184,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">TextIO</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">:</span> <span class="s1">&#39;Union[str, TextIO]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Initialize context.</span>
 
 <span class="sd">        Args:</span>
@@ -176,7 +193,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">obj</span> <span class="o">=</span> <span class="n">obj</span>
 
-    <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TextIO</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;TextIO&#39;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Enter context.</span>
 
 <span class="sd">        * If :attr:`self.obj &lt;MakeTextIO.obj&gt;` is :obj:`str`, a</span>
@@ -203,8 +220,8 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">obj</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">obj</span>
 
-    <span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="ne">BaseException</span><span class="p">]],</span> <span class="n">exc_value</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="ne">BaseException</span><span class="p">],</span>
-                 <span class="n">traceback</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">types</span><span class="o">.</span><span class="n">TracebackType</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">:</span> <span class="s1">&#39;Optional[Type[BaseException]]&#39;</span><span class="p">,</span> <span class="n">exc_value</span><span class="p">:</span> <span class="s1">&#39;Optional[BaseException]&#39;</span><span class="p">,</span>
+                 <span class="n">traceback</span><span class="p">:</span> <span class="s1">&#39;Optional[TracebackType]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Exit context.</span>
 
 <span class="sd">        * If :attr:`self.obj &lt;MakeTextIO.obj&gt;` is :obj:`str`, the</span>
@@ -220,11 +237,21 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">obj</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pos</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="Config"><a class="viewcode-back" href="../../api.html#f2format.Config">[docs]</a><span class="k">class</span> <span class="nc">Config</span><span class="p">(</span><span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">MutableMapping</span><span class="p">):</span>
+<div class="viewcode-block" id="Config"><a class="viewcode-back" href="../../api.html#f2format.Config">[docs]</a><span class="k">class</span> <span class="nc">Config</span><span class="p">(</span><span class="n">MutableMapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">object</span><span class="p">]):</span>
     <span class="sd">&quot;&quot;&quot;Configuration namespace.</span>
 
 <span class="sd">    This class is inspired from :class:`argparse.Namespace` for storing</span>
 <span class="sd">    internal attributes and/or configuration variables.</span>
+
+<span class="sd">    &gt;&gt;&gt; config = Config(foo=&#39;var&#39;, bar=True)</span>
+<span class="sd">    &gt;&gt;&gt; config.foo</span>
+<span class="sd">    &#39;var&#39;</span>
+<span class="sd">    &gt;&gt;&gt; config[&#39;bar&#39;]</span>
+<span class="sd">    True</span>
+<span class="sd">    &gt;&gt;&gt; config.bar = &#39;boo&#39;</span>
+<span class="sd">    &gt;&gt;&gt; del config[&#39;foo&#39;]</span>
+<span class="sd">    &gt;&gt;&gt; config</span>
+<span class="sd">    Config(bar=&#39;boo&#39;)</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -235,7 +262,7 @@
     <span class="k">def</span> <span class="fm">__contains__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span>
 
-    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Iterator[str]&#39;</span><span class="p">:</span>
         <span class="k">return</span> <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
@@ -267,7 +294,298 @@
         <span class="k">return</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">(</span><span class="si">%s</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">type_name</span><span class="p">,</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">arg_strings</span><span class="p">))</span></div>
 
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;first_truthy&#39;</span><span class="p">,</span> <span class="s1">&#39;first_non_none&#39;</span><span class="p">,</span> <span class="s1">&#39;UUID4Generator&#39;</span><span class="p">,</span> <span class="s1">&#39;Config&#39;</span><span class="p">]</span>
+<span class="k">class</span> <span class="nc">Placeholder</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Placeholder for string interpolation.</span>
+
+<span class="sd">    :class:`Placeholder` objects can be concatenated with :obj:`str`, other :class:`Placeholder` objects</span>
+<span class="sd">    and :class:`StringInterpolation` objects via the &#39;+&#39; operator.</span>
+
+<span class="sd">    :class:`Placeholder` objects should be regarded as immutable. Please do not modify the ``name``</span>
+<span class="sd">    attribute. Build new objects instead.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Initialize Placeholder.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            name: name of the placeholder</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            TypeError: if ``name`` is not :obj:`str`</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;placeholder name must be str&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+
+    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">type</span><span class="p">(</span><span class="n">other</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">name</span>  <span class="c1"># type: ignore[attr-defined]</span>
+
+    <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">hash</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,))</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">(</span><span class="si">{!r}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;NoReturn&#39;</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Placeholder objects cannot be converted to str, consider using &#39;</span>
+                        <span class="s1">&#39;repr() if you want a string representation&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;StringInterpolation&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">StringInterpolation</span><span class="o">.</span><span class="n">from_components</span><span class="p">((</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">other</span><span class="p">),</span> <span class="p">(</span><span class="bp">self</span><span class="p">,))</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">Placeholder</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">StringInterpolation</span><span class="o">.</span><span class="n">from_components</span><span class="p">((</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">),</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">))</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">StringInterpolation</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">StringInterpolation</span><span class="o">.</span><span class="n">from_components</span><span class="p">((</span><span class="s1">&#39;&#39;</span><span class="p">,)</span> <span class="o">+</span> <span class="n">other</span><span class="o">.</span><span class="n">literals</span><span class="p">,</span> <span class="p">(</span><span class="bp">self</span><span class="p">,)</span> <span class="o">+</span> <span class="n">other</span><span class="o">.</span><span class="n">placeholders</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">NotImplemented</span>
+
+    <span class="k">def</span> <span class="fm">__radd__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;StringInterpolation&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">StringInterpolation</span><span class="o">.</span><span class="n">from_components</span><span class="p">((</span><span class="n">other</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">),</span> <span class="p">(</span><span class="bp">self</span><span class="p">,))</span>
+        <span class="k">return</span> <span class="bp">NotImplemented</span>
+
+
+<span class="k">class</span> <span class="nc">StringInterpolation</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;A string with placeholders to be filled in.</span>
+
+<span class="sd">    This looks like an object-oriented format string, but making sure that string literals are</span>
+<span class="sd">    always interpreted literally (so no need to manually do escaping). The boundaries between string</span>
+<span class="sd">    literals and placeholders are very clear. Filling in a placeholder will never inject a new</span>
+<span class="sd">    placeholder, protecting string integrity for multiple-round interpolation.</span>
+
+<span class="sd">    &gt;&gt;&gt; s1 = &#39;%(injected)s&#39;</span>
+<span class="sd">    &gt;&gt;&gt; s2 = &#39;hello&#39;</span>
+<span class="sd">    &gt;&gt;&gt; s = StringInterpolation(&#39;prefix &#39;, Placeholder(&#39;q1&#39;), &#39; infix &#39;, Placeholder(&#39;q2&#39;), &#39; suffix&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; str(s % {&#39;q1&#39;: s1} % {&#39;q2&#39;: s2})</span>
+<span class="sd">    &#39;prefix %(injected)s infix hello suffix&#39;</span>
+
+<span class="sd">    (This can be regarded as an improved version of :meth:`string.Template.safe_substitute`.)</span>
+
+<span class="sd">    Multiple-round interpolation is tricky to do with a traditional format string. In order to do things</span>
+<span class="sd">    correctly and avoid format string injection vulnerabilities, you need to perform escapes very carefully.</span>
+
+<span class="sd">    &gt;&gt;&gt; fs = &#39;prefix %(q1)s infix %(q2)s suffix&#39;</span>
+<span class="sd">    &gt;&gt;&gt; fs % {&#39;q1&#39;: s1} % {&#39;q2&#39;: s2}</span>
+<span class="sd">    Traceback (most recent call last):</span>
+<span class="sd">        ...</span>
+<span class="sd">    KeyError: &#39;q2&#39;</span>
+<span class="sd">    &gt;&gt;&gt; fs = &#39;prefix %(q1)s infix %%(q2)s suffix&#39;</span>
+<span class="sd">    &gt;&gt;&gt; fs % {&#39;q1&#39;: s1} % {&#39;q2&#39;: s2}</span>
+<span class="sd">    Traceback (most recent call last):</span>
+<span class="sd">        ...</span>
+<span class="sd">    KeyError: &#39;injected&#39;</span>
+<span class="sd">    &gt;&gt;&gt; fs % {&#39;q1&#39;: s1.replace(&#39;%&#39;, &#39;%%&#39;)} % {&#39;q2&#39;: s2}</span>
+<span class="sd">    &#39;prefix %(injected)s infix hello suffix&#39;</span>
+
+<span class="sd">    :class:`StringInterpolation` objects can be concatenated with :obj:`str`, :class:`Placeholder` objects</span>
+<span class="sd">    and other :class:`StringInterpolation` objects via the &#39;+&#39; operator.</span>
+
+<span class="sd">    :class:`StringInterpolation` objects should be regarded as immutable. Please do not modify the</span>
+<span class="sd">    ``literals`` and ``placeholders`` attributes. Build new objects instead.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="s1">&#39;Union[str, Placeholder, StringInterpolation]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Initialize StringInterpolation. ``args`` will be concatenated to construct a</span>
+<span class="sd">        :class:`StringInterpolation` object.</span>
+
+<span class="sd">        &gt;&gt;&gt; StringInterpolation(&#39;prefix&#39;, Placeholder(&#39;data&#39;), &#39;suffix&#39;)</span>
+<span class="sd">        StringInterpolation(&#39;prefix&#39;, Placeholder(&#39;data&#39;), &#39;suffix&#39;)</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            args: the components to construct a :class:`StringInterpolation` object</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">args</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">literals</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,)</span>  <span class="c1"># type: Tuple[str, ...]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">placeholders</span> <span class="o">=</span> <span class="p">()</span>  <span class="c1"># type: Tuple[Placeholder, ...]</span>
+            <span class="k">return</span>
+        <span class="n">obj</span> <span class="o">=</span> <span class="n">functools</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span><span class="n">operator</span><span class="o">.</span><span class="n">add</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">StringInterpolation</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">literals</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">literals</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">placeholders</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">placeholders</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">from_components</span><span class="p">(</span><span class="n">literals</span><span class="p">:</span> <span class="s1">&#39;Iterable[str]&#39;</span><span class="p">,</span> <span class="n">placeholders</span><span class="p">:</span> <span class="s1">&#39;Iterable[Placeholder]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;StringInterpolation&#39;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Construct a :class:`StringInterpolation` object from ``literals`` and ``placeholders`` components.</span>
+<span class="sd">        This method is more efficient than the :func:`StringInterpolation` constructor, but it is mainly</span>
+<span class="sd">        intended for internal use.</span>
+
+<span class="sd">        &gt;&gt;&gt; StringInterpolation.from_components(</span>
+<span class="sd">        ...     (&#39;prefix&#39;, &#39;infix&#39;, &#39;suffix&#39;),</span>
+<span class="sd">        ...     (Placeholder(&#39;data1&#39;), Placeholder(&#39;data2&#39;))</span>
+<span class="sd">        ... )</span>
+<span class="sd">        StringInterpolation(&#39;prefix&#39;, Placeholder(&#39;data1&#39;), &#39;infix&#39;, Placeholder(&#39;data2&#39;), &#39;suffix&#39;)</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            literals: the literal components in order</span>
+<span class="sd">            placeholders: the :class:`Placeholder` components in order</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            the constructed :class:`StringInterpolation` object</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            TypeError: if ``literals`` is :obj:`str`; if ``literals`` contains non-:obj:`str` values;</span>
+<span class="sd">                if ``placeholders`` contains non-:class:`Placeholder` values</span>
+<span class="sd">            ValueError: if the length of ``literals`` is not exactly one more than the length of ``placeholders``</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">obj</span> <span class="o">=</span> <span class="n">StringInterpolation</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">literals</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;literals must be a non-string iterable&#39;</span><span class="p">)</span>
+
+        <span class="n">obj</span><span class="o">.</span><span class="n">literals</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">literals</span><span class="p">)</span>
+        <span class="n">obj</span><span class="o">.</span><span class="n">placeholders</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">placeholders</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">literals</span><span class="p">)</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">placeholders</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;the number of literals must be exactly one more than the number of placeholders&#39;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">literal</span> <span class="ow">in</span> <span class="n">obj</span><span class="o">.</span><span class="n">literals</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">literal</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;literals contain non-string value: </span><span class="si">{!r}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">literal</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">placeholder</span> <span class="ow">in</span> <span class="n">obj</span><span class="o">.</span><span class="n">placeholders</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">placeholder</span><span class="p">,</span> <span class="n">Placeholder</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;placeholders contain non-Placeholder value: </span><span class="si">{!r}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">placeholder</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">obj</span>
+
+    <span class="k">def</span> <span class="nf">iter_components</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Generator[Union[str, Placeholder], None, None]&#39;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Generator to iterate all components of this :class:`StringInterpolation` object in order.</span>
+
+<span class="sd">        &gt;&gt;&gt; list(StringInterpolation(&#39;prefix&#39;, Placeholder(&#39;data&#39;), &#39;suffix&#39;).iter_components())</span>
+<span class="sd">        [&#39;prefix&#39;, Placeholder(&#39;data&#39;), &#39;suffix&#39;]</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            generator containing the components of this :class:`StringInterpolation` object in order</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">literal</span><span class="p">,</span> <span class="n">placeholder</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">literals</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">placeholders</span><span class="p">):</span>
+            <span class="k">yield</span> <span class="n">literal</span>
+            <span class="k">yield</span> <span class="n">placeholder</span>
+        <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">literals</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">(</span><span class="si">{}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">repr</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">iter_components</span><span class="p">()</span> <span class="k">if</span> <span class="n">c</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Returns the fully-substituted string interpolation result.</span>
+
+<span class="sd">        &gt;&gt;&gt; str(StringInterpolation(&#39;prefix hello suffix&#39;))</span>
+<span class="sd">        &#39;prefix hello suffix&#39;</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            the fully-substituted string interpolation result</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: if there are still unsubstituted placeholders in this :class:`StringInterpolation` object</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">placeholders</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s1">&#39;cannot convert this StringInterpolation object to str because it contains &#39;</span>
+                <span class="s1">&#39;the following unsubstituted placeholders: &#39;</span>
+                <span class="o">+</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">repr</span><span class="p">,</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">placeholder</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">placeholder</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">placeholders</span><span class="p">))))</span>
+                <span class="o">+</span> <span class="s1">&#39;; consider using repr() if you want a string representation of this object&#39;</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">literals</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">type</span><span class="p">(</span><span class="n">other</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">literals</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">literals</span>   <span class="c1"># type: ignore[attr-defined]</span>
+                <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">placeholders</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">placeholders</span><span class="p">):</span>  <span class="c1"># type: ignore[attr-defined]</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">literals</span> <span class="o">==</span> <span class="p">(</span><span class="n">other</span><span class="p">,):</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">Placeholder</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">placeholders</span> <span class="o">==</span> <span class="p">(</span><span class="n">other</span><span class="p">,)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">literals</span> <span class="o">==</span> <span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">literals</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">literals</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">literals</span> <span class="o">==</span> <span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">placeholders</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">return</span> <span class="nb">hash</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">literals</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">placeholders</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="fm">__bool__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">literals</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">or</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">literals</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="fm">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;StringInterpolation&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">StringInterpolation</span><span class="o">.</span><span class="n">from_components</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">literals</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">literals</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">other</span><span class="p">,),</span>
+                                                       <span class="bp">self</span><span class="o">.</span><span class="n">placeholders</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">Placeholder</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">StringInterpolation</span><span class="o">.</span><span class="n">from_components</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">literals</span> <span class="o">+</span> <span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,),</span> <span class="bp">self</span><span class="o">.</span><span class="n">placeholders</span> <span class="o">+</span> <span class="p">(</span><span class="n">other</span><span class="p">,))</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">StringInterpolation</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">StringInterpolation</span><span class="o">.</span><span class="n">from_components</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">literals</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">literals</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">other</span><span class="o">.</span><span class="n">literals</span><span class="p">[</span><span class="mi">0</span><span class="p">],)</span> <span class="o">+</span> <span class="n">other</span><span class="o">.</span><span class="n">literals</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">placeholders</span> <span class="o">+</span> <span class="n">other</span><span class="o">.</span><span class="n">placeholders</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">NotImplemented</span>
+
+    <span class="k">def</span> <span class="fm">__radd__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;StringInterpolation&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">StringInterpolation</span><span class="o">.</span><span class="n">from_components</span><span class="p">((</span><span class="n">other</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">literals</span><span class="p">[</span><span class="mi">0</span><span class="p">],)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">literals</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span>
+                                                       <span class="bp">self</span><span class="o">.</span><span class="n">placeholders</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">NotImplemented</span>
+
+    <span class="k">def</span> <span class="fm">__mod__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">substitutions</span><span class="p">:</span> <span class="s1">&#39;Mapping[str, object]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;StringInterpolation&#39;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Substitute the placeholders in this :class:`StringInterpolation` object with string values (if possible)</span>
+<span class="sd">        according to the ``substitutions`` mapping.</span>
+
+<span class="sd">        &gt;&gt;&gt; StringInterpolation(&#39;prefix &#39;, Placeholder(&#39;data&#39;), &#39; suffix&#39;) % {&#39;data&#39;: &#39;hello&#39;}</span>
+<span class="sd">        StringInterpolation(&#39;prefix hello suffix&#39;)</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            substitutions: a mapping from placeholder names to the values to be filled in; all values</span>
+<span class="sd">                are converted into :obj:`str`</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            a new :class:`StringInterpolation` object with as many placeholders substituted as possible</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">StringInterpolation</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">component</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">iter_components</span><span class="p">():</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">component</span><span class="p">,</span> <span class="n">Placeholder</span><span class="p">)</span> <span class="ow">and</span> <span class="n">component</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="n">substitutions</span><span class="p">:</span>
+                <span class="n">result</span> <span class="o">+=</span> <span class="nb">str</span><span class="p">(</span><span class="n">substitutions</span><span class="p">[</span><span class="n">component</span><span class="o">.</span><span class="n">name</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">result</span> <span class="o">+=</span> <span class="n">component</span>
+        <span class="k">return</span> <span class="n">result</span>
+
+
+<span class="k">class</span> <span class="nc">BPCInternalError</span><span class="p">(</span><span class="ne">RuntimeError</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Internal bug happened in BPC tools.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize BPCInternalError.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            message: the error message</span>
+<span class="sd">            context: describe the context/location/component where the bug happened</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            TypeError: if ``context`` is not :obj:`str`</span>
+<span class="sd">            ValueError: if ``message`` (when converted to :obj:`str`) or ``context`` is empty or</span>
+<span class="sd">                only contains whitespace characters</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">msg_string</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">msg_string</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;message should not be empty&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;context should be str&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">context</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;context should not be empty&#39;</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">textwrap</span><span class="o">.</span><span class="n">dedent</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;</span><span class="se">\</span>
+<span class="s1">            An internal bug happened in </span><span class="si">{}</span><span class="s1">:</span>
+
+<span class="s1">            </span><span class="si">{}</span><span class="s1"></span>
+
+<span class="s1">            Please report this error to project maintainers.&#39;&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">msg_string</span><span class="p">))</span>
+
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;first_truthy&#39;</span><span class="p">,</span> <span class="s1">&#39;first_non_none&#39;</span><span class="p">,</span> <span class="s1">&#39;UUID4Generator&#39;</span><span class="p">,</span> <span class="s1">&#39;Config&#39;</span><span class="p">,</span> <span class="s1">&#39;Placeholder&#39;</span><span class="p">,</span> <span class="s1">&#39;StringInterpolation&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;BPCInternalError&#39;</span><span class="p">]</span>
 </pre></div>
 
           </div>

@@ -45,11 +45,11 @@
 <span class="kn">import</span> <span class="nn">parso.python.tree</span>
 <span class="kn">import</span> <span class="nn">parso.tree</span>
 <span class="kn">import</span> <span class="nn">tbtrim</span>
-<span class="kn">from</span> <span class="nn">bpc_utils</span> <span class="kn">import</span> <span class="p">(</span><span class="n">BaseContext</span><span class="p">,</span> <span class="n">BPCSyntaxError</span><span class="p">,</span> <span class="n">Config</span><span class="p">,</span> <span class="n">TaskLock</span><span class="p">,</span> <span class="n">archive_files</span><span class="p">,</span>
-                       <span class="n">detect_encoding</span><span class="p">,</span> <span class="n">detect_files</span><span class="p">,</span> <span class="n">detect_indentation</span><span class="p">,</span> <span class="n">detect_linesep</span><span class="p">,</span>
-                       <span class="n">first_non_none</span><span class="p">,</span> <span class="n">get_parso_grammar_versions</span><span class="p">,</span> <span class="n">map_tasks</span><span class="p">,</span> <span class="n">parse_boolean_state</span><span class="p">,</span>
-                       <span class="n">parse_indentation</span><span class="p">,</span> <span class="n">parse_linesep</span><span class="p">,</span> <span class="n">parse_positive_integer</span><span class="p">,</span> <span class="n">parso_parse</span><span class="p">,</span>
-                       <span class="n">recover_files</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">bpc_utils</span> <span class="kn">import</span> <span class="p">(</span><span class="n">BaseContext</span><span class="p">,</span> <span class="n">BPCSyntaxError</span><span class="p">,</span> <span class="n">Config</span><span class="p">,</span> <span class="n">Placeholder</span><span class="p">,</span> <span class="n">StringInterpolation</span><span class="p">,</span>
+                       <span class="n">TaskLock</span><span class="p">,</span> <span class="n">archive_files</span><span class="p">,</span> <span class="n">detect_encoding</span><span class="p">,</span> <span class="n">detect_files</span><span class="p">,</span> <span class="n">detect_indentation</span><span class="p">,</span>
+                       <span class="n">detect_linesep</span><span class="p">,</span> <span class="n">first_non_none</span><span class="p">,</span> <span class="n">get_parso_grammar_versions</span><span class="p">,</span> <span class="n">map_tasks</span><span class="p">,</span>
+                       <span class="n">parse_boolean_state</span><span class="p">,</span> <span class="n">parse_indentation</span><span class="p">,</span> <span class="n">parse_linesep</span><span class="p">,</span>
+                       <span class="n">parse_positive_integer</span><span class="p">,</span> <span class="n">parso_parse</span><span class="p">,</span> <span class="n">recover_files</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">bpc_utils.typing</span> <span class="kn">import</span> <span class="n">Linesep</span>
 <span class="kn">from</span> <span class="nn">typing_extensions</span> <span class="kn">import</span> <span class="n">ClassVar</span><span class="p">,</span> <span class="n">Final</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">final</span>
 
@@ -453,6 +453,10 @@
         <span class="k">if</span> <span class="n">has_fstring</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">has_fstring</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_fstring</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
 
+        <span class="c1"># TODO: migrate to BaseContext implementation</span>
+        <span class="c1">#: bool: Raw processing flag.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_raw</span> <span class="o">=</span> <span class="n">raw</span>
+
         <span class="c1">#: List[str]: Expressions extracted from the formatted string literal.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_expr</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># type: List[str]</span>
         <span class="c1">#: bool: Flag if contains actual formatted string literals (with expressions).</span>
@@ -521,13 +525,19 @@
         <span class="bp">self</span> <span class="o">+=</span> <span class="n">node</span><span class="o">.</span><span class="n">children</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_code</span><span class="p">()</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span>
 
         <span class="n">flag_imp</span> <span class="o">=</span> <span class="kc">False</span>  <span class="c1"># implicit tuple, generator expression and/or yield expression</span>
-        <span class="n">flag_dbg</span> <span class="o">=</span> <span class="kc">False</span>  <span class="c1"># is debug f-string?</span>
+        <span class="n">flag_dbg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_debug_fstring</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>  <span class="c1"># is debug f-string?</span>
 
         <span class="n">conv_str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>  <span class="c1"># f-string conversion</span>
-        <span class="n">conv_var</span> <span class="o">=</span> <span class="s1">&#39;## f2format: </span><span class="si">%s</span><span class="s1"> ##&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_uuid_gen</span><span class="o">.</span><span class="n">gen</span><span class="p">()</span>
+        <span class="n">spec_str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>  <span class="c1"># f-string format spec</span>
 
-        <span class="n">expr_str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
-        <span class="n">spec_str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="c1"># NOTE: we need to maintain two SI, one keeps track of the original expression</span>
+        <span class="c1"># string for debug f-string, one keeps track of *sanitised* f-string with slots</span>
+        <span class="c1"># for `format` call, whose value will then be maintained in another list - the</span>
+        <span class="c1"># whole design here is to convert multi-layered debug f-string in a linear way,</span>
+        <span class="c1"># i.e., no need to do reverse lookup of expressions, etc.</span>
+        <span class="n">expr_dbg</span> <span class="o">=</span> <span class="n">StringInterpolation</span><span class="p">()</span>  <span class="c1"># debug f-string original expression buffer</span>
+        <span class="n">expr_str</span> <span class="o">=</span> <span class="n">StringInterpolation</span><span class="p">()</span>  <span class="c1"># extracted expression buffer - string part</span>
+        <span class="n">expr_lst</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># extracted expression buffer - format expression part</span>
 
         <span class="c1"># testlist [&#39;=&#39;] [ fstring_conversion ] [ fstring_format_spec ]</span>
         <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">children</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
@@ -559,38 +569,46 @@
                     <span class="k">else</span><span class="p">:</span>
                         <span class="bp">self</span> <span class="o">+=</span> <span class="n">child</span><span class="o">.</span><span class="n">get_code</span><span class="p">()</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">expr_str</span> <span class="o">+=</span> <span class="n">child</span><span class="o">.</span><span class="n">get_code</span><span class="p">()</span>
+                    <span class="n">code</span> <span class="o">=</span> <span class="n">child</span><span class="o">.</span><span class="n">get_code</span><span class="p">()</span>
+                    <span class="n">expr_dbg</span> <span class="o">+=</span> <span class="n">code</span>
+                    <span class="n">expr_str</span> <span class="o">+=</span> <span class="n">code</span>
             <span class="c1"># embedded f-string</span>
             <span class="k">elif</span> <span class="n">child</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s1">&#39;fstring&#39;</span><span class="p">:</span>
                 <span class="c1"># initialise new context</span>
                 <span class="n">ctx</span> <span class="o">=</span> <span class="n">StringContext</span><span class="p">(</span><span class="n">child</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">,</span> <span class="n">has_fstring</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>  <span class="c1"># type: ignore[arg-type]</span>
                                     <span class="n">indent_level</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_indent_level</span><span class="p">,</span> <span class="n">raw</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-                <span class="n">expr_str</span> <span class="o">+=</span> <span class="n">ctx</span><span class="o">.</span><span class="n">string</span>
+
+                <span class="k">if</span> <span class="n">flag_dbg</span><span class="p">:</span>
+                    <span class="n">expr_dbg</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fstring_bracket</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\1\1&#39;</span><span class="p">,</span> <span class="n">child</span><span class="o">.</span><span class="n">get_code</span><span class="p">())</span>
+                    <span class="n">expr_str</span> <span class="o">+=</span> <span class="n">ctx</span><span class="o">.</span><span class="n">_prefix</span> <span class="o">+</span> <span class="n">ctx</span><span class="o">.</span><span class="n">_suffix</span>  <span class="c1"># pylint: disable=protected-access</span>
+                    <span class="n">expr_lst</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">expr</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">expr_str</span> <span class="o">+=</span> <span class="n">ctx</span><span class="o">.</span><span class="n">string</span>
             <span class="c1"># concatenable strings</span>
             <span class="k">elif</span> <span class="n">child</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s1">&#39;strings&#39;</span><span class="p">:</span>
                 <span class="c1"># initialise new context</span>
                 <span class="n">ctx</span> <span class="o">=</span> <span class="n">StringContext</span><span class="p">(</span><span class="n">child</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">,</span> <span class="n">has_fstring</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>  <span class="c1"># type: ignore[arg-type]</span>
                                     <span class="n">indent_level</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_indent_level</span><span class="p">,</span> <span class="n">raw</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-                <span class="n">expr_str</span> <span class="o">+=</span> <span class="n">ctx</span><span class="o">.</span><span class="n">string</span>
-            <span class="c1"># debug f-string / normal expression</span>
-            <span class="k">elif</span> <span class="n">child</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s1">&#39;operator&#39;</span> <span class="ow">and</span> <span class="n">child</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="s1">&#39;=&#39;</span><span class="p">:</span>
-                <span class="n">next_sibling</span> <span class="o">=</span> <span class="n">child</span><span class="o">.</span><span class="n">get_next_sibling</span><span class="p">()</span>
-
-                <span class="k">if</span> <span class="p">(</span><span class="n">next_sibling</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s1">&#39;operator&#39;</span> <span class="ow">and</span> <span class="n">next_sibling</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="s1">&#39;}&#39;</span><span class="p">):</span>
-                    <span class="n">flag_dbg</span> <span class="o">=</span> <span class="kc">True</span>
-                <span class="k">elif</span> <span class="n">next_sibling</span><span class="o">.</span><span class="n">type</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;fstring_conversion&#39;</span><span class="p">,</span> <span class="s1">&#39;fstring_format_spec&#39;</span><span class="p">]:</span>
-                    <span class="n">flag_dbg</span> <span class="o">=</span> <span class="kc">True</span>
-                <span class="k">elif</span> <span class="n">next_sibling</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s1">&#39;operator&#39;</span> <span class="ow">and</span> <span class="n">next_sibling</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="s1">&#39;:&#39;</span><span class="p">:</span>
-                    <span class="n">next_next_sibling</span> <span class="o">=</span> <span class="n">next_sibling</span><span class="o">.</span><span class="n">get_next_sibling</span><span class="p">()</span>
-                    <span class="k">if</span> <span class="n">next_next_sibling</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s1">&#39;operator&#39;</span> <span class="ow">and</span> <span class="n">next_next_sibling</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="s1">&#39;}&#39;</span><span class="p">:</span>
-                        <span class="n">flag_dbg</span> <span class="o">=</span> <span class="kc">True</span>
 
                 <span class="k">if</span> <span class="n">flag_dbg</span><span class="p">:</span>
-                    <span class="n">expr_tmp</span> <span class="o">=</span> <span class="n">expr_str</span> <span class="o">+</span> <span class="n">child</span><span class="o">.</span><span class="n">get_code</span><span class="p">()</span> <span class="o">+</span> \
-                        <span class="bp">self</span><span class="o">.</span><span class="n">extract_whitespaces</span><span class="p">(</span><span class="n">next_sibling</span><span class="o">.</span><span class="n">get_code</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;{</span><span class="si">%s</span><span class="s1">}&#39;</span> <span class="o">%</span> <span class="n">conv_var</span>
+                    <span class="n">expr_dbg</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fstring_bracket</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\1\1&#39;</span><span class="p">,</span> <span class="n">child</span><span class="o">.</span><span class="n">get_code</span><span class="p">())</span>
+                    <span class="n">expr_str</span> <span class="o">+=</span> <span class="n">ctx</span><span class="o">.</span><span class="n">_prefix</span> <span class="o">+</span> <span class="n">ctx</span><span class="o">.</span><span class="n">_suffix</span>  <span class="c1"># pylint: disable=protected-access</span>
+                    <span class="n">expr_lst</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">expr</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">expr_str</span> <span class="o">+=</span> <span class="n">ctx</span><span class="o">.</span><span class="n">string</span>
+            <span class="c1"># debug f-string / normal expression</span>
+            <span class="k">elif</span> <span class="n">child</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s1">&#39;operator&#39;</span> <span class="ow">and</span> <span class="n">child</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="s1">&#39;=&#39;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">flag_dbg</span><span class="p">:</span>
+                    <span class="n">next_sibling</span> <span class="o">=</span> <span class="n">child</span><span class="o">.</span><span class="n">get_next_sibling</span><span class="p">()</span>
+                    <span class="n">expr_dbg</span> <span class="o">+=</span> <span class="n">child</span><span class="o">.</span><span class="n">get_code</span><span class="p">()</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">extract_whitespaces</span><span class="p">(</span><span class="n">next_sibling</span><span class="o">.</span><span class="n">get_code</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> \
+                        <span class="s1">&#39;{&#39;</span> <span class="o">+</span> <span class="n">Placeholder</span><span class="p">(</span><span class="s1">&#39;conv_str&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;}&#39;</span>
                     <span class="k">if</span> <span class="n">flag_imp</span><span class="p">:</span>
-                        <span class="n">expr_str</span> <span class="o">=</span> <span class="s1">&#39;(</span><span class="si">%s</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="n">expr_str</span>
-                    <span class="n">expr_str</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%r</span><span class="s1">.format(</span><span class="si">%s</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">expr_tmp</span><span class="p">,</span> <span class="n">expr_str</span><span class="p">)</span>
+                        <span class="n">expr_str</span> <span class="o">=</span> <span class="s1">&#39;(&#39;</span> <span class="o">+</span> <span class="n">expr_str</span> <span class="o">+</span> <span class="s1">&#39;)&#39;</span>
+                    <span class="k">if</span> <span class="n">expr_lst</span><span class="p">:</span>
+                        <span class="n">expr_str</span> <span class="o">=</span> <span class="n">Placeholder</span><span class="p">(</span><span class="s1">&#39;expr_dbg&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;.format(&#39;</span> <span class="o">+</span> <span class="n">expr_str</span> <span class="o">+</span> \
+                            <span class="s1">&#39;.format(</span><span class="si">%s</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">expr_lst</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;)&#39;</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">expr_str</span> <span class="o">=</span> <span class="n">Placeholder</span><span class="p">(</span><span class="s1">&#39;expr_dbg&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;.format(&#39;</span> <span class="o">+</span> <span class="n">expr_str</span> <span class="o">+</span> <span class="s1">&#39;)&#39;</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">expr_str</span> <span class="o">+=</span> <span class="n">child</span><span class="o">.</span><span class="n">get_code</span><span class="p">()</span>
             <span class="c1"># normal expression</span>
@@ -600,14 +618,18 @@
                 <span class="k">if</span> <span class="n">child</span><span class="o">.</span><span class="n">type</span> <span class="ow">in</span> <span class="p">{</span><span class="s1">&#39;testlist&#39;</span><span class="p">,</span> <span class="s1">&#39;testlist_comp&#39;</span><span class="p">,</span> <span class="s1">&#39;yield_expr&#39;</span><span class="p">}</span> \
                         <span class="ow">or</span> <span class="n">child</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s1">&#39;keyword&#39;</span> <span class="ow">and</span> <span class="n">child</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="s1">&#39;yield&#39;</span><span class="p">:</span>
                     <span class="n">flag_imp</span> <span class="o">=</span> <span class="kc">True</span>
-                <span class="n">expr_str</span> <span class="o">+=</span> <span class="n">child</span><span class="o">.</span><span class="n">get_code</span><span class="p">()</span>
+
+                <span class="n">code</span> <span class="o">=</span> <span class="n">child</span><span class="o">.</span><span class="n">get_code</span><span class="p">()</span>
+                <span class="n">expr_str</span> <span class="o">+=</span> <span class="n">code</span>
+                <span class="n">expr_dbg</span> <span class="o">+=</span> <span class="n">code</span>
 
         <span class="k">if</span> <span class="n">expr_str</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">flag_dbg</span><span class="p">:</span>
-                <span class="n">expr_str</span> <span class="o">=</span> <span class="n">expr_str</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">conv_var</span><span class="p">,</span> <span class="n">conv_str</span> <span class="ow">or</span> <span class="s1">&#39;!r&#39;</span><span class="p">)</span>
+                <span class="n">expr_tmp</span> <span class="o">=</span> <span class="n">expr_dbg</span> <span class="o">%</span> <span class="p">{</span><span class="s1">&#39;conv_str&#39;</span><span class="p">:</span> <span class="n">conv_str</span> <span class="ow">or</span> <span class="s1">&#39;!r&#39;</span><span class="p">}</span>
+                <span class="n">expr_str</span> <span class="o">=</span> <span class="n">expr_str</span> <span class="o">%</span> <span class="p">{</span><span class="s1">&#39;expr_dbg&#39;</span><span class="p">:</span> <span class="nb">repr</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">expr_tmp</span><span class="p">))}</span>
             <span class="k">if</span> <span class="n">flag_imp</span><span class="p">:</span>
-                <span class="n">expr_str</span> <span class="o">=</span> <span class="s1">&#39;(</span><span class="si">%s</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="n">expr_str</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_expr</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">expr_str</span><span class="p">)</span>
+                <span class="n">expr_str</span> <span class="o">=</span> <span class="s1">&#39;(&#39;</span> <span class="o">+</span> <span class="n">expr_str</span> <span class="o">+</span> <span class="s1">&#39;)&#39;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_expr</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">expr_str</span><span class="p">))</span>
         <span class="k">if</span> <span class="n">spec_str</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_expr</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">spec_str</span><span class="p">)</span>
 
@@ -653,6 +675,32 @@
             <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">children</span><span class="p">:</span>  <span class="c1"># type: ignore[attr-defined]</span>
                 <span class="k">if</span> <span class="bp">cls</span><span class="o">.</span><span class="n">has_fstring</span><span class="p">(</span><span class="n">child</span><span class="p">):</span>
                     <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="StringContext.is_debug_fstring"><a class="viewcode-back" href="../api.html#f2format.StringContext.is_debug_fstring">[docs]</a>    <span class="nd">@final</span>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">is_debug_fstring</span><span class="p">(</span><span class="n">node</span><span class="p">:</span> <span class="n">parso</span><span class="o">.</span><span class="n">python</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">PythonNode</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Check if node **is** *debug* formatted string literals.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            node (parso.python.tree.PythonNode): formatted literal expression node</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: if ``node`` **is** debug formatted string literals</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">expr</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">children</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">expr</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s1">&#39;operator&#39;</span> <span class="ow">and</span> <span class="n">expr</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="s1">&#39;=&#39;</span><span class="p">:</span>
+                <span class="n">next_sibling</span> <span class="o">=</span> <span class="n">expr</span><span class="o">.</span><span class="n">get_next_sibling</span><span class="p">()</span>
+
+                <span class="k">if</span> <span class="p">(</span><span class="n">next_sibling</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s1">&#39;operator&#39;</span> <span class="ow">and</span> <span class="n">next_sibling</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="s1">&#39;}&#39;</span><span class="p">):</span>
+                    <span class="k">return</span> <span class="kc">True</span>
+                <span class="k">if</span> <span class="n">next_sibling</span><span class="o">.</span><span class="n">type</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;fstring_conversion&#39;</span><span class="p">,</span> <span class="s1">&#39;fstring_format_spec&#39;</span><span class="p">]:</span>
+                    <span class="k">return</span> <span class="kc">True</span>
+                <span class="k">if</span> <span class="n">next_sibling</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s1">&#39;operator&#39;</span> <span class="ow">and</span> <span class="n">next_sibling</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="s1">&#39;:&#39;</span><span class="p">:</span>
+                    <span class="n">next_next_sibling</span> <span class="o">=</span> <span class="n">next_sibling</span><span class="o">.</span><span class="n">get_next_sibling</span><span class="p">()</span>
+                    <span class="k">if</span> <span class="n">next_next_sibling</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s1">&#39;operator&#39;</span> <span class="ow">and</span> <span class="n">next_next_sibling</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="s1">&#39;}&#39;</span><span class="p">:</span>
+                        <span class="k">return</span> <span class="kc">True</span>
         <span class="k">return</span> <span class="kc">False</span></div></div>
 
 
