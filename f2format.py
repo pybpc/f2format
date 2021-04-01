@@ -420,10 +420,6 @@ class StringContext(Context):
         if has_fstring is None:
             has_fstring = self.has_fstring(node)
 
-        # TODO: migrate to BaseContext implementation
-        #: bool: Raw processing flag.
-        self._raw = raw
-
         #: List[str]: Expressions extracted from the formatted string literal.
         self._expr = []  # type: List[str]
         #: bool: Flag if contains actual formatted string literals (with expressions).
@@ -504,7 +500,7 @@ class StringContext(Context):
         # i.e., no need to do reverse lookup of expressions, etc.
         expr_dbg = StringInterpolation()  # debug f-string original expression buffer
         expr_str = StringInterpolation()  # extracted expression buffer - string part
-        expr_lst = []  # extracted expression buffer - format expression part
+        expr_fmt = []  # extracted expression buffer - format expression part
 
         # testlist ['='] [ fstring_conversion ] [ fstring_format_spec ]
         for child in node.children[1:-1]:
@@ -548,7 +544,7 @@ class StringContext(Context):
                 if flag_dbg:
                     expr_dbg += self.fstring_bracket.sub(r'\1\1', child.get_code())
                     expr_str += ctx._prefix + ctx._suffix  # pylint: disable=protected-access
-                    expr_lst.extend(ctx.expr)
+                    expr_fmt.extend(ctx.expr)
                 else:
                     expr_str += ctx.string
             # concatenable strings
@@ -560,7 +556,7 @@ class StringContext(Context):
                 if flag_dbg:
                     expr_dbg += self.fstring_bracket.sub(r'\1\1', child.get_code())
                     expr_str += ctx._prefix + ctx._suffix  # pylint: disable=protected-access
-                    expr_lst.extend(ctx.expr)
+                    expr_fmt.extend(ctx.expr)
                 else:
                     expr_str += ctx.string
             # debug f-string / normal expression
@@ -571,9 +567,9 @@ class StringContext(Context):
                         '{' + Placeholder('conv_str') + '}'
                     if flag_imp:
                         expr_str = '(' + expr_str + ')'
-                    if expr_lst:
+                    if expr_fmt:
                         expr_str = Placeholder('expr_dbg') + '.format(' + expr_str + \
-                            '.format(%s)' % ', '.join(expr_lst) + ')'
+                            '.format(%s)' % ', '.join(map(lambda s: s.strip(), expr_fmt)) + ')'
                     else:
                         expr_str = Placeholder('expr_dbg') + '.format(' + expr_str + ')'
                 else:
