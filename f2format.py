@@ -12,11 +12,11 @@ from typing import Generator, List, Optional, Union
 import parso.python.tree
 import parso.tree
 import tbtrim
-from bpc_utils import (BaseContext, BPCSyntaxError, Config, TaskLock, archive_files,
-                       detect_encoding, detect_files, detect_indentation, detect_linesep,
-                       first_non_none, get_parso_grammar_versions, map_tasks, parse_boolean_state,
-                       parse_indentation, parse_linesep, parse_positive_integer, parso_parse,
-                       recover_files)
+from bpc_utils import (BaseContext, BPCSyntaxError, Config, Placeholder, StringInterpolation,
+                       TaskLock, archive_files, detect_encoding, detect_files, detect_indentation,
+                       detect_linesep, first_non_none, get_parso_grammar_versions, map_tasks,
+                       parse_boolean_state, parse_indentation, parse_linesep,
+                       parse_positive_integer, parso_parse, recover_files)
 from bpc_utils.typing import Linesep
 from typing_extensions import ClassVar, Final, Literal, final
 
@@ -420,6 +420,10 @@ class StringContext(Context):
         if has_fstring is None:
             has_fstring = self.has_fstring(node)
 
+        # TODO: migrate to BaseContext implementation
+        #: bool: Raw processing flag.
+        self._raw = raw
+
         #: List[str]: Expressions extracted from the formatted string literal.
         self._expr = []  # type: List[str]
         #: bool: Flag if contains actual formatted string literals (with expressions).
@@ -488,13 +492,19 @@ class StringContext(Context):
         self += node.children[0].get_code().rstrip()
 
         flag_imp = False  # implicit tuple, generator expression and/or yield expression
-        flag_dbg = False  # is debug f-string?
+        flag_dbg = self.is_debug_fstring(node)  # is debug f-string?
 
         conv_str = ''  # f-string conversion
-        conv_var = '## f2format: %s ##' % self._uuid_gen.gen()
+        spec_str = ''  # f-string format spec
 
-        expr_str = ''
-        spec_str = ''
+        # NOTE: we need to maintain two SI, one keeps track of the original expression
+        # string for debug f-string, one keeps track of *sanitised* f-string with slots
+        # for `format` call, whose value will then be maintained in another list - the
+        # whole design here is to convert multi-layered debug f-string in a linear way,
+        # i.e., no need to do reverse lookup of expressions, etc.
+        expr_dbg = StringInterpolation()  # debug f-string original expression buffer
+        expr_str = StringInterpolation()  # extracted expression buffer - string part
+        expr_lst = []  # extracted expression buffer - format expression part
 
         # testlist ['='] [ fstring_conversion ] [ fstring_format_spec ]
         for child in node.children[1:-1]:
@@ -526,38 +536,46 @@ class StringContext(Context):
                     else:
                         self += child.get_code()
                 else:
-                    expr_str += child.get_code()
+                    code = child.get_code()
+                    expr_dbg += code
+                    expr_str += code
             # embedded f-string
             elif child.type == 'fstring':
                 # initialise new context
                 ctx = StringContext(child, self.config, has_fstring=None,  # type: ignore[arg-type]
                                     indent_level=self._indent_level, raw=False)
-                expr_str += ctx.string
+
+                if flag_dbg:
+                    expr_dbg += self.fstring_bracket.sub(r'\1\1', child.get_code())
+                    expr_str += ctx._prefix + ctx._suffix  # pylint: disable=protected-access
+                    expr_lst.extend(ctx.expr)
+                else:
+                    expr_str += ctx.string
             # concatenable strings
             elif child.type == 'strings':
                 # initialise new context
                 ctx = StringContext(child, self.config, has_fstring=None,  # type: ignore[arg-type]
                                     indent_level=self._indent_level, raw=False)
-                expr_str += ctx.string
-            # debug f-string / normal expression
-            elif child.type == 'operator' and child.value == '=':
-                next_sibling = child.get_next_sibling()
-
-                if (next_sibling.type == 'operator' and next_sibling.value == '}'):
-                    flag_dbg = True
-                elif next_sibling.type in ['fstring_conversion', 'fstring_format_spec']:
-                    flag_dbg = True
-                elif next_sibling.type == 'operator' and next_sibling.value == ':':
-                    next_next_sibling = next_sibling.get_next_sibling()
-                    if next_next_sibling.type == 'operator' and next_next_sibling.value == '}':
-                        flag_dbg = True
 
                 if flag_dbg:
-                    expr_tmp = expr_str + child.get_code() + \
-                        self.extract_whitespaces(next_sibling.get_code())[0] + '{%s}' % conv_var
+                    expr_dbg += self.fstring_bracket.sub(r'\1\1', child.get_code())
+                    expr_str += ctx._prefix + ctx._suffix  # pylint: disable=protected-access
+                    expr_lst.extend(ctx.expr)
+                else:
+                    expr_str += ctx.string
+            # debug f-string / normal expression
+            elif child.type == 'operator' and child.value == '=':
+                if flag_dbg:
+                    next_sibling = child.get_next_sibling()
+                    expr_dbg += child.get_code() + self.extract_whitespaces(next_sibling.get_code())[0] + \
+                        '{' + Placeholder('conv_str') + '}'
                     if flag_imp:
-                        expr_str = '(%s)' % expr_str
-                    expr_str = '%r.format(%s)' % (expr_tmp, expr_str)
+                        expr_str = '(' + expr_str + ')'
+                    if expr_lst:
+                        expr_str = Placeholder('expr_dbg') + '.format(' + expr_str + \
+                            '.format(%s)' % ', '.join(expr_lst) + ')'
+                    else:
+                        expr_str = Placeholder('expr_dbg') + '.format(' + expr_str + ')'
                 else:
                     expr_str += child.get_code()
             # normal expression
@@ -567,14 +585,18 @@ class StringContext(Context):
                 if child.type in {'testlist', 'testlist_comp', 'yield_expr'} \
                         or child.type == 'keyword' and child.value == 'yield':
                     flag_imp = True
-                expr_str += child.get_code()
+
+                code = child.get_code()
+                expr_str += code
+                expr_dbg += code
 
         if expr_str:
             if flag_dbg:
-                expr_str = expr_str.replace(conv_var, conv_str or '!r')
+                expr_tmp = expr_dbg % {'conv_str': conv_str or '!r'}
+                expr_str = expr_str % {'expr_dbg': repr(str(expr_tmp))}
             if flag_imp:
-                expr_str = '(%s)' % expr_str
-            self._expr.append(expr_str)
+                expr_str = '(' + expr_str + ')'
+            self._expr.append(str(expr_str))
         if spec_str:
             self._expr.append(spec_str)
 
@@ -620,6 +642,32 @@ class StringContext(Context):
             for child in node.children:  # type: ignore[attr-defined]
                 if cls.has_fstring(child):
                     return True
+        return False
+
+    @final
+    @staticmethod
+    def is_debug_fstring(node: parso.python.tree.PythonNode) -> bool:
+        """Check if node **is** *debug* formatted string literals.
+
+        Args:
+            node (parso.python.tree.PythonNode): formatted literal expression node
+
+        Returns:
+            bool: if ``node`` **is** debug formatted string literals
+
+        """
+        for expr in node.children:
+            if expr.type == 'operator' and expr.value == '=':
+                next_sibling = expr.get_next_sibling()
+
+                if (next_sibling.type == 'operator' and next_sibling.value == '}'):
+                    return True
+                if next_sibling.type in ['fstring_conversion', 'fstring_format_spec']:
+                    return True
+                if next_sibling.type == 'operator' and next_sibling.value == ':':
+                    next_next_sibling = next_sibling.get_next_sibling()
+                    if next_next_sibling.type == 'operator' and next_next_sibling.value == '}':
+                        return True
         return False
 
 
