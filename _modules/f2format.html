@@ -453,10 +453,6 @@
         <span class="k">if</span> <span class="n">has_fstring</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">has_fstring</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_fstring</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
 
-        <span class="c1"># TODO: migrate to BaseContext implementation</span>
-        <span class="c1">#: bool: Raw processing flag.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_raw</span> <span class="o">=</span> <span class="n">raw</span>
-
         <span class="c1">#: List[str]: Expressions extracted from the formatted string literal.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_expr</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># type: List[str]</span>
         <span class="c1">#: bool: Flag if contains actual formatted string literals (with expressions).</span>
@@ -537,7 +533,7 @@
         <span class="c1"># i.e., no need to do reverse lookup of expressions, etc.</span>
         <span class="n">expr_dbg</span> <span class="o">=</span> <span class="n">StringInterpolation</span><span class="p">()</span>  <span class="c1"># debug f-string original expression buffer</span>
         <span class="n">expr_str</span> <span class="o">=</span> <span class="n">StringInterpolation</span><span class="p">()</span>  <span class="c1"># extracted expression buffer - string part</span>
-        <span class="n">expr_lst</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># extracted expression buffer - format expression part</span>
+        <span class="n">expr_fmt</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># extracted expression buffer - format expression part</span>
 
         <span class="c1"># testlist [&#39;=&#39;] [ fstring_conversion ] [ fstring_format_spec ]</span>
         <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">children</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
@@ -581,7 +577,7 @@
                 <span class="k">if</span> <span class="n">flag_dbg</span><span class="p">:</span>
                     <span class="n">expr_dbg</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fstring_bracket</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\1\1&#39;</span><span class="p">,</span> <span class="n">child</span><span class="o">.</span><span class="n">get_code</span><span class="p">())</span>
                     <span class="n">expr_str</span> <span class="o">+=</span> <span class="n">ctx</span><span class="o">.</span><span class="n">_prefix</span> <span class="o">+</span> <span class="n">ctx</span><span class="o">.</span><span class="n">_suffix</span>  <span class="c1"># pylint: disable=protected-access</span>
-                    <span class="n">expr_lst</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">expr</span><span class="p">)</span>
+                    <span class="n">expr_fmt</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">expr</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">expr_str</span> <span class="o">+=</span> <span class="n">ctx</span><span class="o">.</span><span class="n">string</span>
             <span class="c1"># concatenable strings</span>
@@ -593,7 +589,7 @@
                 <span class="k">if</span> <span class="n">flag_dbg</span><span class="p">:</span>
                     <span class="n">expr_dbg</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fstring_bracket</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\1\1&#39;</span><span class="p">,</span> <span class="n">child</span><span class="o">.</span><span class="n">get_code</span><span class="p">())</span>
                     <span class="n">expr_str</span> <span class="o">+=</span> <span class="n">ctx</span><span class="o">.</span><span class="n">_prefix</span> <span class="o">+</span> <span class="n">ctx</span><span class="o">.</span><span class="n">_suffix</span>  <span class="c1"># pylint: disable=protected-access</span>
-                    <span class="n">expr_lst</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">expr</span><span class="p">)</span>
+                    <span class="n">expr_fmt</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">expr</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">expr_str</span> <span class="o">+=</span> <span class="n">ctx</span><span class="o">.</span><span class="n">string</span>
             <span class="c1"># debug f-string / normal expression</span>
@@ -604,9 +600,9 @@
                         <span class="s1">&#39;{&#39;</span> <span class="o">+</span> <span class="n">Placeholder</span><span class="p">(</span><span class="s1">&#39;conv_str&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;}&#39;</span>
                     <span class="k">if</span> <span class="n">flag_imp</span><span class="p">:</span>
                         <span class="n">expr_str</span> <span class="o">=</span> <span class="s1">&#39;(&#39;</span> <span class="o">+</span> <span class="n">expr_str</span> <span class="o">+</span> <span class="s1">&#39;)&#39;</span>
-                    <span class="k">if</span> <span class="n">expr_lst</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">expr_fmt</span><span class="p">:</span>
                         <span class="n">expr_str</span> <span class="o">=</span> <span class="n">Placeholder</span><span class="p">(</span><span class="s1">&#39;expr_dbg&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;.format(&#39;</span> <span class="o">+</span> <span class="n">expr_str</span> <span class="o">+</span> \
-                            <span class="s1">&#39;.format(</span><span class="si">%s</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">expr_lst</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;)&#39;</span>
+                            <span class="s1">&#39;.format(</span><span class="si">%s</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span> <span class="n">expr_fmt</span><span class="p">))</span> <span class="o">+</span> <span class="s1">&#39;)&#39;</span>
                     <span class="k">else</span><span class="p">:</span>
                         <span class="n">expr_str</span> <span class="o">=</span> <span class="n">Placeholder</span><span class="p">(</span><span class="s1">&#39;expr_dbg&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;.format(&#39;</span> <span class="o">+</span> <span class="n">expr_str</span> <span class="o">+</span> <span class="s1">&#39;)&#39;</span>
                 <span class="k">else</span><span class="p">:</span>
