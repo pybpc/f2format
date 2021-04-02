@@ -14,23 +14,14 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
-f2format = {editable = true,path = "."}
+bpc-f2format = {editable = true, path = ".", extras = ["lint", "test", "docs"]}
 autopep8 = "*"
-bandit = "*"
-codecov = "*"
-coverage = "*"
-ipython = "*"
-mypy = "*"
-pylint = "*"
 rstcheck = "*"
-sphinx = "*"
-sphinxemoji = "*"
-sphinx-autodoc-typehints = "*"
+ipython = "*"
+tox = "*"
 
 [packages]
-tbtrim = "*"
-parso = "*"
 bpc-utils = {git = "https://github.com/pybpc/bpc-utils.git"}
 
 [requires]
-python_version = "3.9"
+python_version = "*"

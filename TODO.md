@@ -1,6 +1,6 @@
 ### October 19th, 2020
 
-- [ ] draft and revise documentations
+- [x] draft and revise documentations
 - [ ] revise the test suite
 
 ### June 6th, 2019

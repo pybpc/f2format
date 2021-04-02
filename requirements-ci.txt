@@ -1,8 +1,0 @@
-# pyup: ignore file
-parso>=0.8.1; python_version >= "3.6"
-parso>=0.6.0; python_version < "3.6"
-tbtrim>=0.2.1
-bpc-utils
--e .
-coverage
-codecov

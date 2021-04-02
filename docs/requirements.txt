@@ -1,6 +1,0 @@
-# sphinx
-Sphinx==3.5.3
-# sphinx-autodoc-typehints
-sphinx-autodoc-typehints==1.11.1
-# sphinxemoji
-sphinxemoji==0.1.8

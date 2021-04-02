@@ -4,15 +4,12 @@
 
 # f2format
 
-[![PyPI - Downloads](https://pepy.tech/badge/f2format)](https://pepy.tech/count/f2format)
-[![PyPI - Version](https://img.shields.io/pypi/v/f2format.svg)](https://pypi.org/project/f2format)
-[![PyPI - Format](https://img.shields.io/pypi/format/f2format.svg)](https://pypi.org/project/f2format)
-[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/f2format.svg)](https://pypi.org/project/f2format)
+[![PyPI - Version](https://img.shields.io/pypi/v/bpc-f2format.svg)](https://pypi.org/project/bpc-f2format)
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/bpc-f2format.svg)](https://pypi.org/project/bpc-f2format)
 
-[![GitHub Actions - Status](https://github.com/pybpc/f2format/workflows/Build/badge.svg)](https://github.com/pybpc/f2format/actions?query=workflow%3ABuild)
-[![Codecov - Coverage](https://codecov.io/gh/pybpc/f2format/branch/master/graph/badge.svg)](https://codecov.io/gh/pybpc/f2format)
-[![License](https://img.shields.io/github/license/pybpc/f2format.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
-[![LICENSE](https://img.shields.io/badge/license-Anti%20996-blue.svg)](https://github.com/996icu/996.ICU/blob/master/LICENSE)
+[![GitHub Actions - Status](https://github.com/pybpc/bpc-f2format/workflows/Build/badge.svg)](https://github.com/pybpc/bpc-f2format/actions?query=workflow%3ABuild)
+[![Codecov - Coverage](https://codecov.io/gh/pybpc/bpc-f2format/branch/master/graph/badge.svg)](https://codecov.io/gh/pybpc/bpc-f2format)
+[![Documentation Status](https://readthedocs.org/projects/bpc-f2format/badge/?version=latest)](https://bpc-f2format.readthedocs.io/en/latest/)
 
 > Write *f-string* in Python 3.6 flavour, and let `f2format` worry about back-port issues :beer:
 
@@ -39,14 +36,6 @@ Also, it always tries to maintain the original layout of source code, and accura
 
 &emsp; See [documentation](https://bpc-f2format.readthedocs.io/en/latest/) for usage and more details.
 
-### Codec
-
-> NB: this project is now stalled, because I just cannot figure out how to play w/ codecs :(
-
-&emsp; [`f2format-codec`](https://github.com/pybpc/f2format-codec) registers a codec in Python
-interpreter, which grants you the compatibility to write directly in Python 3.6 *f-string* syntax
-even through running with a previous version of Python.
-
 ## Contribution
 
 &emsp; Contributions are very welcome, especially fixing bugs and providing test cases.
@@ -57,4 +46,5 @@ Note that code must remain valid and reasonable.
 - [`pybpc`](https://github.com/pybpc/bpc) (formerly known as `python-babel`)
 - [`poseur`](https://github.com/pybpc/poseur)
 - [`walrus`](https://github.com/pybpc/walrus)
+- [`relaxedecor`](https://github.com/pybpc/relaxedecor)
 - [`vermin`](https://github.com/netromdk/vermin)
