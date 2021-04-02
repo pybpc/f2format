@@ -359,6 +359,28 @@ class Context(BaseContext):
 
     @final
     @classmethod
+    def has_fstring(cls, node: parso.tree.NodeOrLeaf) -> bool:
+        """Check if node has actual formatted string literals.
+
+        Args:
+            node (parso.tree.NodeOrLeaf): parso AST
+
+        Returns:
+            bool: if ``node`` has actual formatted string literals
+                (with expressions in the literals)
+
+        """
+        if node.type == 'fstring_expr':
+            return True
+
+        if hasattr(node, 'children'):
+            for child in node.children:  # type: ignore[attr-defined]
+                if cls.has_fstring(child):
+                    return True
+        return False
+
+    @final
+    @classmethod
     def has_debug_fstring(cls, node: parso.tree.NodeOrLeaf) -> bool:
         """Check if node has *debug* formatted string literals.
 
@@ -370,18 +392,41 @@ class Context(BaseContext):
 
         """
         if node.type == 'fstring_expr':
-            for expr in node.children:  # type: ignore[attr-defined]
-                if expr.type == 'operator' and expr.value == '=':
-                    next_sibling = expr.get_next_sibling()
-                    if next_sibling.type == 'operator' and next_sibling.value == '}' \
-                        or next_sibling.type in ('fstring_conversion', 'fstring_format_spec'):
-                        return True
-            return False
+            return cls.is_debug_fstring(node)  # type: ignore[arg-type]
 
         if hasattr(node, 'children'):
             for child in node.children:  # type: ignore[attr-defined]
                 if cls.has_debug_fstring(child):
                     return True
+        return False
+
+    @final
+    @staticmethod
+    def is_debug_fstring(node: parso.python.tree.PythonNode) -> bool:
+        """Check if node **is** *debug* formatted string literal expression (:token:`f_expression`).
+
+        Args:
+            node (parso.python.tree.PythonNode): formatted literal expression node
+
+        Returns:
+            bool: if ``node`` **is** debug formatted string literals
+
+        """
+        if node.type != 'fstring_expr':
+            return False
+
+        for expr in node.children:
+            if expr.type == 'operator' and expr.value == '=':
+                next_sibling = expr.get_next_sibling()
+
+                if (next_sibling.type == 'operator' and next_sibling.value == '}'):
+                    return True
+                if next_sibling.type in ['fstring_conversion', 'fstring_format_spec']:
+                    return True
+                if next_sibling.type == 'operator' and next_sibling.value == ':':
+                    next_next_sibling = next_sibling.get_next_sibling()
+                    if next_next_sibling.type == 'operator' and next_next_sibling.value == '}':
+                        return True
         return False
 
 
@@ -617,54 +662,6 @@ class StringContext(Context):
 
         # no-op
         self._buffer = self._prefix + self._suffix
-
-    @final
-    @classmethod
-    def has_fstring(cls, node: parso.tree.NodeOrLeaf) -> bool:
-        """Check if node has actual formatted string literals.
-
-        Args:
-            node (parso.tree.NodeOrLeaf): parso AST
-
-        Returns:
-            bool: if ``node`` has actual formatted string literals
-                (with expressions in the literals)
-
-        """
-        if node.type == 'fstring_expr':
-            return True
-
-        if hasattr(node, 'children'):
-            for child in node.children:  # type: ignore[attr-defined]
-                if cls.has_fstring(child):
-                    return True
-        return False
-
-    @final
-    @staticmethod
-    def is_debug_fstring(node: parso.python.tree.PythonNode) -> bool:
-        """Check if node **is** *debug* formatted string literals.
-
-        Args:
-            node (parso.python.tree.PythonNode): formatted literal expression node
-
-        Returns:
-            bool: if ``node`` **is** debug formatted string literals
-
-        """
-        for expr in node.children:
-            if expr.type == 'operator' and expr.value == '=':
-                next_sibling = expr.get_next_sibling()
-
-                if (next_sibling.type == 'operator' and next_sibling.value == '}'):
-                    return True
-                if next_sibling.type in ['fstring_conversion', 'fstring_format_spec']:
-                    return True
-                if next_sibling.type == 'operator' and next_sibling.value == ':':
-                    next_next_sibling = next_sibling.get_next_sibling()
-                    if next_next_sibling.type == 'operator' and next_next_sibling.value == '}':
-                        return True
-        return False
 
 
 ###############################################################################
