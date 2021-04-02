@@ -1,6 +1,6 @@
 .\" Man page generated from reStructuredText.
 .
-.TH F2FORMAT 1 "December 11, 2019" "v0.8.7rc1" ""
+.TH F2FORMAT 1 "April 03, 2021" "v0.8.7rc1" ""
 .SH NAME
 f2format \- back-port compiler for Python 3.6 f-string literals
 .
@@ -48,12 +48,16 @@ expressions from \fIf\-string\fP literals, and then reassemble the original stri
 using \fBstr.format\fP method. Besides \fBconversion\fP and \fBformat specification\fP,
 \fBf2format\fP also considered and resolved \fBstring concatenation\fP\&. Also, it always
 tries to maintain the original layout of source code, and accuracy of syntax.
+.sp
+This man page mainly introduces the CLI options of the \fBf2format\fP program.
+You can also checkout the online documentation at
+\fI\%https://bpc\-f2format.readthedocs.io/\fP for more details.
 .SH OPTIONS
 .SS positional arguments
 .INDENT 0.0
 .TP
 .B SOURCE
-python source files and folders to be converted
+Python source files and directories to be converted
 .UNINDENT
 .SS optional arguments
 .INDENT 0.0
@@ -67,43 +71,87 @@ show program\(aqs version number and exit
 .B \-q\fP,\fB  \-\-quiet
 run in quiet mode
 .UNINDENT
-.SS archive options
-.sp
-duplicate original files in case there\(aqs any issue
 .INDENT 0.0
 .TP
-.BI \-n\fB a\fP,\fB \ \-\-no\-archive
+.B \-C \fIN\fP, \-\-concurrency \fIN\fP
+the number of concurrent processes for conversion
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-\-dry\-run
+list the files to be converted without actually performing conversion and archiving
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-s \fI[FILE]\fP, \-\-simple \fI[FILE]\fP
+this option tells the program to operate in "simple mode"; if a file name is provided, the program will convert
+the file but print conversion result to standard output instead of overwriting the file; if no file names are
+provided, read code for conversion from standard input and print conversion result to standard output; in
+"simple mode", no file names shall be provided via positional arguments
+.UNINDENT
+.SS archive options
+.sp
+backup original files in case there\(aqre any issues
+.INDENT 0.0
+.TP
+.BI \-n\fB a\fR,\fB \ \-\-no\-archive
 do not archive original files
 .UNINDENT
 .INDENT 0.0
 .TP
-.B \-p \fIPATH\fP, \-\-archive\-path \fIPATH\fP
+.B \-k \fIPATH\fP, \-\-archive\-path \fIPATH\fP
 path to archive original files
+.TP
+.B \-r \fIARCHIVE_FILE\fP, \-\-recover \fIARCHIVE_FILE\fP
+recover files from a given archive file
 .UNINDENT
+.sp
+\-r2                     remove the archive file after recovery
+\-r3                     remove the archive file after recovery, and remove the archive directory if it becomes empty
 .SS convert options
 .sp
-compatibility configuration for non\-unicode files
+conversion configuration
 .INDENT 0.0
 .TP
-.B \-c \fICODING\fP, \-\-encoding \fICODING\fP
-encoding to open source files
+.B \-vs \fIVERSION\fP, \-\-vf \fIVERSION\fP, \-\-source\-version \fIVERSION\fP, \-\-from\-version \fIVERSION\fP
+parse source code as this Python version
 .TP
-.B \-v \fIVERSION\fP, \-\-python \fIVERSION\fP
-convert against Python version
+.B \-l \fILINESEP\fP, \-\-linesep \fILINESEP\fP
+line separator (\fBLF\fP, \fBCRLF\fP, \fBCR\fP) to read source files
+.TP
+.B \-t \fIINDENT\fP, \-\-indentation \fIINDENT\fP
+code indentation style, specify an integer for the number of spaces, or \fB\(aqt\(aq\fP/\fB\(aqtab\(aq\fP for tabs
 .UNINDENT
+.sp
+\-n8, \-\-no\-pep8          do not make code insertion \fBPEP 8\fP compliant
 .SH ENVIRONMENT
 .sp
 \fBf2format\fP currently supports three environment variables.
 .INDENT 0.0
 .TP
-.B F2FORMAT_ENCODING
-encoding to open source files
-.TP
-.B F2FORMAT_VERSION
-convert against Python version
-.TP
 .B F2FORMAT_QUIET
 run in quiet mode
+.TP
+.B F2FORMAT_CONCURRENCY
+the number of concurrent processes for conversion
+.TP
+.B F2FORMAT_DO_ARCHIVE
+whether to perform archiving
+.TP
+.B F2FORMAT_ARCHIVE_PATH
+path to archive original files
+.TP
+.B F2FORMAT_SOURCE_VERSION
+parse source code as this Python version
+.TP
+.B F2FORMAT_LINESEP
+line separator to read source files
+.TP
+.B F2FORMAT_INDENTATION
+code indentation style
+.TP
+.B F2FORMAT_PEP8
+whether to make code insertion \fBPEP 8\fP compliant
 .UNINDENT
 .SH SEE ALSO
 .sp

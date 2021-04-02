@@ -21,6 +21,8 @@ ipython = "*"
 tox = "*"
 
 [packages]
+parso = "*"
+tbtrim = "*"
 bpc-utils = {git = "https://github.com/pybpc/bpc-utils.git"}
 
 [requires]

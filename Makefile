@@ -36,5 +36,5 @@ pipenv-update:
 pipenv-deinit:
 	pipenv --rm
 
-manual:
+manpage:
 	pipenv run rst2man.py share/f2format.rst > share/f2format.1

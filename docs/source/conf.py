@@ -23,7 +23,7 @@ sys.path.insert(0, os.path.abspath(
 # -- Project information -----------------------------------------------------
 
 project = 'f2format'
-copyright = '2020, Python Backport Compiler Project'
+copyright = '2020-2021, Python Backport Compiler Project'
 author = 'Python Backport Compiler Project'
 
 # The full version, including alpha/beta/rc tags
@@ -48,7 +48,6 @@ intersphinx_mapping = {
     'python': ('https://docs.python.org/3', None),
     'bpc_utils': ('https://bpc-utils.readthedocs.io/en/latest/', None),
     'parso': ('https://parso.readthedocs.io/en/latest/', None),
-    'f2format': ('https://bpc-f2format.readthedocs.io/en/latest/', None),
 }
 
 autodoc_typehints = 'description'

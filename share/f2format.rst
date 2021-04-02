@@ -7,7 +7,7 @@ back-port compiler for Python 3.6 f-string literals
 ---------------------------------------------------
 
 :Version: v0.8.7rc1
-:Date: December 11, 2019
+:Date: April 03, 2021
 :Manual section: 1
 :Author:
     Jarry Shaw, a newbie programmer, is the author, owner and maintainer
