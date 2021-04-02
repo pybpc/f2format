@@ -8,7 +8,7 @@ docs:
 	pipenv run $(MAKE) -C docs html
 
 coverage:
-	pipenv run coverage run -m pytest --color=yes
+	pipenv run coverage run -m pytest
 	pipenv run coverage html
 	open htmlcov/index.html
 	echo "Press ENTER to continue..."
@@ -17,7 +17,7 @@ coverage:
 	rm .coverage
 
 test:
-	pipenv run pytest --color=yes
+	pipenv run pytest
 
 pipenv-init:
 	pipenv install --dev

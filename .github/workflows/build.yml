@@ -6,6 +6,8 @@ jobs:
   test:
     runs-on: ${{ matrix.os }}
     continue-on-error: ${{ matrix.experimental }}
+    env:
+      PYTEST_ADDOPTS: --color=yes
     strategy:
       fail-fast: false
       matrix:
