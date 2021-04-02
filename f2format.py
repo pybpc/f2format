@@ -634,10 +634,10 @@ class StringContext(Context):
         if expr_str:
             if flag_dbg:
                 expr_tmp = expr_dbg % {'conv_str': conv_str or '!r'}
-                expr_str = expr_str % {'expr_dbg': repr(str(expr_tmp))}
+                expr_str = expr_str % {'expr_dbg': repr(expr_tmp.result)}
             if flag_imp:
                 expr_str = '(' + expr_str + ')'
-            self._expr.append(str(expr_str))
+            self._expr.append(expr_str.result)
         if spec_str:
             self._expr.append(spec_str)
 
