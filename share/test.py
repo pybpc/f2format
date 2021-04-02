@@ -83,9 +83,9 @@ class TestF2format(unittest.TestCase):
                                    '%s.txt' % pathlib.Path(dst).stem)
                 with open(src, 'r', encoding='utf-8') as file:
                     old = file.read()
-                new = subprocess.Popen([sys.executable, dst], stdout=subprocess.PIPE)
+                new = subprocess.Popen([sys.executable, dst], stdout=subprocess.PIPE, universal_newlines=True)
                 new_stdout = new.communicate()[0]
-                self.assertEqual(old, new_stdout.decode())
+                self.assertEqual(old, new_stdout)
 
     @unittest.skipIf(sys.version_info[:2] < (3, 8),
                      "not supported in this Python version")
