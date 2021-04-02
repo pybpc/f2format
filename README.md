@@ -4,6 +4,7 @@
 
 # f2format
 
+[![PyPI - Downloads](https://pepy.tech/badge/f2format)](https://pepy.tech/count/f2format)
 [![PyPI - Version](https://img.shields.io/pypi/v/bpc-f2format.svg)](https://pypi.org/project/bpc-f2format)
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/bpc-f2format.svg)](https://pypi.org/project/bpc-f2format)
 

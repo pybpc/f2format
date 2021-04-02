@@ -43,13 +43,15 @@ setup(
         'Topic :: Utilities',
         'Typing :: Typed',
     ],
-    keywords='bpc backport utilities',
+    keywords='fstring format conversion',
     py_modules=[module_name],
     python_requires='>=3.4',
     install_requires=[
         'parso>=0.6.0',         # universal AST support
         'tbtrim>=0.2.1',        # traceback trim support
-        'bpc-utils~=0.10.0',    # utility library
+        'bpc-utils~=0.10.1',    # utility library
+        'typing;python_version<"3.5"',
+        'typing_extensions',
     ],
     extras_require={
         'lint': [
@@ -74,7 +76,8 @@ setup(
     },
     entry_points={
         'console_scripts': [
-            'template = template:main',
+            # 'f2format = f2format.__main__:main',
+            'f2format = f2format:main',
         ]
     },
 )

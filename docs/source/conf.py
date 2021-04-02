@@ -23,7 +23,7 @@ sys.path.insert(0, os.path.abspath(
 # -- Project information -----------------------------------------------------
 
 project = 'f2format'
-copyright = '2020-2021, Python Backport Compiler Project'
+copyright = '2018-2021, Python Backport Compiler Project'  # pylint: disable=redefined-builtin
 author = 'Python Backport Compiler Project'
 
 # The full version, including alpha/beta/rc tags

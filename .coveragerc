@@ -1,6 +1,7 @@
 [run]
 branch = True
-source = .
+# TODO: update source and omit after refactoring
+source = f2format.py
 omit = setup.py
 
 [report]

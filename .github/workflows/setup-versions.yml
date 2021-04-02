@@ -1,10 +1,15 @@
 name: Setup Versions
 
-on: [push]
+on:
+  push:
+    # Sequence of patterns matched against refs/tags
+    tags:
+      - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
 
 jobs:
   setup:
     runs-on: ubuntu-latest
+    if: ${{ false }}  # disable it for now
     steps:
     - uses: actions/checkout@v2
     - name: Set up Python
