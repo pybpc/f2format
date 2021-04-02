@@ -23,8 +23,7 @@ jobs:
           brew install pipenv python@3.8
           pipenv --python $(brew --prefix python@3.8)/bin/python3.8
           pipenv run pip install -U pip setuptools wheel
-          pipenv run pip install -r docs/requirements.txt
-          pipenv run pip install .
+          pipenv run pip install .[docs]
           pipenv run make -C docs html
 
           # disable Jekyll
