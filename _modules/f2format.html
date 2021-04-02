@@ -390,6 +390,28 @@
     <span class="c1"># backward compatibility and auxiliary alias</span>
     <span class="n">has_f2format</span> <span class="o">=</span> <span class="n">has_expr</span>
 
+<div class="viewcode-block" id="Context.has_fstring"><a class="viewcode-back" href="../api.html#f2format.Context.has_fstring">[docs]</a>    <span class="nd">@final</span>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">has_fstring</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">parso</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">NodeOrLeaf</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Check if node has actual formatted string literals.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            node (parso.tree.NodeOrLeaf): parso AST</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: if ``node`` has actual formatted string literals</span>
+<span class="sd">                (with expressions in the literals)</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s1">&#39;fstring_expr&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span>
+
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="s1">&#39;children&#39;</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">children</span><span class="p">:</span>  <span class="c1"># type: ignore[attr-defined]</span>
+                <span class="k">if</span> <span class="bp">cls</span><span class="o">.</span><span class="n">has_fstring</span><span class="p">(</span><span class="n">child</span><span class="p">):</span>
+                    <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
 <div class="viewcode-block" id="Context.has_debug_fstring"><a class="viewcode-back" href="../api.html#f2format.Context.has_debug_fstring">[docs]</a>    <span class="nd">@final</span>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">has_debug_fstring</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">parso</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">NodeOrLeaf</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
@@ -403,18 +425,41 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s1">&#39;fstring_expr&#39;</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">expr</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">children</span><span class="p">:</span>  <span class="c1"># type: ignore[attr-defined]</span>
-                <span class="k">if</span> <span class="n">expr</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s1">&#39;operator&#39;</span> <span class="ow">and</span> <span class="n">expr</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="s1">&#39;=&#39;</span><span class="p">:</span>
-                    <span class="n">next_sibling</span> <span class="o">=</span> <span class="n">expr</span><span class="o">.</span><span class="n">get_next_sibling</span><span class="p">()</span>
-                    <span class="k">if</span> <span class="n">next_sibling</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s1">&#39;operator&#39;</span> <span class="ow">and</span> <span class="n">next_sibling</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="s1">&#39;}&#39;</span> \
-                        <span class="ow">or</span> <span class="n">next_sibling</span><span class="o">.</span><span class="n">type</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;fstring_conversion&#39;</span><span class="p">,</span> <span class="s1">&#39;fstring_format_spec&#39;</span><span class="p">):</span>
-                        <span class="k">return</span> <span class="kc">True</span>
-            <span class="k">return</span> <span class="kc">False</span>
+            <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">is_debug_fstring</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>  <span class="c1"># type: ignore[arg-type]</span>
 
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="s1">&#39;children&#39;</span><span class="p">):</span>
             <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">children</span><span class="p">:</span>  <span class="c1"># type: ignore[attr-defined]</span>
                 <span class="k">if</span> <span class="bp">cls</span><span class="o">.</span><span class="n">has_debug_fstring</span><span class="p">(</span><span class="n">child</span><span class="p">):</span>
                     <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="Context.is_debug_fstring"><a class="viewcode-back" href="../api.html#f2format.Context.is_debug_fstring">[docs]</a>    <span class="nd">@final</span>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">is_debug_fstring</span><span class="p">(</span><span class="n">node</span><span class="p">:</span> <span class="n">parso</span><span class="o">.</span><span class="n">python</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">PythonNode</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Check if node **is** *debug* formatted string literal expression (:token:`f_expression`).</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            node (parso.python.tree.PythonNode): formatted literal expression node</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: if ``node`` **is** debug formatted string literals</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">type</span> <span class="o">!=</span> <span class="s1">&#39;fstring_expr&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="k">for</span> <span class="n">expr</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">children</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">expr</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s1">&#39;operator&#39;</span> <span class="ow">and</span> <span class="n">expr</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="s1">&#39;=&#39;</span><span class="p">:</span>
+                <span class="n">next_sibling</span> <span class="o">=</span> <span class="n">expr</span><span class="o">.</span><span class="n">get_next_sibling</span><span class="p">()</span>
+
+                <span class="k">if</span> <span class="p">(</span><span class="n">next_sibling</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s1">&#39;operator&#39;</span> <span class="ow">and</span> <span class="n">next_sibling</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="s1">&#39;}&#39;</span><span class="p">):</span>
+                    <span class="k">return</span> <span class="kc">True</span>
+                <span class="k">if</span> <span class="n">next_sibling</span><span class="o">.</span><span class="n">type</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;fstring_conversion&#39;</span><span class="p">,</span> <span class="s1">&#39;fstring_format_spec&#39;</span><span class="p">]:</span>
+                    <span class="k">return</span> <span class="kc">True</span>
+                <span class="k">if</span> <span class="n">next_sibling</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s1">&#39;operator&#39;</span> <span class="ow">and</span> <span class="n">next_sibling</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="s1">&#39;:&#39;</span><span class="p">:</span>
+                    <span class="n">next_next_sibling</span> <span class="o">=</span> <span class="n">next_sibling</span><span class="o">.</span><span class="n">get_next_sibling</span><span class="p">()</span>
+                    <span class="k">if</span> <span class="n">next_next_sibling</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s1">&#39;operator&#39;</span> <span class="ow">and</span> <span class="n">next_next_sibling</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="s1">&#39;}&#39;</span><span class="p">:</span>
+                        <span class="k">return</span> <span class="kc">True</span>
         <span class="k">return</span> <span class="kc">False</span></div></div>
 
 
@@ -649,55 +694,7 @@
             <span class="k">return</span>
 
         <span class="c1"># no-op</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_buffer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prefix</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_suffix</span></div>
-
-<div class="viewcode-block" id="StringContext.has_fstring"><a class="viewcode-back" href="../api.html#f2format.StringContext.has_fstring">[docs]</a>    <span class="nd">@final</span>
-    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">has_fstring</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">parso</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">NodeOrLeaf</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Check if node has actual formatted string literals.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            node (parso.tree.NodeOrLeaf): parso AST</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            bool: if ``node`` has actual formatted string literals</span>
-<span class="sd">                (with expressions in the literals)</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s1">&#39;fstring_expr&#39;</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">True</span>
-
-        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="s1">&#39;children&#39;</span><span class="p">):</span>
-            <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">children</span><span class="p">:</span>  <span class="c1"># type: ignore[attr-defined]</span>
-                <span class="k">if</span> <span class="bp">cls</span><span class="o">.</span><span class="n">has_fstring</span><span class="p">(</span><span class="n">child</span><span class="p">):</span>
-                    <span class="k">return</span> <span class="kc">True</span>
-        <span class="k">return</span> <span class="kc">False</span></div>
-
-<div class="viewcode-block" id="StringContext.is_debug_fstring"><a class="viewcode-back" href="../api.html#f2format.StringContext.is_debug_fstring">[docs]</a>    <span class="nd">@final</span>
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">is_debug_fstring</span><span class="p">(</span><span class="n">node</span><span class="p">:</span> <span class="n">parso</span><span class="o">.</span><span class="n">python</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">PythonNode</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Check if node **is** *debug* formatted string literals.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            node (parso.python.tree.PythonNode): formatted literal expression node</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            bool: if ``node`` **is** debug formatted string literals</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">for</span> <span class="n">expr</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">children</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">expr</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s1">&#39;operator&#39;</span> <span class="ow">and</span> <span class="n">expr</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="s1">&#39;=&#39;</span><span class="p">:</span>
-                <span class="n">next_sibling</span> <span class="o">=</span> <span class="n">expr</span><span class="o">.</span><span class="n">get_next_sibling</span><span class="p">()</span>
-
-                <span class="k">if</span> <span class="p">(</span><span class="n">next_sibling</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s1">&#39;operator&#39;</span> <span class="ow">and</span> <span class="n">next_sibling</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="s1">&#39;}&#39;</span><span class="p">):</span>
-                    <span class="k">return</span> <span class="kc">True</span>
-                <span class="k">if</span> <span class="n">next_sibling</span><span class="o">.</span><span class="n">type</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;fstring_conversion&#39;</span><span class="p">,</span> <span class="s1">&#39;fstring_format_spec&#39;</span><span class="p">]:</span>
-                    <span class="k">return</span> <span class="kc">True</span>
-                <span class="k">if</span> <span class="n">next_sibling</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s1">&#39;operator&#39;</span> <span class="ow">and</span> <span class="n">next_sibling</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="s1">&#39;:&#39;</span><span class="p">:</span>
-                    <span class="n">next_next_sibling</span> <span class="o">=</span> <span class="n">next_sibling</span><span class="o">.</span><span class="n">get_next_sibling</span><span class="p">()</span>
-                    <span class="k">if</span> <span class="n">next_next_sibling</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s1">&#39;operator&#39;</span> <span class="ow">and</span> <span class="n">next_next_sibling</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="s1">&#39;}&#39;</span><span class="p">:</span>
-                        <span class="k">return</span> <span class="kc">True</span>
-        <span class="k">return</span> <span class="kc">False</span></div></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_buffer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prefix</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_suffix</span></div></div>
 
 
 <span class="c1">###############################################################################</span>

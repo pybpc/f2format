@@ -360,6 +360,44 @@ may contain formatted string literals (<a class="reference external" href="https
 </dl>
 </dd></dl>
 
+<dl class="py method">
+<dt id="f2format.Context.has_fstring">
+<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">has_fstring</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/f2format.html#Context.has_fstring"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#f2format.Context.has_fstring" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if node has actual formatted string literals.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>node</strong> (<a class="reference external" href="https://parso.readthedocs.io/en/latest/docs/parser-tree.html#parso.tree.NodeOrLeaf" title="(in parso v0.7)"><em>parso.tree.NodeOrLeaf</em></a>) – parso AST</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>if <code class="docutils literal notranslate"><span class="pre">node</span></code> has actual formatted string literals</dt><dd><p>(with expressions in the literals)</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="f2format.Context.is_debug_fstring">
+<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">is_debug_fstring</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/f2format.html#Context.is_debug_fstring"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#f2format.Context.is_debug_fstring" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if node <strong>is</strong> <em>debug</em> formatted string literal expression (<a class="reference external" href="https://docs.python.org/3/reference/lexical_analysis.html#grammar-token-f-expression" title="(in Python v3.9)"><code class="xref std std-token docutils literal notranslate"><span class="pre">f_expression</span></code></a>).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>node</strong> (<a class="reference external" href="https://parso.readthedocs.io/en/latest/docs/parser-tree.html#parso.python.tree.PythonNode" title="(in parso v0.7)"><em>parso.python.tree.PythonNode</em></a>) – formatted literal expression node</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>if <code class="docutils literal notranslate"><span class="pre">node</span></code> <strong>is</strong> debug formatted string literals</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py attribute">
 <dt id="f2format.Context._abc_impl">
 <code class="sig-name descname"><span class="pre">_abc_impl</span></code><em class="property"> <span class="pre">=</span> <span class="pre">&lt;_abc_data</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#f2format.Context._abc_impl" title="Permalink to this definition">¶</a></dt>
@@ -484,44 +522,6 @@ code as <code class="xref py py-attr docutils literal notranslate"><span class="
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="f2format.StringContext.has_fstring">
-<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">has_fstring</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/f2format.html#StringContext.has_fstring"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#f2format.StringContext.has_fstring" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check if node has actual formatted string literals.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>node</strong> (<a class="reference external" href="https://parso.readthedocs.io/en/latest/docs/parser-tree.html#parso.tree.NodeOrLeaf" title="(in parso v0.7)"><em>parso.tree.NodeOrLeaf</em></a>) – parso AST</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><dl class="simple">
-<dt>if <code class="docutils literal notranslate"><span class="pre">node</span></code> has actual formatted string literals</dt><dd><p>(with expressions in the literals)</p>
-</dd>
-</dl>
-</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="f2format.StringContext.is_debug_fstring">
-<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">is_debug_fstring</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/f2format.html#StringContext.is_debug_fstring"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#f2format.StringContext.is_debug_fstring" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check if node <strong>is</strong> <em>debug</em> formatted string literals.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>node</strong> (<a class="reference external" href="https://parso.readthedocs.io/en/latest/docs/parser-tree.html#parso.python.tree.PythonNode" title="(in parso v0.7)"><em>parso.python.tree.PythonNode</em></a>) – formatted literal expression node</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>if <code class="docutils literal notranslate"><span class="pre">node</span></code> <strong>is</strong> debug formatted string literals</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></p>
 </dd>
 </dl>
 </dd></dl>
