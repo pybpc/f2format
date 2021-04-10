@@ -4,7 +4,8 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+
     <title>Algorithms &#8212; f2format 0.8.7rc1 documentation</title>
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
@@ -32,7 +33,7 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="algorithms">
+  <section id="algorithms">
 <h1>Algorithms<a class="headerlink" href="#algorithms" title="Permalink to this headline">¶</a></h1>
 <p>As discussed in <span class="target" id="index-0"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0498"><strong>PEP 498</strong></a>, <em>formatted string literals</em> (<em>f-string</em>) is a way to
 interpolate evaluated expression values into regular string literals, using the syntax
@@ -40,7 +41,7 @@ interpolate evaluated expression values into regular string literals, using the 
 It is roughly equivalent to first evaluate the value of <code class="docutils literal notranslate"><span class="pre">expression</span></code> then
 interpolate its value into the string literal with provided format specifiers and
 convension.</p>
-<div class="section" id="basic-concepts">
+<section id="basic-concepts">
 <h2>Basic Concepts<a class="headerlink" href="#basic-concepts" title="Permalink to this headline">¶</a></h2>
 <p>To convert, <code class="docutils literal notranslate"><span class="pre">f2format</span></code> will first extract all <em>expressions</em> from the <em>f-strings</em>,
 then rewrite the literal with a <code class="docutils literal notranslate"><span class="pre">str.format</span></code> function using anonymous positional
@@ -53,8 +54,8 @@ expression sequence from the extracted expressions.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;abc{:spec1}{:spec2}def</span><span class="si">{}</span><span class="s1">ghi&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">expr1</span><span class="p">,</span> <span class="n">expr2</span><span class="p">,</span> <span class="n">expr3</span><span class="p">)</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="concatenable-strings">
+</section>
+<section id="concatenable-strings">
 <h2>Concatenable Strings<a class="headerlink" href="#concatenable-strings" title="Permalink to this headline">¶</a></h2>
 <p>As mentioned in the <a class="reference external" href="https://docs.python.org/3/reference/lexical_analysis.html#string-literal-concatenation">Python documentation</a>,
 multiple adjacent string or bytes literals (delimited by whitespace), possibly
@@ -88,8 +89,8 @@ at the end of the string sequence.</p>
  <span class="s1">&#39;&quot;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">_replace</span><span class="p">(</span><span class="n">password</span><span class="p">)))</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="debug-f-strings">
+</section>
+<section id="debug-f-strings">
 <h2>Debug F-Strings<a class="headerlink" href="#debug-f-strings" title="Permalink to this headline">¶</a></h2>
 <p>Since Python 3.8, <code class="docutils literal notranslate"><span class="pre">=</span></code> was introduced to <em>f-strings</em> in addition to the acceptance
 of <a class="reference external" href="https://bugs.python.org/issue36817">bpo-36817</a>. As discussed in the
@@ -108,8 +109,8 @@ corresponding expressions.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot; foo = </span><span class="si">{!r}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">foo</span><span class="p">)</span>
 </pre></div>
 </div>
-</div>
-</div>
+</section>
+</section>
 
 
           </div>
