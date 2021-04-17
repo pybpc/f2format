@@ -4,8 +4,7 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>API Reference &#8212; f2format 0.8.7rc1 documentation</title>
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
@@ -32,9 +31,9 @@
 
           <div class="body" role="main">
             
-  <section id="module-f2format">
+  <div class="section" id="module-f2format">
 <span id="api-reference"></span><h1>API Reference<a class="headerlink" href="#module-f2format" title="Permalink to this headline">¶</a></h1>
-<section id="public-interface">
+<div class="section" id="public-interface">
 <h2>Public Interface<a class="headerlink" href="#public-interface" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
 <dt id="f2format.convert">
@@ -151,14 +150,14 @@ or <code class="docutils literal notranslate"><span class="pre">'t'</span></code
 </dl>
 </dd></dl>
 
-</section>
-<section id="conversion-implementation">
+</div>
+<div class="section" id="conversion-implementation">
 <h2>Conversion Implementation<a class="headerlink" href="#conversion-implementation" title="Permalink to this headline">¶</a></h2>
 <p>The main logic of the <code class="docutils literal notranslate"><span class="pre">f2format</span></code> conversion is to extract the expressions
 part from <em>formatted string literals</em> and rewrite the original <em>f-string</em>
 using <code class="docutils literal notranslate"><span class="pre">str.format</span></code> syntax.</p>
 <p>For conversion algorithms and details, please refer to <a class="reference internal" href="algorithms.html"><span class="doc">Algorithms</span></a>.</p>
-<section id="data-structures">
+<div class="section" id="data-structures">
 <h3>Data Structures<a class="headerlink" href="#data-structures" title="Permalink to this headline">¶</a></h3>
 <p>During conversion, we utilised <a class="reference external" href="https://bpc-utils.readthedocs.io/en/latest/index.html#bpc_utils.Config" title="(in bpc-utils)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bpc_utils.Config</span></code></a> to store and deliver the
 configurations over the conversion <a class="reference internal" href="#f2format.Context" title="f2format.Context"><code class="xref py py-class docutils literal notranslate"><span class="pre">Context</span></code></a> instances, which should
@@ -199,8 +198,8 @@ be as following:</p>
 
 </dd></dl>
 
-</section>
-<section id="conversion-contexts">
+</div>
+<div class="section" id="conversion-contexts">
 <h3>Conversion Contexts<a class="headerlink" href="#conversion-contexts" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
 <dt id="f2format.Context">
@@ -666,11 +665,11 @@ code as <code class="xref py py-attr docutils literal notranslate"><span class="
 
 </dd></dl>
 
-</section>
-</section>
-<section id="internal-auxiliaries">
+</div>
+</div>
+<div class="section" id="internal-auxiliaries">
 <h2>Internal Auxiliaries<a class="headerlink" href="#internal-auxiliaries" title="Permalink to this headline">¶</a></h2>
-<section id="options-defaults">
+<div class="section" id="options-defaults">
 <h3>Options &amp; Defaults<a class="headerlink" href="#options-defaults" title="Permalink to this headline">¶</a></h3>
 <dl class="py data">
 <dt id="f2format.F2FORMAT_SOURCE_VERSIONS">
@@ -943,8 +942,8 @@ code as <code class="xref py py-attr docutils literal notranslate"><span class="
 <p>For <a class="reference internal" href="#f2format._default_concurrency" title="f2format._default_concurrency"><code class="xref py py-data docutils literal notranslate"><span class="pre">_default_concurrency</span></code></a>, <a class="reference internal" href="#f2format._default_linesep" title="f2format._default_linesep"><code class="xref py py-data docutils literal notranslate"><span class="pre">_default_linesep</span></code></a> and <a class="reference internal" href="#f2format._default_indentation" title="f2format._default_indentation"><code class="xref py py-data docutils literal notranslate"><span class="pre">_default_indentation</span></code></a>,
 <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a> means <em>auto detection</em> during runtime.</p>
 </div>
-</section>
-<section id="cli-utilities">
+</div>
+<div class="section" id="cli-utilities">
 <h3>CLI Utilities<a class="headerlink" href="#cli-utilities" title="Permalink to this headline">¶</a></h3>
 <dl class="py function">
 <dt id="f2format.get_parser">
@@ -1047,9 +1046,9 @@ code as <code class="xref py py-attr docutils literal notranslate"><span class="
 </div>
 </dd></dl>
 
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
           </div>

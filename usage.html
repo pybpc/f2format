@@ -4,8 +4,7 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Usage &#8212; f2format 0.8.7rc1 documentation</title>
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
@@ -33,9 +32,9 @@
 
           <div class="body" role="main">
             
-  <section id="usage">
+  <div class="section" id="usage">
 <h1>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h1>
-<section id="specifying-files-and-directories-to-convert">
+<div class="section" id="specifying-files-and-directories-to-convert">
 <h2>Specifying Files And Directories To Convert<a class="headerlink" href="#specifying-files-and-directories-to-convert" title="Permalink to this headline">¶</a></h2>
 <p>To convert a single file:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>cat myscript.py
@@ -111,8 +110,8 @@ use the <strong>simple mode</strong>.</p>
 </pre></div>
 </div>
 <p>In simple mode, no file names shall be provided via positional arguments.</p>
-</section>
-<section id="archiving-and-recovering-files">
+</div>
+<div class="section" id="archiving-and-recovering-files">
 <h2>Archiving And Recovering Files<a class="headerlink" href="#archiving-and-recovering-files" title="Permalink to this headline">¶</a></h2>
 <p>If you are not using the simple mode, <code class="docutils literal notranslate"><span class="pre">f2format</span></code> overwrites Python source
 files, which could potentially cause data loss. Therefore, a built-in archiving
@@ -156,8 +155,8 @@ was created. Never perform the recovery operation on an arbitrary untrusted
 archive file. Doing so may allow attackers to overwrite any files in the
 system.</p>
 </div>
-</section>
-<section id="conversion-options">
+</div>
+<div class="section" id="conversion-options">
 <h2>Conversion Options<a class="headerlink" href="#conversion-options" title="Permalink to this headline">¶</a></h2>
 <p>By default, <code class="docutils literal notranslate"><span class="pre">f2format</span></code> automatically detects file line endings and use the
 same line ending for code insertion. If you want to manually specify the line
@@ -174,8 +173,8 @@ If you want to manually specify a version for parsing, use the CLI option
 <p>By default, code insertion of <code class="docutils literal notranslate"><span class="pre">f2format</span></code> conforms to <span class="target" id="index-0"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0008"><strong>PEP 8</strong></a>. To opt out
 and get a more compact result, specify the CLI option <code class="docutils literal notranslate"><span class="pre">-n8</span></code> (<code class="docutils literal notranslate"><span class="pre">--no-pep8</span></code>)
 or set environment variable <code class="docutils literal notranslate"><span class="pre">F2FORMAT_PEP8=0</span></code>.</p>
-</section>
-<section id="runtime-options">
+</div>
+<div class="section" id="runtime-options">
 <h2>Runtime Options<a class="headerlink" href="#runtime-options" title="Permalink to this headline">¶</a></h2>
 <p>Specify the CLI option <code class="docutils literal notranslate"><span class="pre">-q</span></code> (<code class="docutils literal notranslate"><span class="pre">--quiet</span></code>) or set environment variable
 <code class="docutils literal notranslate"><span class="pre">F2FORMAT_QUIET=1</span></code> to run in quiet mode.</p>
@@ -186,14 +185,14 @@ for conversion.</p>
 actually performing conversion and archiving.</p>
 <p>By running <code class="docutils literal notranslate"><span class="pre">f2format</span> <span class="pre">--help</span></code>, you can see the current values of all the options,
 based on their default values and your environment variables.</p>
-</section>
-<section id="api-usage">
+</div>
+<div class="section" id="api-usage">
 <h2>API Usage<a class="headerlink" href="#api-usage" title="Permalink to this headline">¶</a></h2>
 <p>If you want to programmatically invoke <code class="docutils literal notranslate"><span class="pre">f2format</span></code>, you may want to look at
 <a class="reference internal" href="api.html"><span class="doc">API Reference</span></a>. The <a class="reference internal" href="api.html#f2format.convert" title="f2format.convert"><code class="xref py py-func docutils literal notranslate"><span class="pre">f2format.convert()</span></code></a> and <a class="reference internal" href="api.html#f2format.f2format" title="f2format.f2format"><code class="xref py py-func docutils literal notranslate"><span class="pre">f2format.f2format()</span></code></a>
 functions should be most commonly used.</p>
-</section>
-<section id="disutils-setuptools-integration">
+</div>
+<div class="section" id="disutils-setuptools-integration">
 <h2>Disutils/Setuptools Integration<a class="headerlink" href="#disutils-setuptools-integration" title="Permalink to this headline">¶</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">f2format</span></code> can also be directly integrated within your <code class="docutils literal notranslate"><span class="pre">setup.py</span></code> script
 to dynamically convert <em>assignment expressions</em> upon installation:</p>
@@ -246,8 +245,8 @@ the <code class="docutils literal notranslate"><span class="pre">requires</span>
 </span><span class="p">...</span>
 </pre></div>
 </div>
-</section>
-</section>
+</div>
+</div>
 
 
           </div>
