@@ -4,11 +4,12 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
     <title>API Reference &#8212; f2format 0.8.7rc1 documentation</title>
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
-    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
@@ -31,13 +32,13 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="module-f2format">
+  <section id="module-f2format">
 <span id="api-reference"></span><h1>API Reference<a class="headerlink" href="#module-f2format" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="public-interface">
+<section id="public-interface">
 <h2>Public Interface<a class="headerlink" href="#public-interface" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
-<dt id="f2format.convert">
-<code class="sig-prename descclassname"><span class="pre">f2format.</span></code><code class="sig-name descname"><span class="pre">convert</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">code</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_version</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linesep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indentation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pep8</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/f2format.html#convert"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#f2format.convert" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="f2format.convert">
+<span class="sig-prename descclassname"><span class="pre">f2format.</span></span><span class="sig-name descname"><span class="pre">convert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">code</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_version</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linesep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indentation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pep8</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/f2format.html#convert"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#f2format.convert" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert the given Python source code string.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -77,8 +78,8 @@
 </dd></dl>
 
 <dl class="py function">
-<dt id="f2format.f2format">
-<code class="sig-prename descclassname"><span class="pre">f2format.</span></code><code class="sig-name descname"><span class="pre">f2format</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_version</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linesep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indentation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pep8</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quiet</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dry_run</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/f2format.html#f2format"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#f2format.f2format" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="f2format.f2format">
+<span class="sig-prename descclassname"><span class="pre">f2format.</span></span><span class="sig-name descname"><span class="pre">f2format</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_version</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linesep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indentation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pep8</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quiet</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dry_run</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/f2format.html#f2format"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#f2format.f2format" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert the given Python source code file. The file will be overwritten.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -125,8 +126,8 @@ or <code class="docutils literal notranslate"><span class="pre">'t'</span></code
 </dd></dl>
 
 <dl class="py function">
-<dt id="f2format.main">
-<code class="sig-prename descclassname"><span class="pre">f2format.</span></code><code class="sig-name descname"><span class="pre">main</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">argv</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/f2format.html#main"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#f2format.main" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="f2format.main">
+<span class="sig-prename descclassname"><span class="pre">f2format.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">argv</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/f2format.html#main"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#f2format.main" title="Permalink to this definition">¶</a></dt>
 <dd><p>Entry point for f2format.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -150,61 +151,61 @@ or <code class="docutils literal notranslate"><span class="pre">'t'</span></code
 </dl>
 </dd></dl>
 
-</div>
-<div class="section" id="conversion-implementation">
+</section>
+<section id="conversion-implementation">
 <h2>Conversion Implementation<a class="headerlink" href="#conversion-implementation" title="Permalink to this headline">¶</a></h2>
 <p>The main logic of the <code class="docutils literal notranslate"><span class="pre">f2format</span></code> conversion is to extract the expressions
 part from <em>formatted string literals</em> and rewrite the original <em>f-string</em>
 using <code class="docutils literal notranslate"><span class="pre">str.format</span></code> syntax.</p>
 <p>For conversion algorithms and details, please refer to <a class="reference internal" href="algorithms.html"><span class="doc">Algorithms</span></a>.</p>
-<div class="section" id="data-structures">
+<section id="data-structures">
 <h3>Data Structures<a class="headerlink" href="#data-structures" title="Permalink to this headline">¶</a></h3>
 <p>During conversion, we utilised <a class="reference external" href="https://bpc-utils.readthedocs.io/en/latest/index.html#bpc_utils.Config" title="(in bpc-utils)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bpc_utils.Config</span></code></a> to store and deliver the
 configurations over the conversion <a class="reference internal" href="#f2format.Context" title="f2format.Context"><code class="xref py py-class docutils literal notranslate"><span class="pre">Context</span></code></a> instances, which should
 be as following:</p>
 <dl class="py class">
-<dt id="f2format.Config">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">f2format.</span></code><code class="sig-name descname"><span class="pre">Config</span></code><a class="reference internal" href="_modules/bpc_utils/misc.html#Config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#f2format.Config" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="f2format.Config">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">f2format.</span></span><span class="sig-name descname"><span class="pre">Config</span></span><a class="reference internal" href="_modules/bpc_utils/misc.html#Config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#f2format.Config" title="Permalink to this definition">¶</a></dt>
 <dd><p>Configuration object shared over the conversion process of a single source file.</p>
 <dl class="py attribute">
-<dt id="f2format.Config.indentation">
-<code class="sig-name descname"><span class="pre">indentation</span></code><em class="property"><span class="pre">:</span> <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a></em><a class="headerlink" href="#f2format.Config.indentation" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="f2format.Config.indentation">
+<span class="sig-name descname"><span class="pre">indentation</span></span><em class="property"><span class="pre">:</span> <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a></em><a class="headerlink" href="#f2format.Config.indentation" title="Permalink to this definition">¶</a></dt>
 <dd><p>Indentation sequence.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="f2format.Config.linesep">
-<code class="sig-name descname"><span class="pre">linesep</span></code><em class="property"><span class="pre">:</span> <span class="pre">Literal['\n',</span> <span class="pre">'\r\n',</span> <span class="pre">'\r']</span></em><a class="headerlink" href="#f2format.Config.linesep" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="f2format.Config.linesep">
+<span class="sig-name descname"><span class="pre">linesep</span></span><em class="property"><span class="pre">:</span> <span class="pre">Literal['\n',</span> <span class="pre">'\r\n',</span> <span class="pre">'\r']</span></em><a class="headerlink" href="#f2format.Config.linesep" title="Permalink to this definition">¶</a></dt>
 <dd><p>Line separator.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="f2format.Config.pep8">
-<code class="sig-name descname"><span class="pre">pep8</span></code><em class="property"><span class="pre">:</span> <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a></em><a class="headerlink" href="#f2format.Config.pep8" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="f2format.Config.pep8">
+<span class="sig-name descname"><span class="pre">pep8</span></span><em class="property"><span class="pre">:</span> <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a></em><a class="headerlink" href="#f2format.Config.pep8" title="Permalink to this definition">¶</a></dt>
 <dd><p><span class="target" id="index-18"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0008"><strong>PEP 8</strong></a> compliant conversion flag.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="f2format.Config.filename">
-<code class="sig-name descname"><span class="pre">filename</span></code><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#f2format.Config.filename" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="f2format.Config.filename">
+<span class="sig-name descname"><span class="pre">filename</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#f2format.Config.filename" title="Permalink to this definition">¶</a></dt>
 <dd><p>An optional source file name to provide a context in case of error.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="f2format.Config.source_version">
-<code class="sig-name descname"><span class="pre">source_version</span></code><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#f2format.Config.source_version" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="f2format.Config.source_version">
+<span class="sig-name descname"><span class="pre">source_version</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#f2format.Config.source_version" title="Permalink to this definition">¶</a></dt>
 <dd><p>Parse the code as this Python version (uses the latest version by default).</p>
 </dd></dl>
 
 </dd></dl>
 
-</div>
-<div class="section" id="conversion-contexts">
+</section>
+<section id="conversion-contexts">
 <h3>Conversion Contexts<a class="headerlink" href="#conversion-contexts" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
-<dt id="f2format.Context">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">f2format.</span></code><code class="sig-name descname"><span class="pre">Context</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indent_level</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">raw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/f2format.html#Context"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#f2format.Context" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">bpc_utils.context.BaseContext</span></code></p>
+<dt class="sig sig-object py" id="f2format.Context">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">f2format.</span></span><span class="sig-name descname"><span class="pre">Context</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indent_level</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">raw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/f2format.html#Context"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#f2format.Context" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://bpc-utils.readthedocs.io/en/latest/index.html#bpc_utils.BaseContext" title="(in bpc-utils)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bpc_utils.context.BaseContext</span></code></a></p>
 <p>General conversion context.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -257,8 +258,8 @@ it will process nodes with following methods:</p>
 </dd>
 </dl>
 <dl class="py method">
-<dt id="f2format.Context._concat">
-<code class="sig-name descname"><span class="pre">_concat</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/f2format.html#Context._concat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#f2format.Context._concat" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="f2format.Context._concat">
+<span class="sig-name descname"><span class="pre">_concat</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/f2format.html#Context._concat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#f2format.Context._concat" title="Permalink to this definition">¶</a></dt>
 <dd><p>Concatenate final string.</p>
 <p>This method tries to concatenate final result based on the very location
 where starts to contain formatted string literals, i.e. between the converted
@@ -271,8 +272,8 @@ code as <code class="xref py py-attr docutils literal notranslate"><span class="
 </dd></dl>
 
 <dl class="py method">
-<dt id="f2format.Context._process_fstring">
-<code class="sig-name descname"><span class="pre">_process_fstring</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/f2format.html#Context._process_fstring"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#f2format.Context._process_fstring" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="f2format.Context._process_fstring">
+<span class="sig-name descname"><span class="pre">_process_fstring</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/f2format.html#Context._process_fstring"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#f2format.Context._process_fstring" title="Permalink to this definition">¶</a></dt>
 <dd><p>Process formatted strings (<a class="reference external" href="https://docs.python.org/3/reference/lexical_analysis.html#grammar-token-f-string" title="(in Python v3.9)"><code class="xref std std-token docutils literal notranslate"><span class="pre">f_string</span></code></a>).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -285,8 +286,8 @@ code as <code class="xref py py-attr docutils literal notranslate"><span class="
 </dd></dl>
 
 <dl class="py method">
-<dt id="f2format.Context._process_strings">
-<code class="sig-name descname"><span class="pre">_process_strings</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/f2format.html#Context._process_strings"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#f2format.Context._process_strings" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="f2format.Context._process_strings">
+<span class="sig-name descname"><span class="pre">_process_strings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/f2format.html#Context._process_strings"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#f2format.Context._process_strings" title="Permalink to this definition">¶</a></dt>
 <dd><p>Process concatenable strings (<a class="reference external" href="https://docs.python.org/3/reference/lexical_analysis.html#grammar-token-stringliteral" title="(in Python v3.9)"><code class="xref std std-token docutils literal notranslate"><span class="pre">stringliteral</span></code></a>).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -310,8 +311,8 @@ may contain formatted string literals (<a class="reference external" href="https
 </dd></dl>
 
 <dl class="py method">
-<dt id="f2format.Context.has_debug_fstring">
-<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">has_debug_fstring</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/f2format.html#Context.has_debug_fstring"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#f2format.Context.has_debug_fstring" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="f2format.Context.has_debug_fstring">
+<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">has_debug_fstring</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/f2format.html#Context.has_debug_fstring"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#f2format.Context.has_debug_fstring" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if node has <em>debug</em> formatted string literals.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -327,8 +328,8 @@ may contain formatted string literals (<a class="reference external" href="https
 </dd></dl>
 
 <dl class="py method">
-<dt id="f2format.Context.has_expr">
-<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">has_expr</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/f2format.html#Context.has_expr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#f2format.Context.has_expr" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="f2format.Context.has_expr">
+<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">has_expr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/f2format.html#Context.has_expr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#f2format.Context.has_expr" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if node has formatted string literals.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -344,8 +345,8 @@ may contain formatted string literals (<a class="reference external" href="https
 </dd></dl>
 
 <dl class="py method">
-<dt id="f2format.Context.has_f2format">
-<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">has_f2format</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#f2format.Context.has_f2format" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="f2format.Context.has_f2format">
+<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">has_f2format</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#f2format.Context.has_f2format" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if node has formatted string literals.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -361,8 +362,8 @@ may contain formatted string literals (<a class="reference external" href="https
 </dd></dl>
 
 <dl class="py method">
-<dt id="f2format.Context.has_fstring">
-<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">has_fstring</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/f2format.html#Context.has_fstring"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#f2format.Context.has_fstring" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="f2format.Context.has_fstring">
+<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">has_fstring</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/f2format.html#Context.has_fstring"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#f2format.Context.has_fstring" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if node has actual formatted string literals.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -382,8 +383,8 @@ may contain formatted string literals (<a class="reference external" href="https
 </dd></dl>
 
 <dl class="py method">
-<dt id="f2format.Context.is_debug_fstring">
-<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">is_debug_fstring</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/f2format.html#Context.is_debug_fstring"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#f2format.Context.is_debug_fstring" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="f2format.Context.is_debug_fstring">
+<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">is_debug_fstring</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/f2format.html#Context.is_debug_fstring"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#f2format.Context.is_debug_fstring" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if node <strong>is</strong> <em>debug</em> formatted string literal expression (<a class="reference external" href="https://docs.python.org/3/reference/lexical_analysis.html#grammar-token-f-expression" title="(in Python v3.9)"><code class="xref std std-token docutils literal notranslate"><span class="pre">f_expression</span></code></a>).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -399,15 +400,15 @@ may contain formatted string literals (<a class="reference external" href="https
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="f2format.Context._abc_impl">
-<code class="sig-name descname"><span class="pre">_abc_impl</span></code><em class="property"> <span class="pre">=</span> <span class="pre">&lt;_abc_data</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#f2format.Context._abc_impl" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="f2format.Context._abc_impl">
+<span class="sig-name descname"><span class="pre">_abc_impl</span></span><em class="property"> <span class="pre">=</span> <span class="pre">&lt;_abc_data</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#f2format.Context._abc_impl" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
-<dt id="f2format.StringContext">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">f2format.</span></code><code class="sig-name descname"><span class="pre">StringContext</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">has_fstring</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indent_level</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">raw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/f2format.html#StringContext"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#f2format.StringContext" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="f2format.StringContext">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">f2format.</span></span><span class="sig-name descname"><span class="pre">StringContext</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">has_fstring</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indent_level</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">raw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/f2format.html#StringContext"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#f2format.StringContext" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#f2format.Context" title="f2format.Context"><code class="xref py py-class docutils literal notranslate"><span class="pre">f2format.Context</span></code></a></p>
 <p>String (f-string) conversion context.</p>
 <p>This class is mainly used for converting <strong>formatted string literals</strong>.</p>
@@ -443,8 +444,8 @@ string literals (with expressions)</p></li>
 </dd>
 </dl>
 <dl class="py method">
-<dt id="f2format.StringContext._concat">
-<code class="sig-name descname"><span class="pre">_concat</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/f2format.html#StringContext._concat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#f2format.StringContext._concat" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="f2format.StringContext._concat">
+<span class="sig-name descname"><span class="pre">_concat</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/f2format.html#StringContext._concat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#f2format.StringContext._concat" title="Permalink to this definition">¶</a></dt>
 <dd><p>Concatenate final string.</p>
 <p>This method tries to concatenate final result based on the very location
 where starts to contain formatted string literals, i.e. between the converted
@@ -457,8 +458,8 @@ code as <code class="xref py py-attr docutils literal notranslate"><span class="
 </dd></dl>
 
 <dl class="py method">
-<dt id="f2format.StringContext._process_fstring">
-<code class="sig-name descname"><span class="pre">_process_fstring</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/f2format.html#StringContext._process_fstring"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#f2format.StringContext._process_fstring" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="f2format.StringContext._process_fstring">
+<span class="sig-name descname"><span class="pre">_process_fstring</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/f2format.html#StringContext._process_fstring"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#f2format.StringContext._process_fstring" title="Permalink to this definition">¶</a></dt>
 <dd><p>Process formatted strings (<a class="reference external" href="https://docs.python.org/3/reference/lexical_analysis.html#grammar-token-f-string" title="(in Python v3.9)"><code class="xref std std-token docutils literal notranslate"><span class="pre">f_string</span></code></a>).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -471,8 +472,8 @@ code as <code class="xref py py-attr docutils literal notranslate"><span class="
 </dd></dl>
 
 <dl class="py method">
-<dt id="f2format.StringContext._process_fstring_expr">
-<code class="sig-name descname"><span class="pre">_process_fstring_expr</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/f2format.html#StringContext._process_fstring_expr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#f2format.StringContext._process_fstring_expr" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="f2format.StringContext._process_fstring_expr">
+<span class="sig-name descname"><span class="pre">_process_fstring_expr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/f2format.html#StringContext._process_fstring_expr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#f2format.StringContext._process_fstring_expr" title="Permalink to this definition">¶</a></dt>
 <dd><p>Process formatted string literal expression node (<a class="reference external" href="https://docs.python.org/3/reference/lexical_analysis.html#grammar-token-f-expression" title="(in Python v3.9)"><code class="xref std std-token docutils literal notranslate"><span class="pre">f_expression</span></code></a>).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -485,8 +486,8 @@ code as <code class="xref py py-attr docutils literal notranslate"><span class="
 </dd></dl>
 
 <dl class="py method">
-<dt id="f2format.StringContext._process_fstring_start">
-<code class="sig-name descname"><span class="pre">_process_fstring_start</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/f2format.html#StringContext._process_fstring_start"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#f2format.StringContext._process_fstring_start" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="f2format.StringContext._process_fstring_start">
+<span class="sig-name descname"><span class="pre">_process_fstring_start</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/f2format.html#StringContext._process_fstring_start"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#f2format.StringContext._process_fstring_start" title="Permalink to this definition">¶</a></dt>
 <dd><p>Process formatted string literal starting node (<a class="reference external" href="https://docs.python.org/3/reference/lexical_analysis.html#grammar-token-stringprefix" title="(in Python v3.9)"><code class="xref std std-token docutils literal notranslate"><span class="pre">stringprefix</span></code></a>).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -499,8 +500,8 @@ code as <code class="xref py py-attr docutils literal notranslate"><span class="
 </dd></dl>
 
 <dl class="py method">
-<dt id="f2format.StringContext._process_fstring_string">
-<code class="sig-name descname"><span class="pre">_process_fstring_string</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/f2format.html#StringContext._process_fstring_string"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#f2format.StringContext._process_fstring_string" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="f2format.StringContext._process_fstring_string">
+<span class="sig-name descname"><span class="pre">_process_fstring_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/f2format.html#StringContext._process_fstring_string"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#f2format.StringContext._process_fstring_string" title="Permalink to this definition">¶</a></dt>
 <dd><p>Process formatted string literal string node (<a class="reference external" href="https://docs.python.org/3/reference/lexical_analysis.html#grammar-token-stringliteral" title="(in Python v3.9)"><code class="xref std std-token docutils literal notranslate"><span class="pre">stringliteral</span></code></a>).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -513,8 +514,8 @@ code as <code class="xref py py-attr docutils literal notranslate"><span class="
 </dd></dl>
 
 <dl class="py method">
-<dt id="f2format.StringContext._process_string">
-<code class="sig-name descname"><span class="pre">_process_string</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/f2format.html#StringContext._process_string"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#f2format.StringContext._process_string" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="f2format.StringContext._process_string">
+<span class="sig-name descname"><span class="pre">_process_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/f2format.html#StringContext._process_string"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#f2format.StringContext._process_string" title="Permalink to this definition">¶</a></dt>
 <dd><p>Process string node (<a class="reference external" href="https://docs.python.org/3/reference/lexical_analysis.html#grammar-token-stringliteral" title="(in Python v3.9)"><code class="xref std std-token docutils literal notranslate"><span class="pre">stringliteral</span></code></a>).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -527,19 +528,19 @@ code as <code class="xref py py-attr docutils literal notranslate"><span class="
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="f2format.StringContext._abc_impl">
-<code class="sig-name descname"><span class="pre">_abc_impl</span></code><em class="property"> <span class="pre">=</span> <span class="pre">&lt;_abc_data</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#f2format.StringContext._abc_impl" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="f2format.StringContext._abc_impl">
+<span class="sig-name descname"><span class="pre">_abc_impl</span></span><em class="property"> <span class="pre">=</span> <span class="pre">&lt;_abc_data</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#f2format.StringContext._abc_impl" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt id="f2format.StringContext._buffer">
-<code class="sig-name descname"><span class="pre">_buffer</span></code><em class="property"><span class="pre">:</span> <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a></em><a class="headerlink" href="#f2format.StringContext._buffer" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="f2format.StringContext._buffer">
+<span class="sig-name descname"><span class="pre">_buffer</span></span><em class="property"><span class="pre">:</span> <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a></em><a class="headerlink" href="#f2format.StringContext._buffer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Final converted result.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="f2format.StringContext._expr">
-<code class="sig-name descname"><span class="pre">_expr</span></code><em class="property"><span class="pre">:</span> <span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#f2format.StringContext._expr" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="f2format.StringContext._expr">
+<span class="sig-name descname"><span class="pre">_expr</span></span><em class="property"><span class="pre">:</span> <span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#f2format.StringContext._expr" title="Permalink to this definition">¶</a></dt>
 <dd><p>Expressions extracted from the formatted string literal.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -549,8 +550,8 @@ code as <code class="xref py py-attr docutils literal notranslate"><span class="
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="f2format.StringContext._flag">
-<code class="sig-name descname"><span class="pre">_flag</span></code><em class="property"><span class="pre">:</span> <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a></em><a class="headerlink" href="#f2format.StringContext._flag" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="f2format.StringContext._flag">
+<span class="sig-name descname"><span class="pre">_flag</span></span><em class="property"><span class="pre">:</span> <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a></em><a class="headerlink" href="#f2format.StringContext._flag" title="Permalink to this definition">¶</a></dt>
 <dd><p>Flag if contains actual formatted string literals (with expressions).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -560,20 +561,20 @@ code as <code class="xref py py-attr docutils literal notranslate"><span class="
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="f2format.StringContext._indent_level">
-<code class="sig-name descname"><span class="pre">_indent_level</span></code><em class="property"><span class="pre">:</span> <span class="pre">Final</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#f2format.StringContext._indent_level" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="f2format.StringContext._indent_level">
+<span class="sig-name descname"><span class="pre">_indent_level</span></span><em class="property"><span class="pre">:</span> <span class="pre">Final</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#f2format.StringContext._indent_level" title="Permalink to this definition">¶</a></dt>
 <dd><p>Current indentation level.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="f2format.StringContext._indentation">
-<code class="sig-name descname"><span class="pre">_indentation</span></code><em class="property"><span class="pre">:</span> <span class="pre">Final</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#f2format.StringContext._indentation" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="f2format.StringContext._indentation">
+<span class="sig-name descname"><span class="pre">_indentation</span></span><em class="property"><span class="pre">:</span> <span class="pre">Final</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#f2format.StringContext._indentation" title="Permalink to this definition">¶</a></dt>
 <dd><p>Indentation sequence.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="f2format.StringContext._linesep">
-<code class="sig-name descname"><span class="pre">_linesep</span></code><em class="property"><span class="pre">:</span> <span class="pre">Final</span><span class="p"><span class="pre">[</span></span><span class="pre">Linesep</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#f2format.StringContext._linesep" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="f2format.StringContext._linesep">
+<span class="sig-name descname"><span class="pre">_linesep</span></span><em class="property"><span class="pre">:</span> <span class="pre">Final</span><span class="p"><span class="pre">[</span></span><span class="pre">Linesep</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#f2format.StringContext._linesep" title="Permalink to this definition">¶</a></dt>
 <dd><p>Line seperator.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -583,56 +584,56 @@ code as <code class="xref py py-attr docutils literal notranslate"><span class="
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="f2format.StringContext._node_before_expr">
-<code class="sig-name descname"><span class="pre">_node_before_expr</span></code><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://parso.readthedocs.io/en/latest/docs/parser-tree.html#parso.tree.NodeOrLeaf" title="(in parso v0.7)"><span class="pre">parso.tree.NodeOrLeaf</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#f2format.StringContext._node_before_expr" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="f2format.StringContext._node_before_expr">
+<span class="sig-name descname"><span class="pre">_node_before_expr</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://parso.readthedocs.io/en/latest/docs/parser-tree.html#parso.tree.NodeOrLeaf" title="(in parso v0.7)"><span class="pre">parso.tree.NodeOrLeaf</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#f2format.StringContext._node_before_expr" title="Permalink to this definition">¶</a></dt>
 <dd><p>Preceding node with the target expression, i.e. the <em>insertion point</em>.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="f2format.StringContext._pep8">
-<code class="sig-name descname"><span class="pre">_pep8</span></code><em class="property"><span class="pre">:</span> <span class="pre">Final</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#f2format.StringContext._pep8" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="f2format.StringContext._pep8">
+<span class="sig-name descname"><span class="pre">_pep8</span></span><em class="property"><span class="pre">:</span> <span class="pre">Final</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#f2format.StringContext._pep8" title="Permalink to this definition">¶</a></dt>
 <dd><p><span class="target" id="index-19"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0008"><strong>PEP 8</strong></a> compliant conversion flag.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="f2format.StringContext._prefix">
-<code class="sig-name descname"><span class="pre">_prefix</span></code><em class="property"><span class="pre">:</span> <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a></em><a class="headerlink" href="#f2format.StringContext._prefix" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="f2format.StringContext._prefix">
+<span class="sig-name descname"><span class="pre">_prefix</span></span><em class="property"><span class="pre">:</span> <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a></em><a class="headerlink" href="#f2format.StringContext._prefix" title="Permalink to this definition">¶</a></dt>
 <dd><p>Code before insertion point.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="f2format.StringContext._prefix_or_suffix">
-<code class="sig-name descname"><span class="pre">_prefix_or_suffix</span></code><em class="property"><span class="pre">:</span> <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a></em><a class="headerlink" href="#f2format.StringContext._prefix_or_suffix" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="f2format.StringContext._prefix_or_suffix">
+<span class="sig-name descname"><span class="pre">_prefix_or_suffix</span></span><em class="property"><span class="pre">:</span> <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a></em><a class="headerlink" href="#f2format.StringContext._prefix_or_suffix" title="Permalink to this definition">¶</a></dt>
 <dd><p>Flag to indicate whether buffer is now <a class="reference external" href="https://bpc-utils.readthedocs.io/en/latest/index.html#bpc_utils.BaseContext._prefix" title="(in bpc-utils)"><code class="xref py py-attr docutils literal notranslate"><span class="pre">self._prefix</span></code></a>.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="f2format.StringContext._root">
-<code class="sig-name descname"><span class="pre">_root</span></code><em class="property"><span class="pre">:</span> <span class="pre">Final</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://parso.readthedocs.io/en/latest/docs/parser-tree.html#parso.tree.NodeOrLeaf" title="(in parso v0.7)"><span class="pre">parso.tree.NodeOrLeaf</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#f2format.StringContext._root" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="f2format.StringContext._root">
+<span class="sig-name descname"><span class="pre">_root</span></span><em class="property"><span class="pre">:</span> <span class="pre">Final</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://parso.readthedocs.io/en/latest/docs/parser-tree.html#parso.tree.NodeOrLeaf" title="(in parso v0.7)"><span class="pre">parso.tree.NodeOrLeaf</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#f2format.StringContext._root" title="Permalink to this definition">¶</a></dt>
 <dd><p>Root node given by the <code class="docutils literal notranslate"><span class="pre">node</span></code> parameter.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="f2format.StringContext._suffix">
-<code class="sig-name descname"><span class="pre">_suffix</span></code><em class="property"><span class="pre">:</span> <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a></em><a class="headerlink" href="#f2format.StringContext._suffix" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="f2format.StringContext._suffix">
+<span class="sig-name descname"><span class="pre">_suffix</span></span><em class="property"><span class="pre">:</span> <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a></em><a class="headerlink" href="#f2format.StringContext._suffix" title="Permalink to this definition">¶</a></dt>
 <dd><p>Code after insertion point.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="f2format.StringContext._uuid_gen">
-<code class="sig-name descname"><span class="pre">_uuid_gen</span></code><em class="property"><span class="pre">:</span> <span class="pre">Final</span><span class="p"><span class="pre">[</span></span><span class="pre">UUID4Generator</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#f2format.StringContext._uuid_gen" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="f2format.StringContext._uuid_gen">
+<span class="sig-name descname"><span class="pre">_uuid_gen</span></span><em class="property"><span class="pre">:</span> <span class="pre">Final</span><span class="p"><span class="pre">[</span></span><span class="pre">UUID4Generator</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#f2format.StringContext._uuid_gen" title="Permalink to this definition">¶</a></dt>
 <dd><p>UUID generator.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="f2format.StringContext.config">
-<code class="sig-name descname"><span class="pre">config</span></code><em class="property"><span class="pre">:</span> <span class="pre">Final</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#f2format.Config" title="f2format.Config"><span class="pre">Config</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#f2format.StringContext.config" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="f2format.StringContext.config">
+<span class="sig-name descname"><span class="pre">config</span></span><em class="property"><span class="pre">:</span> <span class="pre">Final</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#f2format.Config" title="f2format.Config"><span class="pre">Config</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#f2format.StringContext.config" title="Permalink to this definition">¶</a></dt>
 <dd><p>Internal configurations.</p>
 </dd></dl>
 
-<dl class="py method">
-<dt id="f2format.StringContext.expr">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">expr</span></code><a class="headerlink" href="#f2format.StringContext.expr" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="f2format.StringContext.expr">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">expr</span></span><em class="property"><span class="pre">:</span> <span class="pre">List[str]</span></em><a class="headerlink" href="#f2format.StringContext.expr" title="Permalink to this definition">¶</a></dt>
 <dd><p>Expressions extracted from the formatted string literal.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
@@ -642,8 +643,8 @@ code as <code class="xref py py-attr docutils literal notranslate"><span class="
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="f2format.StringContext.fstring_bracket">
-<code class="sig-name descname"><span class="pre">fstring_bracket</span></code><em class="property"><span class="pre">:</span> <span class="pre">Final</span><span class="p"><span class="pre">[</span></span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">re.Pattern</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"> <span class="pre">=</span> <span class="pre">re.compile('([{}])',</span> <span class="pre">re.ASCII)</span></em><a class="headerlink" href="#f2format.StringContext.fstring_bracket" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="f2format.StringContext.fstring_bracket">
+<span class="sig-name descname"><span class="pre">fstring_bracket</span></span><em class="property"><span class="pre">:</span> <span class="pre">Final</span><span class="p"><span class="pre">[</span></span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">re.Pattern</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"> <span class="pre">=</span> <span class="pre">re.compile('([{}])',</span> <span class="pre">re.ASCII)</span></em><a class="headerlink" href="#f2format.StringContext.fstring_bracket" title="Permalink to this definition">¶</a></dt>
 <dd><p>Pattern matches single brackets in the formatted string literal (<code class="docutils literal notranslate"><span class="pre">{}</span></code>).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -653,8 +654,8 @@ code as <code class="xref py py-attr docutils literal notranslate"><span class="
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="f2format.StringContext.fstring_start">
-<code class="sig-name descname"><span class="pre">fstring_start</span></code><em class="property"><span class="pre">:</span> <span class="pre">Final</span><span class="p"><span class="pre">[</span></span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">re.Pattern</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"> <span class="pre">=</span> <span class="pre">re.compile('[fF]',</span> <span class="pre">re.ASCII)</span></em><a class="headerlink" href="#f2format.StringContext.fstring_start" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="f2format.StringContext.fstring_start">
+<span class="sig-name descname"><span class="pre">fstring_start</span></span><em class="property"><span class="pre">:</span> <span class="pre">Final</span><span class="p"><span class="pre">[</span></span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">re.Pattern</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"> <span class="pre">=</span> <span class="pre">re.compile('[fF]',</span> <span class="pre">re.ASCII)</span></em><a class="headerlink" href="#f2format.StringContext.fstring_start" title="Permalink to this definition">¶</a></dt>
 <dd><p>Pattern matches the formatted string literal prefix (<code class="docutils literal notranslate"><span class="pre">f</span></code>).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -665,15 +666,15 @@ code as <code class="xref py py-attr docutils literal notranslate"><span class="
 
 </dd></dl>
 
-</div>
-</div>
-<div class="section" id="internal-auxiliaries">
+</section>
+</section>
+<section id="internal-auxiliaries">
 <h2>Internal Auxiliaries<a class="headerlink" href="#internal-auxiliaries" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="options-defaults">
+<section id="options-defaults">
 <h3>Options &amp; Defaults<a class="headerlink" href="#options-defaults" title="Permalink to this headline">¶</a></h3>
 <dl class="py data">
-<dt id="f2format.F2FORMAT_SOURCE_VERSIONS">
-<code class="sig-prename descclassname"><span class="pre">f2format.</span></code><code class="sig-name descname"><span class="pre">F2FORMAT_SOURCE_VERSIONS</span></code><em class="property"> <span class="pre">=</span> <span class="pre">['3.6',</span> <span class="pre">'3.7',</span> <span class="pre">'3.8',</span> <span class="pre">'3.9',</span> <span class="pre">'3.10']</span></em><a class="headerlink" href="#f2format.F2FORMAT_SOURCE_VERSIONS" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="f2format.F2FORMAT_SOURCE_VERSIONS">
+<span class="sig-prename descclassname"><span class="pre">f2format.</span></span><span class="sig-name descname"><span class="pre">F2FORMAT_SOURCE_VERSIONS</span></span><em class="property"> <span class="pre">=</span> <span class="pre">['3.6',</span> <span class="pre">'3.7',</span> <span class="pre">'3.8',</span> <span class="pre">'3.9',</span> <span class="pre">'3.10']</span></em><a class="headerlink" href="#f2format.F2FORMAT_SOURCE_VERSIONS" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get supported source versions.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
@@ -686,8 +687,8 @@ code as <code class="xref py py-attr docutils literal notranslate"><span class="
 </pre></div>
 </div>
 <dl class="py function">
-<dt id="f2format._get_quiet_option">
-<code class="sig-prename descclassname"><span class="pre">f2format.</span></code><code class="sig-name descname"><span class="pre">_get_quiet_option</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">explicit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/f2format.html#_get_quiet_option"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#f2format._get_quiet_option" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="f2format._get_quiet_option">
+<span class="sig-prename descclassname"><span class="pre">f2format.</span></span><span class="sig-name descname"><span class="pre">_get_quiet_option</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">explicit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/f2format.html#_get_quiet_option"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#f2format._get_quiet_option" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the value for the <code class="docutils literal notranslate"><span class="pre">quiet</span></code> option.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -711,8 +712,8 @@ code as <code class="xref py py-attr docutils literal notranslate"><span class="
 </dd></dl>
 
 <dl class="py function">
-<dt id="f2format._get_concurrency_option">
-<code class="sig-prename descclassname"><span class="pre">f2format.</span></code><code class="sig-name descname"><span class="pre">_get_concurrency_option</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">explicit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/f2format.html#_get_concurrency_option"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#f2format._get_concurrency_option" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="f2format._get_concurrency_option">
+<span class="sig-prename descclassname"><span class="pre">f2format.</span></span><span class="sig-name descname"><span class="pre">_get_concurrency_option</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">explicit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/f2format.html#_get_concurrency_option"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#f2format._get_concurrency_option" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the value for the <code class="docutils literal notranslate"><span class="pre">concurrency</span></code> option.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -737,8 +738,8 @@ code as <code class="xref py py-attr docutils literal notranslate"><span class="
 </dd></dl>
 
 <dl class="py function">
-<dt id="f2format._get_do_archive_option">
-<code class="sig-prename descclassname"><span class="pre">f2format.</span></code><code class="sig-name descname"><span class="pre">_get_do_archive_option</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">explicit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/f2format.html#_get_do_archive_option"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#f2format._get_do_archive_option" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="f2format._get_do_archive_option">
+<span class="sig-prename descclassname"><span class="pre">f2format.</span></span><span class="sig-name descname"><span class="pre">_get_do_archive_option</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">explicit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/f2format.html#_get_do_archive_option"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#f2format._get_do_archive_option" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the value for the <code class="docutils literal notranslate"><span class="pre">do_archive</span></code> option.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -762,8 +763,8 @@ code as <code class="xref py py-attr docutils literal notranslate"><span class="
 </dd></dl>
 
 <dl class="py function">
-<dt id="f2format._get_archive_path_option">
-<code class="sig-prename descclassname"><span class="pre">f2format.</span></code><code class="sig-name descname"><span class="pre">_get_archive_path_option</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">explicit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/f2format.html#_get_archive_path_option"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#f2format._get_archive_path_option" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="f2format._get_archive_path_option">
+<span class="sig-prename descclassname"><span class="pre">f2format.</span></span><span class="sig-name descname"><span class="pre">_get_archive_path_option</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">explicit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/f2format.html#_get_archive_path_option"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#f2format._get_archive_path_option" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the value for the <code class="docutils literal notranslate"><span class="pre">archive_path</span></code> option.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -787,8 +788,8 @@ code as <code class="xref py py-attr docutils literal notranslate"><span class="
 </dd></dl>
 
 <dl class="py function">
-<dt id="f2format._get_source_version_option">
-<code class="sig-prename descclassname"><span class="pre">f2format.</span></code><code class="sig-name descname"><span class="pre">_get_source_version_option</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">explicit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/f2format.html#_get_source_version_option"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#f2format._get_source_version_option" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="f2format._get_source_version_option">
+<span class="sig-prename descclassname"><span class="pre">f2format.</span></span><span class="sig-name descname"><span class="pre">_get_source_version_option</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">explicit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/f2format.html#_get_source_version_option"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#f2format._get_source_version_option" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the value for the <code class="docutils literal notranslate"><span class="pre">source_version</span></code> option.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -812,8 +813,8 @@ code as <code class="xref py py-attr docutils literal notranslate"><span class="
 </dd></dl>
 
 <dl class="py function">
-<dt id="f2format._get_linesep_option">
-<code class="sig-prename descclassname"><span class="pre">f2format.</span></code><code class="sig-name descname"><span class="pre">_get_linesep_option</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">explicit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/f2format.html#_get_linesep_option"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#f2format._get_linesep_option" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="f2format._get_linesep_option">
+<span class="sig-prename descclassname"><span class="pre">f2format.</span></span><span class="sig-name descname"><span class="pre">_get_linesep_option</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">explicit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/f2format.html#_get_linesep_option"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#f2format._get_linesep_option" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the value for the <code class="docutils literal notranslate"><span class="pre">linesep</span></code> option.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -838,8 +839,8 @@ code as <code class="xref py py-attr docutils literal notranslate"><span class="
 </dd></dl>
 
 <dl class="py function">
-<dt id="f2format._get_indentation_option">
-<code class="sig-prename descclassname"><span class="pre">f2format.</span></code><code class="sig-name descname"><span class="pre">_get_indentation_option</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">explicit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/f2format.html#_get_indentation_option"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#f2format._get_indentation_option" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="f2format._get_indentation_option">
+<span class="sig-prename descclassname"><span class="pre">f2format.</span></span><span class="sig-name descname"><span class="pre">_get_indentation_option</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">explicit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/f2format.html#_get_indentation_option"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#f2format._get_indentation_option" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the value for the <code class="docutils literal notranslate"><span class="pre">indentation</span></code> option.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -864,8 +865,8 @@ code as <code class="xref py py-attr docutils literal notranslate"><span class="
 </dd></dl>
 
 <dl class="py function">
-<dt id="f2format._get_pep8_option">
-<code class="sig-prename descclassname"><span class="pre">f2format.</span></code><code class="sig-name descname"><span class="pre">_get_pep8_option</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">explicit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/f2format.html#_get_pep8_option"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#f2format._get_pep8_option" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="f2format._get_pep8_option">
+<span class="sig-prename descclassname"><span class="pre">f2format.</span></span><span class="sig-name descname"><span class="pre">_get_pep8_option</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">explicit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/f2format.html#_get_pep8_option"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#f2format._get_pep8_option" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the value for the <code class="docutils literal notranslate"><span class="pre">pep8</span></code> option.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -890,50 +891,50 @@ code as <code class="xref py py-attr docutils literal notranslate"><span class="
 
 <p>The following variables are used for fallback default values of options.</p>
 <dl class="py data">
-<dt id="f2format._default_quiet">
-<code class="sig-prename descclassname"><span class="pre">f2format.</span></code><code class="sig-name descname"><span class="pre">_default_quiet</span></code><em class="property"> <span class="pre">=</span> <span class="pre">False</span></em><a class="headerlink" href="#f2format._default_quiet" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="f2format._default_quiet">
+<span class="sig-prename descclassname"><span class="pre">f2format.</span></span><span class="sig-name descname"><span class="pre">_default_quiet</span></span><em class="property"> <span class="pre">=</span> <span class="pre">False</span></em><a class="headerlink" href="#f2format._default_quiet" title="Permalink to this definition">¶</a></dt>
 <dd><p>Default value for the <code class="docutils literal notranslate"><span class="pre">quiet</span></code> option.</p>
 </dd></dl>
 
 <dl class="py data">
-<dt id="f2format._default_concurrency">
-<code class="sig-prename descclassname"><span class="pre">f2format.</span></code><code class="sig-name descname"><span class="pre">_default_concurrency</span></code><em class="property"> <span class="pre">=</span> <span class="pre">None</span></em><a class="headerlink" href="#f2format._default_concurrency" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="f2format._default_concurrency">
+<span class="sig-prename descclassname"><span class="pre">f2format.</span></span><span class="sig-name descname"><span class="pre">_default_concurrency</span></span><em class="property"> <span class="pre">=</span> <span class="pre">None</span></em><a class="headerlink" href="#f2format._default_concurrency" title="Permalink to this definition">¶</a></dt>
 <dd><p>Default value for the <code class="docutils literal notranslate"><span class="pre">concurrency</span></code> option.</p>
 </dd></dl>
 
 <dl class="py data">
-<dt id="f2format._default_do_archive">
-<code class="sig-prename descclassname"><span class="pre">f2format.</span></code><code class="sig-name descname"><span class="pre">_default_do_archive</span></code><em class="property"> <span class="pre">=</span> <span class="pre">True</span></em><a class="headerlink" href="#f2format._default_do_archive" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="f2format._default_do_archive">
+<span class="sig-prename descclassname"><span class="pre">f2format.</span></span><span class="sig-name descname"><span class="pre">_default_do_archive</span></span><em class="property"> <span class="pre">=</span> <span class="pre">True</span></em><a class="headerlink" href="#f2format._default_do_archive" title="Permalink to this definition">¶</a></dt>
 <dd><p>Default value for the <code class="docutils literal notranslate"><span class="pre">do_archive</span></code> option.</p>
 </dd></dl>
 
 <dl class="py data">
-<dt id="f2format._default_archive_path">
-<code class="sig-prename descclassname"><span class="pre">f2format.</span></code><code class="sig-name descname"><span class="pre">_default_archive_path</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'archive'</span></em><a class="headerlink" href="#f2format._default_archive_path" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="f2format._default_archive_path">
+<span class="sig-prename descclassname"><span class="pre">f2format.</span></span><span class="sig-name descname"><span class="pre">_default_archive_path</span></span><em class="property"> <span class="pre">=</span> <span class="pre">'archive'</span></em><a class="headerlink" href="#f2format._default_archive_path" title="Permalink to this definition">¶</a></dt>
 <dd><p>Default value for the <code class="docutils literal notranslate"><span class="pre">archive_path</span></code> option.</p>
 </dd></dl>
 
 <dl class="py data">
-<dt id="f2format._default_source_version">
-<code class="sig-prename descclassname"><span class="pre">f2format.</span></code><code class="sig-name descname"><span class="pre">_default_source_version</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'3.10'</span></em><a class="headerlink" href="#f2format._default_source_version" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="f2format._default_source_version">
+<span class="sig-prename descclassname"><span class="pre">f2format.</span></span><span class="sig-name descname"><span class="pre">_default_source_version</span></span><em class="property"> <span class="pre">=</span> <span class="pre">'3.10'</span></em><a class="headerlink" href="#f2format._default_source_version" title="Permalink to this definition">¶</a></dt>
 <dd><p>Default value for the <code class="docutils literal notranslate"><span class="pre">source_version</span></code> option.</p>
 </dd></dl>
 
 <dl class="py data">
-<dt id="f2format._default_linesep">
-<code class="sig-prename descclassname"><span class="pre">f2format.</span></code><code class="sig-name descname"><span class="pre">_default_linesep</span></code><em class="property"> <span class="pre">=</span> <span class="pre">None</span></em><a class="headerlink" href="#f2format._default_linesep" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="f2format._default_linesep">
+<span class="sig-prename descclassname"><span class="pre">f2format.</span></span><span class="sig-name descname"><span class="pre">_default_linesep</span></span><em class="property"> <span class="pre">=</span> <span class="pre">None</span></em><a class="headerlink" href="#f2format._default_linesep" title="Permalink to this definition">¶</a></dt>
 <dd><p>Default value for the <code class="docutils literal notranslate"><span class="pre">linesep</span></code> option.</p>
 </dd></dl>
 
 <dl class="py data">
-<dt id="f2format._default_indentation">
-<code class="sig-prename descclassname"><span class="pre">f2format.</span></code><code class="sig-name descname"><span class="pre">_default_indentation</span></code><em class="property"> <span class="pre">=</span> <span class="pre">None</span></em><a class="headerlink" href="#f2format._default_indentation" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="f2format._default_indentation">
+<span class="sig-prename descclassname"><span class="pre">f2format.</span></span><span class="sig-name descname"><span class="pre">_default_indentation</span></span><em class="property"> <span class="pre">=</span> <span class="pre">None</span></em><a class="headerlink" href="#f2format._default_indentation" title="Permalink to this definition">¶</a></dt>
 <dd><p>Default value for the <code class="docutils literal notranslate"><span class="pre">indentation</span></code> option.</p>
 </dd></dl>
 
 <dl class="py data">
-<dt id="f2format._default_pep8">
-<code class="sig-prename descclassname"><span class="pre">f2format.</span></code><code class="sig-name descname"><span class="pre">_default_pep8</span></code><em class="property"> <span class="pre">=</span> <span class="pre">True</span></em><a class="headerlink" href="#f2format._default_pep8" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="f2format._default_pep8">
+<span class="sig-prename descclassname"><span class="pre">f2format.</span></span><span class="sig-name descname"><span class="pre">_default_pep8</span></span><em class="property"> <span class="pre">=</span> <span class="pre">True</span></em><a class="headerlink" href="#f2format._default_pep8" title="Permalink to this definition">¶</a></dt>
 <dd><p>Default value for the <code class="docutils literal notranslate"><span class="pre">pep8</span></code> option.</p>
 </dd></dl>
 
@@ -942,12 +943,12 @@ code as <code class="xref py py-attr docutils literal notranslate"><span class="
 <p>For <a class="reference internal" href="#f2format._default_concurrency" title="f2format._default_concurrency"><code class="xref py py-data docutils literal notranslate"><span class="pre">_default_concurrency</span></code></a>, <a class="reference internal" href="#f2format._default_linesep" title="f2format._default_linesep"><code class="xref py py-data docutils literal notranslate"><span class="pre">_default_linesep</span></code></a> and <a class="reference internal" href="#f2format._default_indentation" title="f2format._default_indentation"><code class="xref py py-data docutils literal notranslate"><span class="pre">_default_indentation</span></code></a>,
 <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a> means <em>auto detection</em> during runtime.</p>
 </div>
-</div>
-<div class="section" id="cli-utilities">
+</section>
+<section id="cli-utilities">
 <h3>CLI Utilities<a class="headerlink" href="#cli-utilities" title="Permalink to this headline">¶</a></h3>
 <dl class="py function">
-<dt id="f2format.get_parser">
-<code class="sig-prename descclassname"><span class="pre">f2format.</span></code><code class="sig-name descname"><span class="pre">get_parser</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/f2format.html#get_parser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#f2format.get_parser" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="f2format.get_parser">
+<span class="sig-prename descclassname"><span class="pre">f2format.</span></span><span class="sig-name descname"><span class="pre">get_parser</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/f2format.html#get_parser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#f2format.get_parser" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate CLI parser.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -961,14 +962,14 @@ code as <code class="xref py py-attr docutils literal notranslate"><span class="
 
 <p>The following variables are used for help messages in the argument parser.</p>
 <dl class="py data">
-<dt id="f2format.f2format.__cwd__">
-<code class="sig-prename descclassname"><span class="pre">f2format.</span></code><code class="sig-name descname"><span class="pre">__cwd__</span></code><em class="property"><span class="pre">:</span> <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a></em><a class="headerlink" href="#f2format.f2format.__cwd__" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="f2format.f2format.__cwd__">
+<span class="sig-prename descclassname"><span class="pre">f2format.</span></span><span class="sig-name descname"><span class="pre">__cwd__</span></span><em class="property"><span class="pre">:</span> <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a></em><a class="headerlink" href="#f2format.f2format.__cwd__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Current working directory returned by <a class="reference external" href="https://docs.python.org/3/library/os.html#os.getcwd" title="(in Python v3.9)"><code class="xref py py-func docutils literal notranslate"><span class="pre">os.getcwd()</span></code></a>.</p>
 </dd></dl>
 
 <dl class="py data">
-<dt id="f2format.f2format.__f2format_quiet__">
-<code class="sig-prename descclassname"><span class="pre">f2format.</span></code><code class="sig-name descname"><span class="pre">__f2format_quiet__</span></code><em class="property"><span class="pre">:</span> <span class="pre">Literal['quiet</span> <span class="pre">mode',</span> <span class="pre">'non-quiet</span> <span class="pre">mode']</span></em><a class="headerlink" href="#f2format.f2format.__f2format_quiet__" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="f2format.f2format.__f2format_quiet__">
+<span class="sig-prename descclassname"><span class="pre">f2format.</span></span><span class="sig-name descname"><span class="pre">__f2format_quiet__</span></span><em class="property"><span class="pre">:</span> <span class="pre">Literal['quiet</span> <span class="pre">mode',</span> <span class="pre">'non-quiet</span> <span class="pre">mode']</span></em><a class="headerlink" href="#f2format.f2format.__f2format_quiet__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Default value for the <code class="docutils literal notranslate"><span class="pre">--quiet</span></code> option.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
@@ -977,8 +978,8 @@ code as <code class="xref py py-attr docutils literal notranslate"><span class="
 </dd></dl>
 
 <dl class="py data">
-<dt id="f2format.f2format.__f2format_concurrency__">
-<code class="sig-prename descclassname"><span class="pre">f2format.</span></code><code class="sig-name descname"><span class="pre">__f2format_concurrency__</span></code><em class="property"><span class="pre">:</span> <span class="pre">Union[int,</span> <span class="pre">Literal['auto</span> <span class="pre">detect']]</span></em><a class="headerlink" href="#f2format.f2format.__f2format_concurrency__" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="f2format.f2format.__f2format_concurrency__">
+<span class="sig-prename descclassname"><span class="pre">f2format.</span></span><span class="sig-name descname"><span class="pre">__f2format_concurrency__</span></span><em class="property"><span class="pre">:</span> <span class="pre">Union[int,</span> <span class="pre">Literal['auto</span> <span class="pre">detect']]</span></em><a class="headerlink" href="#f2format.f2format.__f2format_concurrency__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Default value for the <code class="docutils literal notranslate"><span class="pre">--concurrency</span></code> option.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
@@ -987,8 +988,8 @@ code as <code class="xref py py-attr docutils literal notranslate"><span class="
 </dd></dl>
 
 <dl class="py data">
-<dt id="f2format.f2format.__f2format_do_archive__">
-<code class="sig-prename descclassname"><span class="pre">f2format.</span></code><code class="sig-name descname"><span class="pre">__f2format_do_archive__</span></code><em class="property"><span class="pre">:</span> <span class="pre">Literal['will</span> <span class="pre">do</span> <span class="pre">archive',</span> <span class="pre">'will</span> <span class="pre">not</span> <span class="pre">do</span> <span class="pre">archive']</span></em><a class="headerlink" href="#f2format.f2format.__f2format_do_archive__" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="f2format.f2format.__f2format_do_archive__">
+<span class="sig-prename descclassname"><span class="pre">f2format.</span></span><span class="sig-name descname"><span class="pre">__f2format_do_archive__</span></span><em class="property"><span class="pre">:</span> <span class="pre">Literal['will</span> <span class="pre">do</span> <span class="pre">archive',</span> <span class="pre">'will</span> <span class="pre">not</span> <span class="pre">do</span> <span class="pre">archive']</span></em><a class="headerlink" href="#f2format.f2format.__f2format_do_archive__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Default value for the <code class="docutils literal notranslate"><span class="pre">--no-archive</span></code> option.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
@@ -997,8 +998,8 @@ code as <code class="xref py py-attr docutils literal notranslate"><span class="
 </dd></dl>
 
 <dl class="py data">
-<dt id="f2format.f2format.__f2format_archive_path__">
-<code class="sig-prename descclassname"><span class="pre">f2format.</span></code><code class="sig-name descname"><span class="pre">__f2format_archive_path__</span></code><em class="property"><span class="pre">:</span> <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a></em><a class="headerlink" href="#f2format.f2format.__f2format_archive_path__" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="f2format.f2format.__f2format_archive_path__">
+<span class="sig-prename descclassname"><span class="pre">f2format.</span></span><span class="sig-name descname"><span class="pre">__f2format_archive_path__</span></span><em class="property"><span class="pre">:</span> <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a></em><a class="headerlink" href="#f2format.f2format.__f2format_archive_path__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Default value for the <code class="docutils literal notranslate"><span class="pre">--archive-path</span></code> option.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
@@ -1007,8 +1008,8 @@ code as <code class="xref py py-attr docutils literal notranslate"><span class="
 </dd></dl>
 
 <dl class="py data">
-<dt id="f2format.f2format.__f2format_source_version__">
-<code class="sig-prename descclassname"><span class="pre">f2format.</span></code><code class="sig-name descname"><span class="pre">__f2format_source_version__</span></code><em class="property"><span class="pre">:</span> <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a></em><a class="headerlink" href="#f2format.f2format.__f2format_source_version__" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="f2format.f2format.__f2format_source_version__">
+<span class="sig-prename descclassname"><span class="pre">f2format.</span></span><span class="sig-name descname"><span class="pre">__f2format_source_version__</span></span><em class="property"><span class="pre">:</span> <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a></em><a class="headerlink" href="#f2format.f2format.__f2format_source_version__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Default value for the <code class="docutils literal notranslate"><span class="pre">--source-version</span></code> option.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
@@ -1017,8 +1018,8 @@ code as <code class="xref py py-attr docutils literal notranslate"><span class="
 </dd></dl>
 
 <dl class="py data">
-<dt id="f2format.f2format.__f2format_linesep__">
-<code class="sig-prename descclassname"><span class="pre">f2format.</span></code><code class="sig-name descname"><span class="pre">__f2format_linesep__</span></code><em class="property"><span class="pre">:</span> <span class="pre">Literal['LF',</span> <span class="pre">'CRLF',</span> <span class="pre">'CR',</span> <span class="pre">'auto</span> <span class="pre">detect']</span></em><a class="headerlink" href="#f2format.f2format.__f2format_linesep__" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="f2format.f2format.__f2format_linesep__">
+<span class="sig-prename descclassname"><span class="pre">f2format.</span></span><span class="sig-name descname"><span class="pre">__f2format_linesep__</span></span><em class="property"><span class="pre">:</span> <span class="pre">Literal['LF',</span> <span class="pre">'CRLF',</span> <span class="pre">'CR',</span> <span class="pre">'auto</span> <span class="pre">detect']</span></em><a class="headerlink" href="#f2format.f2format.__f2format_linesep__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Default value for the <code class="docutils literal notranslate"><span class="pre">--linesep</span></code> option.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
@@ -1027,8 +1028,8 @@ code as <code class="xref py py-attr docutils literal notranslate"><span class="
 </dd></dl>
 
 <dl class="py data">
-<dt id="f2format.f2format.__f2format_indentation__">
-<code class="sig-prename descclassname"><span class="pre">f2format.</span></code><code class="sig-name descname"><span class="pre">__f2format_indentation__</span></code><em class="property"><span class="pre">:</span> <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a></em><a class="headerlink" href="#f2format.f2format.__f2format_indentation__" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="f2format.f2format.__f2format_indentation__">
+<span class="sig-prename descclassname"><span class="pre">f2format.</span></span><span class="sig-name descname"><span class="pre">__f2format_indentation__</span></span><em class="property"><span class="pre">:</span> <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a></em><a class="headerlink" href="#f2format.f2format.__f2format_indentation__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Default value for the <code class="docutils literal notranslate"><span class="pre">--indentation</span></code> option.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
@@ -1037,8 +1038,8 @@ code as <code class="xref py py-attr docutils literal notranslate"><span class="
 </dd></dl>
 
 <dl class="py data">
-<dt id="f2format.f2format.__f2format_pep8__">
-<code class="sig-prename descclassname"><span class="pre">f2format.</span></code><code class="sig-name descname"><span class="pre">__f2format_pep8__</span></code><em class="property"><span class="pre">:</span> <span class="pre">Literal['will</span> <span class="pre">conform</span> <span class="pre">to</span> <span class="pre">PEP</span> <span class="pre">8',</span> <span class="pre">'will</span> <span class="pre">not</span> <span class="pre">conform</span> <span class="pre">to</span> <span class="pre">PEP</span> <span class="pre">8']</span></em><a class="headerlink" href="#f2format.f2format.__f2format_pep8__" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="f2format.f2format.__f2format_pep8__">
+<span class="sig-prename descclassname"><span class="pre">f2format.</span></span><span class="sig-name descname"><span class="pre">__f2format_pep8__</span></span><em class="property"><span class="pre">:</span> <span class="pre">Literal['will</span> <span class="pre">conform</span> <span class="pre">to</span> <span class="pre">PEP</span> <span class="pre">8',</span> <span class="pre">'will</span> <span class="pre">not</span> <span class="pre">conform</span> <span class="pre">to</span> <span class="pre">PEP</span> <span class="pre">8']</span></em><a class="headerlink" href="#f2format.f2format.__f2format_pep8__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Default value for the <code class="docutils literal notranslate"><span class="pre">--no-pep8</span></code> option.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
@@ -1046,9 +1047,9 @@ code as <code class="xref py py-attr docutils literal notranslate"><span class="
 </div>
 </dd></dl>
 
-</div>
-</div>
-</div>
+</section>
+</section>
+</section>
 
 
           </div>
